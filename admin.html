@@ -90,7 +90,7 @@
     display: flex; align-items: center; justify-content: space-between;
   }
   header h1 { font-size: 1rem; font-weight: 500; }
-  header span { font-size: 0.8rem; opacity: 0.8; }
+  header span { font-size: 0.8rem; opacity: 0.6; }
   .logout-btn {
     background: transparent; border: 1px solid rgba(245,240,232,0.3);
     color: var(--cream); padding: 0.35rem 0.9rem;
@@ -110,7 +110,7 @@
   }
   .tab.active { border-bottom-color: var(--gold); color: var(--brown); font-weight: 500; }
 
-  .panel { display: none; padding: 2rem; max-width: 900px; margin: 0 auto; }
+  .panel { display: none; padding: 2rem; max-width: 950px; margin: 0 auto; }
   .panel.active { display: block; }
 
   .card {
@@ -126,6 +126,19 @@
   }
   .card h3 { font-size: 1rem; font-weight: 500; }
   .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .card-grid-full { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1rem; }
+  
+  /* Form sections grouping translations */
+  .lang-group {
+    border-left: 2px solid var(--gold);
+    padding-left: 1rem;
+    margin: 1rem 0;
+    background: rgba(245, 240, 232, 0.3);
+    padding-top: 0.5rem; padding-bottom: 0.5rem;
+    border-radius: 0 4px 4px 0;
+  }
+  .lang-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); font-weight: bold; margin-bottom: 0.5rem; }
+
   label { display: block; font-size: 0.78rem; color: var(--brown-mid); margin-bottom: 0.25rem; font-weight: 500; }
   input[type=text], input[type=url], textarea, select {
     width: 100%; padding: 0.6rem 0.8rem;
@@ -164,17 +177,17 @@
     color: var(--brown-mid);
     font-size: 0.82rem;
     transition: border-color 0.2s;
+    margin-bottom: 0.5rem;
   }
   .photo-upload-area:hover { border-color: var(--gold); }
   .photo-upload-area input { display: none; }
   .photo-preview { width: 80px; height: 80px; object-fit: cover; border-radius: 4px; display: none; margin: 0.5rem auto 0; }
 
-  .status-badge {
-    font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 3px;
-    font-weight: 500;
-  }
-  .status-available { background: rgba(45,106,79,0.12); color: var(--green); }
-  .status-reserved { background: rgba(201,168,76,0.15); color: var(--brown-mid); }
+  /* Subgallery management */
+  .subgallery-manager { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 0.5rem; margin-top: 0.5rem; }
+  .subgallery-thumb { position: relative; aspect-ratio: 1; border-radius: 4px; overflow: hidden; border: 1px solid var(--border); }
+  .subgallery-thumb img { width:100%; height:100%; object-fit: cover; }
+  .subgallery-thumb button { position: absolute; top:2px; right:2px; background: var(--red); color: white; border: none; font-size: 10px; width: 16px; height:16px; border-radius: 50%; cursor: pointer; }
 
   .toast {
     position: fixed; top: 1rem; right: 1rem;
@@ -196,7 +209,7 @@
     background: var(--white);
     border-radius: 10px;
     padding: 2rem;
-    width: 560px;
+    width: 680px;
     max-height: 85vh;
     overflow-y: auto;
     box-shadow: 0 16px 48px rgba(0,0,0,0.2);
@@ -241,17 +254,17 @@
   <header>
     <h1>🐱 Crystal Valley — správa webu</h1>
     <div style="display:flex;align-items:center;gap:1rem">
-      <span id="header-status">Připojování k GitHub...</span>
+      <span id="header-status">Připojeno k GitHub</span>
       <button class="logout-btn" onclick="logout()">Odhlásit</button>
     </div>
   </header>
 
   <div class="tabs">
-    <button class="tab active" onclick="showTab('cats', this)">🐱 Kočky</button>
-    <button class="tab" onclick="showTab('toms', this)">🐈 Kocouři</button>
-    <button class="tab" onclick="showTab('litters', this)">🐾 Koťata</button>
-    <button class="tab" onclick="showTab('gallery', this)">📸 Galerie</button>
-    <button class="tab" onclick="showTab('about', this)">📝 O nás</button>
+    <button class="tab active" onclick="showTab('cats')">🐱 Kočky</button>
+    <button class="tab" onclick="showTab('toms')">🐈 Kocouři</button>
+    <button class="tab" onclick="showTab('litters')">🐾 Koťata</button>
+    <button class="tab" onclick="showTab('gallery')">📸 Galerie</button>
+    <button class="tab" onclick="showTab('about')">📝 O nás</button>
   </div>
 
   <div class="panel active" id="panel-cats">
@@ -268,7 +281,7 @@
     <div class="card">
       <div class="card-header">
         <h3>Chovní kocouři</h3>
-        <button class="btn btn-primary" onclick="openModal('toms')">+ Přidat kocoura</button>
+        <button class="btn btn-primary" onclick="openModal('toms')">+ Přidat kocour</button>
       </div>
       <div class="item-list" id="list-toms"></div>
     </div>
@@ -287,7 +300,7 @@
   <div class="panel" id="panel-gallery">
     <div class="card">
       <div class="card-header">
-        <h3>Galerie</h3>
+        <h3>Hlavní Galerie</h3>
         <button class="btn btn-primary" onclick="openModal('gallery')">+ Přidat foto</button>
       </div>
       <div id="gallery-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1rem;margin-top:1rem"></div>
@@ -296,11 +309,30 @@
 
   <div class="panel" id="panel-about">
     <div class="card">
-      <h3 style="margin-bottom:1rem">Text „O nás"</h3>
-      <label>Hlavní text</label>
-      <textarea id="about-text" rows="8"></textarea>
+      <h3 style="margin-bottom:1rem">Text „O nás" ve 4 jazycích</h3>
+      
+      <div class="lang-group">
+        <div class="lang-title">🇨🇿 Česky (CZ)</div>
+        <textarea id="about-text" rows="5" placeholder="Hlavní český text..."></textarea>
+      </div>
+      
+      <div class="lang-group">
+        <div class="lang-title">🇬🇧 Anglicky (EN)</div>
+        <textarea id="about-text-en" rows="5" placeholder="English description..."></textarea>
+      </div>
+
+      <div class="lang-group">
+        <div class="lang-title">🇩🇪 Německy (DE)</div>
+        <textarea id="about-text-de" rows="5" placeholder="Deutsche Beschreibung..."></textarea>
+      </div>
+
+      <div class="lang-group">
+        <div class="lang-title">🇵🇱 Polsky (PL)</div>
+        <textarea id="about-text-pl" rows="5" placeholder="Polski opis..."></textarea>
+      </div>
+
       <div style="margin-top:1rem">
-        <button class="btn btn-success" id="save-about-btn" onclick="saveAbout()">💾 Uložit text</button>
+        <button class="btn btn-success" onclick="saveAbout()">💾 Uložit všechny překlady textu</button>
       </div>
     </div>
   </div>
@@ -327,18 +359,11 @@ const OWNER_KEY = 'cv_gh_owner';
 const REPO_KEY = 'cv_gh_repo';
 
 let GH_TOKEN, GH_OWNER, GH_REPO;
-let DATA = { cats: [], toms: [], litters: [], gallery: [], about: '' };
+let DATA = { cats: [], toms: [], litters: [], gallery: [], about: {} };
 let fileSHAs = {};
 let currentModal = null;
 let editIndex = -1;
-
-/* Bezpečné kódování pro češtinu (UTF-8) */
-function utoa(str) {
-  return btoa(String.fromCharCode(...new TextEncoder().encode(str)));
-}
-function atou(str) {
-  return new TextDecoder().decode(Uint8Array.from(atob(str.replace(/\n/g, '')), c => c.charCodeAt(0)));
-}
+let currentModalSubgallery = []; // Dočasné pole pro fotky v rozklikávací podgalerii kočky
 
 /* ── INIT ── */
 function init() {
@@ -364,7 +389,6 @@ function saveSetup() {
   localStorage.setItem(REPO_KEY, repo);
   localStorage.setItem(PASS_KEY, pass);
   GH_TOKEN = token; GH_OWNER = owner; GH_REPO = repo;
-  document.getElementById('login-pass').value = '';
   show('login-screen');
 }
 
@@ -399,7 +423,7 @@ async function ghGet(path) {
 }
 
 async function ghPut(path, content, sha) {
-  const body = { message: `Admin update: ${path}`, content: utoa(content) };
+  const body = { message: `Admin update: ${path}`, content: btoa(unescape(encodeURIComponent(content))) };
   if (sha) body.sha = sha;
   const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`, {
     method: 'PUT',
@@ -421,51 +445,41 @@ async function ghUploadImage(filename, base64data) {
     headers: { Authorization: `token ${GH_TOKEN}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
-  if (r.ok) {
-    const data = await r.json();
-    return data.content.download_url;
-  }
+  if (r.ok) return `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${path}`;
   return null;
 }
 
 /* ── LOAD DATA ── */
 async function loadData() {
   const files = ['data/cats.json','data/toms.json','data/litters.json','data/gallery.json','data/about.json'];
-  const defaults = { 'data/cats.json': [], 'data/toms.json': [], 'data/litters.json': [], 'data/gallery.json': [], 'data/about.json': { text: '' } };
-  
-  document.getElementById('header-status').textContent = '⏳ Načítání dat z GitHubu...';
+  const defaults = { 'data/cats.json': [], 'data/toms.json': [], 'data/litters.json': [], 'data/gallery.json': [], 'data/about.json': { text: '', text_en: '', text_de: '', text_pl: '' } };
 
-  try {
-    for (const f of files) {
-      const res = await ghGet(f);
-      if (res && res.content) {
-        fileSHAs[f] = res.sha;
-        const parsed = JSON.parse(atou(res.content));
-        if (f === 'data/cats.json') DATA.cats = parsed;
-        if (f === 'data/toms.json') DATA.toms = parsed;
-        if (f === 'data/litters.json') DATA.litters = parsed;
-        if (f === 'data/gallery.json') DATA.gallery = parsed;
-        if (f === 'data/about.json') DATA.about = parsed.text || '';
-      } else {
-        const ok = await ghPut(f, JSON.stringify(defaults[f], null, 2), null);
-        if (!ok) throw new Error(`Nepodařilo se vytvořit soubor ${f}`);
-      }
+  for (const f of files) {
+    const res = await ghGet(f);
+    if (res && res.content) {
+      fileSHAs[f] = res.sha;
+      const parsed = JSON.parse(atob(res.content.replace(/\n/g,'')));
+      if (f === 'data/cats.json') DATA.cats = parsed;
+      if (f === 'data/toms.json') DATA.toms = parsed;
+      if (f === 'data/litters.json') DATA.litters = parsed;
+      if (f === 'data/gallery.json') DATA.gallery = parsed;
+      if (f === 'data/about.json') DATA.about = parsed || {};
+    } else {
+      await ghPut(f, JSON.stringify(defaults[f], null, 2), null);
     }
-    renderAll();
-    document.getElementById('about-text').value = DATA.about;
-    document.getElementById('header-status').textContent = '✅ Připojeno k GitHub';
-  } catch (e) {
-    document.getElementById('header-status').textContent = '❌ Chyba připojení';
-    toast('Chyba při komunikaci s GitHubem. Zkontrolujte nastavení tokenu.', true);
-    console.error(e);
   }
+  renderAll();
+  document.getElementById('about-text').value = DATA.about.text || '';
+  document.getElementById('about-text-en').value = DATA.about.text_en || '';
+  document.getElementById('about-text-de').value = DATA.about.text_de || '';
+  document.getElementById('about-text-pl').value = DATA.about.text_pl || '';
 }
 
 /* ── SAVE DATA ── */
 async function saveFile(key, content) {
   const path = `data/${key}.json`;
   const ok = await ghPut(path, JSON.stringify(content, null, 2), fileSHAs[path]);
-  if (ok) toast('✅ Uloženo do GitHubu!'); else toast('❌ Chyba při ukládání', true);
+  if (ok) toast('✅ Uloženo na GitHub!'); else toast('❌ Chyba při ukládání', true);
   return ok;
 }
 
@@ -479,13 +493,13 @@ function renderAll() {
 
 function renderList(type, items) {
   const el = document.getElementById(`list-${type}`);
-  if (!items || !items.length) { el.innerHTML = '<p style="color:var(--brown-mid);font-size:0.85rem;padding:0.5rem">Zatím žádné záznamy.</p>'; return; }
+  if (!items.length) { el.innerHTML = '<p style="color:var(--brown-mid);font-size:0.85rem;padding:0.5rem">Zatím žádné záznamy.</p>'; return; }
   el.innerHTML = items.map((item, i) => `
     <div class="item-row">
       ${item.photo ? `<img src="${item.photo}" alt="">` : `<div style="width:48px;height:48px;background:var(--cream);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:1.5rem">🐱</div>`}
       <div class="item-row-info">
         <strong>${item.name}</strong>
-        <span>${item.detail || ''} ${item.achievements ? '· 🏆 ' + item.achievements : ''}</span>
+        <span>${item.detail || ''} ${item.ems ? '· ' + item.ems : ''} · 🖼️ ${(item.subgallery||[]).length} dalších fotek</span>
       </div>
       <div class="item-actions">
         <button class="btn btn-outline" onclick="openModal('${type}', ${i})">Upravit</button>
@@ -497,7 +511,7 @@ function renderList(type, items) {
 
 function renderLitters() {
   const el = document.getElementById('list-litters');
-  if (!DATA.litters || !DATA.litters.length) { el.innerHTML = '<p style="color:var(--brown-mid);font-size:0.85rem;padding:0.5rem">Zatím žádné vrhy.</p>'; return; }
+  if (!DATA.litters.length) { el.innerHTML = '<p style="color:var(--brown-mid);font-size:0.85rem;padding:0.5rem">Zatím žádné vrhy.</p>'; return; }
   el.innerHTML = DATA.litters.map((l, i) => `
     <div class="item-row">
       <div style="width:48px;height:48px;background:var(--cream);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:1.5rem">🐾</div>
@@ -515,22 +529,21 @@ function renderLitters() {
 
 function renderGallery() {
   const el = document.getElementById('gallery-grid');
-  if (!DATA.gallery || !DATA.gallery.length) { el.innerHTML = '<p style="color:var(--brown-mid);font-size:0.85rem">Zatím žádné fotografie.</p>'; return; }
   el.innerHTML = DATA.gallery.map((g, i) => `
     <div style="position:relative">
-      <img src="${g.url}" alt="${g.label || ''}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;border:1px solid var(--border)">
+      <img src="${g.url}" alt="" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;border:1px solid var(--border)">
       <div style="font-size:0.72rem;color:var(--brown-mid);margin-top:0.25rem;text-align:center">${g.label || ''}</div>
       <button onclick="deleteItem('gallery', ${i})" style="position:absolute;top:4px;right:4px;background:var(--red);color:#fff;border:none;border-radius:3px;padding:2px 6px;font-size:0.7rem;cursor:pointer">✕</button>
     </div>
-  `).join('');
+  `).join('') || '<p style="color:var(--brown-mid);font-size:0.85rem">Zatím žádné fotografie.</p>';
 }
 
 /* ── TABS ── */
-function showTab(name, btn) {
+function showTab(name) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
-  if (btn) btn.classList.add('active');
+  event.target.classList.add('active');
 }
 
 /* ── MODAL ── */
@@ -549,16 +562,17 @@ function openModal(type, index = -1) {
   ) : {};
 
   if (type === 'cats' || type === 'toms') {
-    const isTom = type === 'toms';
-    title.textContent = (index >= 0 ? 'Upravit' : 'Přidat') + (isTom ? ' kocoura' : ' kočku');
+    title.textContent = (index >= 0 ? 'Upravit' : 'Přidat') + (type === 'toms' ? ' kocoura' : ' kočku');
+    currentModalSubgallery = item.subgallery ? [...item.subgallery] : [];
     body.innerHTML = catForm(item);
   } else if (type === 'litter') {
     title.textContent = index >= 0 ? 'Upravit vrh' : 'Přidat vrh';
     currentModal = 'litters';
     body.innerHTML = litterForm(item);
   } else if (type === 'gallery') {
-    title.textContent = 'Přidat fotografii';
-    body.innerHTML = galleryForm();
+    title.textContent = 'Přidat fotografii do hlavní galerie';
+    currentModal = 'gallery';
+    body.innerHTML = galleryForm(item);
   }
 
   modal.classList.add('open');
@@ -566,27 +580,112 @@ function openModal(type, index = -1) {
 
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
-  currentModal = null; editIndex = -1;
+  currentModal = null; editIndex = -1; currentModalSubgallery = [];
 }
 
 function catForm(item) {
   return `
     <div class="card-grid">
-      <div><label>Jméno</label><input type="text" id="f-name" value="${item.name||''}"></div>
-      <div><label>Detail (NFO n 22 · Kočka)</label><input type="text" id="f-detail" value="${item.detail||''}"></div>
-      <div><label>Výstavní výsledky</label><input type="text" id="f-achievements" value="${item.achievements||''}"></div>
+      <div><label>Jméno kočky / kocoura</label><input type="text" id="f-name" value="${item.name||''}"></div>
       <div><label>URL rodokmenu</label><input type="url" id="f-pedigree" value="${item.pedigree||''}"></div>
+      <div><label>EMS kód (např. NFO n 22)</label><input type="text" id="f-ems" value="${item.ems||''}"></div>
+      <div><label>Zdravotní testy (GSD IV, PK def...)</label><input type="text" id="f-tests" value="${item.tests||''}"></div>
     </div>
-    <div style="margin-top:1rem"><label>Tagy (oddělte čárkou)</label><input type="text" id="f-tags" value="${(item.tags||[]).join(', ')}"></div>
-    <div style="margin-top:1rem"><label>Fotografie</label>
+
+    <div class="lang-group">
+      <div class="lang-title">🇨🇿 ČESKÝ PŘEKLAD (CZ)</div>
+      <div class="card-grid">
+        <div><label>Krátký detail (např. Třída šampionů)</label><input type="text" id="f-detail" value="${item.detail||''}"></div>
+        <div><label>Výstavní úspěchy</label><input type="text" id="f-achievements" value="${item.achievements||''}"></div>
+      </div>
+      <div style="margin-top:0.5rem"><label>Popis barvy</label><input type="text" id="f-color-desc" value="${item.color_desc||''}"></div>
+      <div style="margin-top:0.5rem"><label>Celkový delší životopis / popis</label><textarea id="f-description">${item.description||''}</textarea></div>
+    </div>
+
+    <div class="lang-group">
+      <div class="lang-title">🇬🇧 ANGLICKÝ PŘEKLAD (EN)</div>
+      <div class="card-grid">
+        <div><label>Short detail (EN)</label><input type="text" id="f-detail-en" value="${item.detail_en||''}"></div>
+        <div><label>Show achievements (EN)</label><input type="text" id="f-achievements-en" value="${item.achievements_en||''}"></div>
+      </div>
+      <div style="margin-top:0.5rem"><label>Color description (EN)</label><input type="text" id="f-color-desc-en" value="${item.color_desc_en||''}"></div>
+      <div style="margin-top:0.5rem"><label>Long description (EN)</label><textarea id="f-description-en">${item.description_en||''}</textarea></div>
+    </div>
+
+    <div class="lang-group">
+      <div class="lang-title">🇩🇪 NĚMECKÝ PŘEKLAD (DE)</div>
+      <div class="card-grid">
+        <div><label>Kurzinfo (DE)</label><input type="text" id="f-detail-de" value="${item.detail_de||''}"></div>
+        <div><label>Ausstellungsergebnisse (DE)</label><input type="text" id="f-achievements-de" value="${item.achievements_de||''}"></div>
+      </div>
+      <div style="margin-top:0.5rem"><label>Farbbeschreibung (DE)</label><input type="text" id="f-color-desc-de" value="${item.color_desc_de||''}"></div>
+      <div style="margin-top:0.5rem"><label>Beschreibung text (DE)</label><textarea id="f-description-de">${item.description_de||''}</textarea></div>
+    </div>
+
+    <div class="lang-group">
+      <div class="lang-title">🇵🇱 POLSKÝ PŘEKLAD (PL)</div>
+      <div class="card-grid">
+        <div><label>Krótki szczegół (PL)</label><input type="text" id="f-detail-pl" value="${item.detail_pl||''}"></div>
+        <div><label>Osiągnięcia wystawowe (PL)</label><input type="text" id="f-achievements-pl" value="${item.achievements_pl||''}"></div>
+      </div>
+      <div style="margin-top:0.5rem"><label>Opis koloru (PL)</label><input type="text" id="f-color-desc-pl" value="${item.color_desc_pl||''}"></div>
+      <div style="margin-top:0.5rem"><label>Długi opis (PL)</label><textarea id="f-description-pl">${item.description_pl||''}</textarea></div>
+    </div>
+
+    <div style="margin-top:1rem"><label>Tagy (oddělte čárkou, např. Chovná, Veterán)</label><input type="text" id="f-tags" value="${(item.tags||[]).join(', ')}"></div>
+    
+    <div style="margin-top:1rem"><label>Hlavní profilová fotografie</label>
       <div class="photo-upload-area" onclick="document.getElementById('f-photo-input').click()">
-        📷 Klikněte pro nahrání fotografie
+        📷 Klikni pro výběr/změnu hlavní fotky
         <input type="file" id="f-photo-input" accept="image/*" onchange="previewPhoto(this)">
-        <img id="f-photo-preview" class="photo-preview" src="${item.photo||''}" style="${item.photo ? 'display:block' : 'display:none'}">
+        <img id="f-photo-preview" class="photo-preview" src="${item.photo||''}" style="${item.photo ? 'display:block' : ''}">
       </div>
       <input type="hidden" id="f-photo" value="${item.photo||''}">
     </div>
+
+    <div style="margin-top:1rem"><label>Podgalerie (další fotky kočky pro rozklikávací detail)</label>
+      <div class="photo-upload-area" style="border-color:var(--gold)" onclick="document.getElementById('f-subgallery-input').click()">
+        ➕ Přidat další fotku do podgalerie kočky
+        <input type="file" id="f-subgallery-input" accept="image/*" onchange="uploadToSubgallery(this)">
+      </div>
+      <div class="subgallery-manager" id="subgallery-wrapper">
+        ${renderSubgalleryThumbs()}
+      </div>
+    </div>
   `;
+}
+
+function renderSubgalleryThumbs() {
+  return currentModalSubgallery.map((url, i) => `
+    <div class="subgallery-thumb">
+      <img src="${url}">
+      <button type="button" onclick="removeSubgalleryPhoto(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+async function uploadToSubgallery(input) {
+  if (!input.files[0]) return;
+  toast('⏳ Nahrávám fotku podgalerie na GitHub...');
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const b64 = e.target.result.split(',')[1];
+    const filename = Date.now() + '_sub_' + input.files[0].name;
+    const uploadedUrl = await ghUploadImage(filename, b64);
+    if (uploadedUrl) {
+      currentModalSubgallery.push(uploadedUrl);
+      document.getElementById('subgallery-wrapper').innerHTML = renderSubgalleryThumbs();
+      toast('✅ Fotka přidána!');
+    } else {
+      toast('❌ Chyba nahrávání', true);
+    }
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function removeSubgalleryPhoto(idx) {
+  currentModalSubgallery.splice(idx, 1);
+  document.getElementById('subgallery-wrapper').innerHTML = renderSubgalleryThumbs();
 }
 
 function litterForm(item) {
@@ -594,15 +693,20 @@ function litterForm(item) {
   return `
     <div class="card-grid">
       <div><label>ID vrhu (A, B, C...)</label><input type="text" id="f-id" value="${item.id||''}"></div>
-      <div><label>Název</label><input type="text" id="f-name" value="${item.name||''}"></div>
-      <div><label>Datum narození</label><input type="text" id="f-born" value="${item.born||''}"></div>
+      <div><label>Název vrhu</label><input type="text" id="f-name" value="${item.name||''}"></div>
+      <div><label>Datum narození / Plánováno</label><input type="text" id="f-born" value="${item.born||''}"></div>
       <div><label>Matka</label><input type="text" id="f-mother" value="${item.mother||''}"></div>
       <div><label>Otec</label><input type="text" id="f-father" value="${item.father||''}"></div>
     </div>
-    <div style="margin-top:1rem"><label>Popis vrhu</label><textarea id="f-desc">${item.description||''}</textarea></div>
+    
+    <div class="lang-group"><div class="lang-title">🇨🇿 Popis vrhu (CZ)</div><textarea id="f-desc">${item.description||''}</textarea></div>
+    <div class="lang-group"><div class="lang-title">🇬🇧 Popis vrhu (EN)</div><textarea id="f-desc-en">${item.description_en||''}</textarea></div>
+    <div class="lang-group"><div class="lang-title">🇩🇪 Popis vrhu (DE)</div><textarea id="f-desc-de">${item.description_de||''}</textarea></div>
+    <div class="lang-group"><div class="lang-title">🇵🇱 Popis vrhu (PL)</div><textarea id="f-desc-pl">${item.description_pl||''}</textarea></div>
+
     <div style="margin-top:1.5rem">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
-        <label style="margin:0">Koťata</label>
+        <label style="margin:0">Jednotlivá koťata</label>
         <button class="btn btn-outline" type="button" onclick="addKittenRow()">+ Přidat kotě</button>
       </div>
       <div id="kittens-list">${kittens}</div>
@@ -612,20 +716,32 @@ function litterForm(item) {
 
 function kittenRow(k = {}, i = 0) {
   return `
-    <div class="item-row" id="kitten-${i}" style="flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem">
-      <input type="text" placeholder="Jméno" value="${k.name||''}" style="flex:2;min-width:140px" class="k-name">
-      <input type="text" placeholder="Pohlaví" value="${k.sex||''}" style="flex:1;min-width:80px" class="k-sex">
-      <input type="text" placeholder="Barva (NFO n 22)" value="${k.color||''}" style="flex:1;min-width:100px" class="k-color">
+    <div class="item-row" id="kitten-${i}" style="flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;background:#fff">
+      <input type="text" placeholder="Jméno koťátka" value="${k.name||''}" style="flex:1.5;min-width:120px" class="k-name">
+      
+      <select class="k-sex" style="flex:1;min-width:90px">
+        <option value="Kocour" ${k.sex==='Kocour'?'selected':''}>Kocour 🐈</option>
+        <option value="Kočka" ${k.sex==='Kočka'?'selected':''}>Kočka 🐱</option>
+      </select>
+
+      <div style="width:100%;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.25rem;margin:0.25rem 0">
+        <input type="text" placeholder="Barva CZ" value="${k.color||''}" class="k-color">
+        <input type="text" placeholder="Color EN" value="${k.color_en||''}" class="k-color-en">
+        <input type="text" placeholder="Farbe DE" value="${k.color_de||''}" class="k-color-de">
+        <input type="text" placeholder="Kolor PL" value="${k.color_pl||''}" class="k-color-pl">
+      </div>
+
       <select class="k-status" style="flex:1;min-width:110px">
-        <option value="available" ${k.status==='available'?'selected':''}>Dostupné</option>
+        <option value="available" ${k.status==='available'?'selected':''}>Volné</option>
         <option value="reserved" ${k.status==='reserved'?'selected':''}>Rezervováno</option>
+        <option value="sold" ${k.status==='sold'?'selected':''}>V novém domově</option>
       </select>
       <button class="btn btn-danger" onclick="this.closest('.item-row').remove()" style="flex-shrink:0">✕</button>
     </div>
   `;
 }
 
-let kittenCount = 10;
+let kittenCount = 50;
 function addKittenRow() {
   const list = document.getElementById('kittens-list');
   const div = document.createElement('div');
@@ -633,16 +749,23 @@ function addKittenRow() {
   list.appendChild(div.firstElementChild);
 }
 
-function galleryForm() {
+function galleryForm(item) {
   return `
-    <div><label>Popis fotografie</label><input type="text" id="f-label" placeholder="Výstava Praha 2024"></div>
+    <div class="lang-group">
+      <div class="lang-title">Popisek fotky ve 4 jazycích</div>
+      <input type="text" id="f-label" placeholder="CZ popisek" value="${item.label||''}" style="margin-bottom:0.3rem">
+      <input type="text" id="f-label-en" placeholder="EN label" value="${item.label_en||''}" style="margin-bottom:0.3rem">
+      <input type="text" id="f-label-de" placeholder="DE beschreibung" value="${item.label_de||''}" style="margin-bottom:0.3rem">
+      <input type="text" id="f-label-pl" placeholder="PL opis" value="${item.label_pl||''}">
+    </div>
     <div style="margin-top:1rem"><label>Fotografie</label>
+      ${item.url ? `<img src="${item.url}" style="width:100px;display:block;margin-bottom:0.5rem;border-radius:4px">` : ''}
       <div class="photo-upload-area" onclick="document.getElementById('g-photo-input').click()">
-        📷 Klikněte pro nahrání
+        📷 Klikni pro nahrání obrázku
         <input type="file" id="g-photo-input" accept="image/*" onchange="previewGallery(this)">
         <img id="g-photo-preview" class="photo-preview">
       </div>
-      <input type="hidden" id="f-photo" value="">
+      <input type="hidden" id="f-photo" value="${item.url||''}">
     </div>
   `;
 }
@@ -653,9 +776,8 @@ function previewPhoto(input) {
   reader.onload = e => {
     const preview = document.getElementById('f-photo-preview');
     preview.src = e.target.result; preview.style.display = 'block';
-    const photoEl = document.getElementById('f-photo');
-    photoEl.dataset.file = input.files[0].name;
-    photoEl.dataset.b64 = e.target.result.split(',')[1];
+    document.getElementById('f-photo').dataset.file = input.files[0].name;
+    document.getElementById('f-photo').dataset.b64 = e.target.result.split(',')[1];
   };
   reader.readAsDataURL(input.files[0]);
 }
@@ -666,9 +788,8 @@ function previewGallery(input) {
   reader.onload = e => {
     const preview = document.getElementById('g-photo-preview');
     preview.src = e.target.result; preview.style.display = 'block';
-    const photoEl = document.getElementById('f-photo');
-    photoEl.dataset.file = input.files[0].name;
-    photoEl.dataset.b64 = e.target.result.split(',')[1];
+    document.getElementById('f-photo').dataset.file = input.files[0].name;
+    document.getElementById('f-photo').dataset.b64 = e.target.result.split(',')[1];
   };
   reader.readAsDataURL(input.files[0]);
 }
@@ -676,7 +797,7 @@ function previewGallery(input) {
 /* ── SAVE MODAL ── */
 async function saveModal() {
   const btn = document.getElementById('modal-save-btn');
-  btn.innerHTML = '<span class="spinner"></span>Ukládám...';
+  btn.innerHTML = '<span class="spinner"></span>Ukládám na GitHub...';
   btn.disabled = true;
 
   try {
@@ -686,14 +807,42 @@ async function saveModal() {
       if (photoEl.dataset.b64) {
         photoUrl = await ghUploadImage(Date.now() + '_' + photoEl.dataset.file, photoEl.dataset.b64) || photoUrl;
       }
+      
       const item = {
         name: document.getElementById('f-name').value,
+        pedigree: document.getElementById('f-pedigree').value,
+        ems: document.getElementById('f-ems').value,
+        tests: document.getElementById('f-tests').value,
+        
+        // lokalizované CZ
         detail: document.getElementById('f-detail').value,
         achievements: document.getElementById('f-achievements').value,
-        pedigree: document.getElementById('f-pedigree').value,
+        color_desc: document.getElementById('f-color-desc').value,
+        description: document.getElementById('f-description').value,
+
+        // EN
+        detail_en: document.getElementById('f-detail-en').value,
+        achievements_en: document.getElementById('f-achievements-en').value,
+        color_desc_en: document.getElementById('f-color-desc-en').value,
+        description_en: document.getElementById('f-description-en').value,
+
+        // DE
+        detail_de: document.getElementById('f-detail-de').value,
+        achievements_de: document.getElementById('f-achievements-de').value,
+        color_desc_de: document.getElementById('f-color-desc-de').value,
+        description_de: document.getElementById('f-description-de').value,
+
+        // PL
+        detail_pl: document.getElementById('f-detail-pl').value,
+        achievements_pl: document.getElementById('f-achievements-pl').value,
+        color_desc_pl: document.getElementById('f-color-desc-pl').value,
+        description_pl: document.getElementById('f-description-pl').value,
+
         tags: document.getElementById('f-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
-        photo: photoUrl
+        photo: photoUrl,
+        subgallery: currentModalSubgallery
       };
+
       const arr = currentModal === 'cats' ? DATA.cats : DATA.toms;
       if (editIndex >= 0) arr[editIndex] = item; else arr.push(item);
       await saveFile(currentModal, arr);
@@ -704,9 +853,13 @@ async function saveModal() {
         name: row.querySelector('.k-name').value,
         sex: row.querySelector('.k-sex').value,
         color: row.querySelector('.k-color').value,
+        color_en: row.querySelector('.k-color-en').value,
+        color_de: row.querySelector('.k-color-de').value,
+        color_pl: row.querySelector('.k-color-pl').value,
         status: row.querySelector('.k-status').value,
         photo: ''
       }));
+      
       const item = {
         id: document.getElementById('f-id').value,
         name: document.getElementById('f-name').value,
@@ -714,6 +867,9 @@ async function saveModal() {
         mother: document.getElementById('f-mother').value,
         father: document.getElementById('f-father').value,
         description: document.getElementById('f-desc').value,
+        description_en: document.getElementById('f-desc-en').value,
+        description_de: document.getElementById('f-desc-de').value,
+        description_pl: document.getElementById('f-desc-pl').value,
         kittens
       };
       if (editIndex >= 0) DATA.litters[editIndex] = item; else DATA.litters.push(item);
@@ -722,12 +878,21 @@ async function saveModal() {
 
     } else if (currentModal === 'gallery') {
       const photoEl = document.getElementById('f-photo');
-      let photoUrl = '';
+      let photoUrl = photoEl.value;
       if (photoEl.dataset.b64) {
         photoUrl = await ghUploadImage(Date.now() + '_' + photoEl.dataset.file, photoEl.dataset.b64) || '';
       }
       if (!photoUrl) { toast('❌ Nahraj fotografii', true); btn.innerHTML = 'Uložit'; btn.disabled = false; return; }
-      DATA.gallery.push({ url: photoUrl, label: document.getElementById('f-label').value });
+      
+      const item = {
+        url: photoUrl,
+        label: document.getElementById('f-label').value,
+        label_en: document.getElementById('f-label-en').value,
+        label_de: document.getElementById('f-label-de').value,
+        label_pl: document.getElementById('f-label-pl').value
+      };
+
+      if (editIndex >= 0) DATA.gallery[editIndex] = item; else DATA.gallery.push(item);
       await saveFile('gallery', DATA.gallery);
       renderGallery();
     }
@@ -747,15 +912,13 @@ async function deleteItem(type, index) {
 }
 
 async function saveAbout() {
-  const btn = document.getElementById('save-about-btn');
-  btn.innerHTML = '<span class="spinner"></span>Ukládám...';
-  btn.disabled = true;
-  
-  DATA.about = document.getElementById('about-text').value;
-  await saveFile('about', { text: DATA.about });
-  
-  btn.innerHTML = '💾 Uložit text';
-  btn.disabled = false;
+  DATA.about = {
+    text: document.getElementById('about-text').value,
+    text_en: document.getElementById('about-text-en').value,
+    text_de: document.getElementById('about-text-de').value,
+    text_pl: document.getElementById('about-text-pl').value
+  };
+  await saveFile('about', DATA.about);
 }
 
 function toast(msg, error=false) {
