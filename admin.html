@@ -90,7 +90,7 @@
     display: flex; align-items: center; justify-content: space-between;
   }
   header h1 { font-size: 1rem; font-weight: 500; }
-  header span { font-size: 0.8rem; opacity: 0.6; }
+  header span { font-size: 0.8rem; opacity: 0.8; }
   .logout-btn {
     background: transparent; border: 1px solid rgba(245,240,232,0.3);
     color: var(--cream); padding: 0.35rem 0.9rem;
@@ -176,17 +176,6 @@
   .status-available { background: rgba(45,106,79,0.12); color: var(--green); }
   .status-reserved { background: rgba(201,168,76,0.15); color: var(--brown-mid); }
 
-  .save-bar {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: var(--brown);
-    padding: 1rem 2rem;
-    display: flex; align-items: center; justify-content: space-between;
-    display: none;
-    z-index: 50;
-  }
-  .save-bar span { color: var(--cream); font-size: 0.85rem; }
-  .save-bar button { background: var(--gold); color: var(--brown); border: none; padding: 0.6rem 1.5rem; border-radius: 5px; font-weight: 600; cursor: pointer; }
-
   .toast {
     position: fixed; top: 1rem; right: 1rem;
     background: var(--green); color: #fff;
@@ -221,7 +210,6 @@
 </head>
 <body>
 
-<!-- SETUP (první spuštění) -->
 <div id="setup-screen">
   <div class="setup-box">
     <h2>⚙️ Nastavení adminu</h2>
@@ -238,7 +226,6 @@
   </div>
 </div>
 
-<!-- LOGIN -->
 <div id="login-screen" style="display:none">
   <div class="login-box">
     <img src="logo.png" alt="Crystal Valley">
@@ -250,47 +237,43 @@
   </div>
 </div>
 
-<!-- ADMIN -->
 <div id="admin-screen">
   <header>
     <h1>🐱 Crystal Valley — správa webu</h1>
     <div style="display:flex;align-items:center;gap:1rem">
-      <span id="header-status">Připojeno k GitHub</span>
+      <span id="header-status">Připojování k GitHub...</span>
       <button class="logout-btn" onclick="logout()">Odhlásit</button>
     </div>
   </header>
 
   <div class="tabs">
-    <button class="tab active" onclick="showTab('cats')">🐱 Kočky</button>
-    <button class="tab" onclick="showTab('toms')">🐈 Kocouři</button>
-    <button class="tab" onclick="showTab('litters')">🐾 Koťata</button>
-    <button class="tab" onclick="showTab('gallery')">📸 Galerie</button>
-    <button class="tab" onclick="showTab('about')">📝 O nás</button>
+    <button class="tab active" onclick="showTab('cats', this)">🐱 Kočky</button>
+    <button class="tab" onclick="showTab('toms', this)">🐈 Kocouři</button>
+    <button class="tab" onclick="showTab('litters', this)">🐾 Koťata</button>
+    <button class="tab" onclick="showTab('gallery', this)">📸 Galerie</button>
+    <button class="tab" onclick="showTab('about', this)">📝 O nás</button>
   </div>
 
-  <!-- KOČKY -->
   <div class="panel active" id="panel-cats">
     <div class="card">
       <div class="card-header">
         <h3>Chovné kočky</h3>
-        <button class="btn btn-primary" onclick="openModal('cat')">+ Přidat kočku</button>
+        <button class="btn btn-primary" onclick="openModal('cats')">+ Přidat kočku</button>
       </div>
       <div class="item-list" id="list-cats"></div>
     </div>
   </div>
 
-  <!-- KOCOUŘI -->
   <div class="panel" id="panel-toms">
     <div class="card">
       <div class="card-header">
         <h3>Chovní kocouři</h3>
-        <button class="btn btn-primary" onclick="openModal('tom')">+ Přidat kocour</button>
+        <button class="btn btn-primary" onclick="openModal('toms')">+ Přidat kocoura</button>
       </div>
       <div class="item-list" id="list-toms"></div>
     </div>
   </div>
 
-  <!-- KOŤATA -->
   <div class="panel" id="panel-litters">
     <div class="card">
       <div class="card-header">
@@ -301,7 +284,6 @@
     </div>
   </div>
 
-  <!-- GALERIE -->
   <div class="panel" id="panel-gallery">
     <div class="card">
       <div class="card-header">
@@ -312,20 +294,18 @@
     </div>
   </div>
 
-  <!-- O NÁS -->
   <div class="panel" id="panel-about">
     <div class="card">
       <h3 style="margin-bottom:1rem">Text „O nás"</h3>
       <label>Hlavní text</label>
       <textarea id="about-text" rows="8"></textarea>
       <div style="margin-top:1rem">
-        <button class="btn btn-success" onclick="saveAbout()">💾 Uložit text</button>
+        <button class="btn btn-success" id="save-about-btn" onclick="saveAbout()">💾 Uložit text</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <h3 id="modal-title">Přidat položku</h3>
@@ -352,6 +332,14 @@ let fileSHAs = {};
 let currentModal = null;
 let editIndex = -1;
 
+/* Bezpečné kódování pro češtinu (UTF-8) */
+function utoa(str) {
+  return btoa(String.fromCharCode(...new TextEncoder().encode(str)));
+}
+function atou(str) {
+  return new TextDecoder().decode(Uint8Array.from(atob(str.replace(/\n/g, '')), c => c.charCodeAt(0)));
+}
+
 /* ── INIT ── */
 function init() {
   const pass = localStorage.getItem(PASS_KEY);
@@ -376,6 +364,7 @@ function saveSetup() {
   localStorage.setItem(REPO_KEY, repo);
   localStorage.setItem(PASS_KEY, pass);
   GH_TOKEN = token; GH_OWNER = owner; GH_REPO = repo;
+  document.getElementById('login-pass').value = '';
   show('login-screen');
 }
 
@@ -410,7 +399,7 @@ async function ghGet(path) {
 }
 
 async function ghPut(path, content, sha) {
-  const body = { message: `Admin update: ${path}`, content: btoa(unescape(encodeURIComponent(content))) };
+  const body = { message: `Admin update: ${path}`, content: utoa(content) };
   if (sha) body.sha = sha;
   const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`, {
     method: 'PUT',
@@ -432,7 +421,10 @@ async function ghUploadImage(filename, base64data) {
     headers: { Authorization: `token ${GH_TOKEN}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
-  if (r.ok) return `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${path}`;
+  if (r.ok) {
+    const data = await r.json();
+    return data.content.download_url;
+  }
   return null;
 }
 
@@ -440,31 +432,40 @@ async function ghUploadImage(filename, base64data) {
 async function loadData() {
   const files = ['data/cats.json','data/toms.json','data/litters.json','data/gallery.json','data/about.json'];
   const defaults = { 'data/cats.json': [], 'data/toms.json': [], 'data/litters.json': [], 'data/gallery.json': [], 'data/about.json': { text: '' } };
+  
+  document.getElementById('header-status').textContent = '⏳ Načítání dat z GitHubu...';
 
-  for (const f of files) {
-    const res = await ghGet(f);
-    if (res && res.content) {
-      fileSHAs[f] = res.sha;
-      const parsed = JSON.parse(atob(res.content.replace(/\n/g,'')));
-      if (f === 'data/cats.json') DATA.cats = parsed;
-      if (f === 'data/toms.json') DATA.toms = parsed;
-      if (f === 'data/litters.json') DATA.litters = parsed;
-      if (f === 'data/gallery.json') DATA.gallery = parsed;
-      if (f === 'data/about.json') DATA.about = parsed.text || '';
-    } else {
-      // create default file
-      await ghPut(f, JSON.stringify(defaults[f], null, 2), null);
+  try {
+    for (const f of files) {
+      const res = await ghGet(f);
+      if (res && res.content) {
+        fileSHAs[f] = res.sha;
+        const parsed = JSON.parse(atou(res.content));
+        if (f === 'data/cats.json') DATA.cats = parsed;
+        if (f === 'data/toms.json') DATA.toms = parsed;
+        if (f === 'data/litters.json') DATA.litters = parsed;
+        if (f === 'data/gallery.json') DATA.gallery = parsed;
+        if (f === 'data/about.json') DATA.about = parsed.text || '';
+      } else {
+        const ok = await ghPut(f, JSON.stringify(defaults[f], null, 2), null);
+        if (!ok) throw new Error(`Nepodařilo se vytvořit soubor ${f}`);
+      }
     }
+    renderAll();
+    document.getElementById('about-text').value = DATA.about;
+    document.getElementById('header-status').textContent = '✅ Připojeno k GitHub';
+  } catch (e) {
+    document.getElementById('header-status').textContent = '❌ Chyba připojení';
+    toast('Chyba při komunikaci s GitHubem. Zkontrolujte nastavení tokenu.', true);
+    console.error(e);
   }
-  renderAll();
-  document.getElementById('about-text').value = DATA.about;
 }
 
 /* ── SAVE DATA ── */
 async function saveFile(key, content) {
   const path = `data/${key}.json`;
   const ok = await ghPut(path, JSON.stringify(content, null, 2), fileSHAs[path]);
-  if (ok) toast('✅ Uloženo!'); else toast('❌ Chyba při ukládání', true);
+  if (ok) toast('✅ Uloženo do GitHubu!'); else toast('❌ Chyba při ukládání', true);
   return ok;
 }
 
@@ -478,7 +479,7 @@ function renderAll() {
 
 function renderList(type, items) {
   const el = document.getElementById(`list-${type}`);
-  if (!items.length) { el.innerHTML = '<p style="color:var(--brown-mid);font-size:0.85rem;padding:0.5rem">Zatím žádné záznamy.</p>'; return; }
+  if (!items || !items.length) { el.innerHTML = '<p style="color:var(--brown-mid);font-size:0.85rem;padding:0.5rem">Zatím žádné záznamy.</p>'; return; }
   el.innerHTML = items.map((item, i) => `
     <div class="item-row">
       ${item.photo ? `<img src="${item.photo}" alt="">` : `<div style="width:48px;height:48px;background:var(--cream);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:1.5rem">🐱</div>`}
@@ -496,7 +497,7 @@ function renderList(type, items) {
 
 function renderLitters() {
   const el = document.getElementById('list-litters');
-  if (!DATA.litters.length) { el.innerHTML = '<p style="color:var(--brown-mid);font-size:0.85rem;padding:0.5rem">Zatím žádné vrhy.</p>'; return; }
+  if (!DATA.litters || !DATA.litters.length) { el.innerHTML = '<p style="color:var(--brown-mid);font-size:0.85rem;padding:0.5rem">Zatím žádné vrhy.</p>'; return; }
   el.innerHTML = DATA.litters.map((l, i) => `
     <div class="item-row">
       <div style="width:48px;height:48px;background:var(--cream);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:1.5rem">🐾</div>
@@ -514,21 +515,22 @@ function renderLitters() {
 
 function renderGallery() {
   const el = document.getElementById('gallery-grid');
+  if (!DATA.gallery || !DATA.gallery.length) { el.innerHTML = '<p style="color:var(--brown-mid);font-size:0.85rem">Zatím žádné fotografie.</p>'; return; }
   el.innerHTML = DATA.gallery.map((g, i) => `
     <div style="position:relative">
-      <img src="${g.url}" alt="${g.label}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;border:1px solid var(--border)">
-      <div style="font-size:0.72rem;color:var(--brown-mid);margin-top:0.25rem;text-align:center">${g.label}</div>
+      <img src="${g.url}" alt="${g.label || ''}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;border:1px solid var(--border)">
+      <div style="font-size:0.72rem;color:var(--brown-mid);margin-top:0.25rem;text-align:center">${g.label || ''}</div>
       <button onclick="deleteItem('gallery', ${i})" style="position:absolute;top:4px;right:4px;background:var(--red);color:#fff;border:none;border-radius:3px;padding:2px 6px;font-size:0.7rem;cursor:pointer">✕</button>
     </div>
-  `).join('') || '<p style="color:var(--brown-mid);font-size:0.85rem">Zatím žádné fotografie.</p>';
+  `).join('');
 }
 
 /* ── TABS ── */
-function showTab(name) {
+function showTab(name, btn) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
-  event.target.classList.add('active');
+  if (btn) btn.classList.add('active');
 }
 
 /* ── MODAL ── */
@@ -546,10 +548,9 @@ function openModal(type, index = -1) {
     type === 'gallery' ? DATA.gallery[index] : {}
   ) : {};
 
-  if (type === 'cats' || type === 'tom' || type === 'toms') {
-    const isTom = type === 'tom' || type === 'toms';
-    title.textContent = (index >= 0 ? 'Upravit' : 'Přidat') + (isTom ? ' kocour' : ' kočku');
-    currentModal = isTom ? 'toms' : 'cats';
+  if (type === 'cats' || type === 'toms') {
+    const isTom = type === 'toms';
+    title.textContent = (index >= 0 ? 'Upravit' : 'Přidat') + (isTom ? ' kocoura' : ' kočku');
     body.innerHTML = catForm(item);
   } else if (type === 'litter') {
     title.textContent = index >= 0 ? 'Upravit vrh' : 'Přidat vrh';
@@ -557,7 +558,6 @@ function openModal(type, index = -1) {
     body.innerHTML = litterForm(item);
   } else if (type === 'gallery') {
     title.textContent = 'Přidat fotografii';
-    currentModal = 'gallery';
     body.innerHTML = galleryForm();
   }
 
@@ -582,7 +582,7 @@ function catForm(item) {
       <div class="photo-upload-area" onclick="document.getElementById('f-photo-input').click()">
         📷 Klikněte pro nahrání fotografie
         <input type="file" id="f-photo-input" accept="image/*" onchange="previewPhoto(this)">
-        <img id="f-photo-preview" class="photo-preview" src="${item.photo||''}">
+        <img id="f-photo-preview" class="photo-preview" src="${item.photo||''}" style="${item.photo ? 'display:block' : 'display:none'}">
       </div>
       <input type="hidden" id="f-photo" value="${item.photo||''}">
     </div>
@@ -653,8 +653,9 @@ function previewPhoto(input) {
   reader.onload = e => {
     const preview = document.getElementById('f-photo-preview');
     preview.src = e.target.result; preview.style.display = 'block';
-    document.getElementById('f-photo').dataset.file = input.files[0].name;
-    document.getElementById('f-photo').dataset.b64 = e.target.result.split(',')[1];
+    const photoEl = document.getElementById('f-photo');
+    photoEl.dataset.file = input.files[0].name;
+    photoEl.dataset.b64 = e.target.result.split(',')[1];
   };
   reader.readAsDataURL(input.files[0]);
 }
@@ -665,8 +666,9 @@ function previewGallery(input) {
   reader.onload = e => {
     const preview = document.getElementById('g-photo-preview');
     preview.src = e.target.result; preview.style.display = 'block';
-    document.getElementById('f-photo').dataset.file = input.files[0].name;
-    document.getElementById('f-photo').dataset.b64 = e.target.result.split(',')[1];
+    const photoEl = document.getElementById('f-photo');
+    photoEl.dataset.file = input.files[0].name;
+    photoEl.dataset.b64 = e.target.result.split(',')[1];
   };
   reader.readAsDataURL(input.files[0]);
 }
@@ -745,8 +747,15 @@ async function deleteItem(type, index) {
 }
 
 async function saveAbout() {
+  const btn = document.getElementById('save-about-btn');
+  btn.innerHTML = '<span class="spinner"></span>Ukládám...';
+  btn.disabled = true;
+  
   DATA.about = document.getElementById('about-text').value;
   await saveFile('about', { text: DATA.about });
+  
+  btn.innerHTML = '💾 Uložit text';
+  btn.disabled = false;
 }
 
 function toast(msg, error=false) {
