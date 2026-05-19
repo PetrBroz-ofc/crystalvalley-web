@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin – Crystal Valley</title>
+<style>
+  :root {
+    --cream: #f5f0e8;
+    --brown: #3b2a1a;
+    --brown-mid: #6b4c2a;
+    --gold: #c9a84c;
+    --green: #2d6a4f;
+    --red: #8b2e2e;
+    --white: #fefcf8;
+    --border: rgba(201,168,76,0.3);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: system-ui, sans-serif; background: var(--cream); color: var(--brown); min-height: 100vh; }
+
+  /* LOGIN */
+  #login-screen {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .login-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.5rem;
+    width: 340px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(59,42,26,0.1);
+  }
+  .login-box img { width: 80px; margin-bottom: 1rem; }
+  .login-box h2 { font-size: 1.1rem; margin-bottom: 0.25rem; }
+  .login-box p { font-size: 0.8rem; color: var(--brown-mid); margin-bottom: 1.5rem; }
+  .login-box input {
+    width: 100%; padding: 0.75rem 1rem;
+    border: 1px solid var(--border); border-radius: 6px;
+    font-size: 0.9rem; margin-bottom: 1rem;
+    background: var(--cream);
+    color: var(--brown);
+  }
+  .login-box button {
+    width: 100%; padding: 0.75rem;
+    background: var(--brown); color: var(--cream);
+    border: none; border-radius: 6px;
+    font-size: 0.9rem; cursor: pointer;
+  }
+  .login-box button:hover { background: var(--brown-mid); }
+  .login-error { color: var(--red); font-size: 0.8rem; margin-top: 0.5rem; display:none; }
+
+  /* SETUP */
+  #setup-screen {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .setup-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.5rem;
+    width: 460px;
+    box-shadow: 0 8px 32px rgba(59,42,26,0.1);
+  }
+  .setup-box h2 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+  .setup-box p { font-size: 0.82rem; color: var(--brown-mid); margin-bottom: 1.5rem; line-height: 1.6; }
+  .setup-box label { display:block; font-size:0.8rem; font-weight:500; margin-bottom:0.3rem; color:var(--brown-mid); }
+  .setup-box input {
+    width:100%; padding:0.7rem 1rem;
+    border:1px solid var(--border); border-radius:6px;
+    font-size:0.85rem; margin-bottom:1rem;
+    background:var(--cream); color:var(--brown);
+    font-family: monospace;
+  }
+  .setup-box button {
+    width:100%; padding:0.75rem;
+    background:var(--brown); color:var(--cream);
+    border:none; border-radius:6px;
+    font-size:0.9rem; cursor:pointer;
+  }
+
+  /* ADMIN UI */
+  #admin-screen { display: none; }
+  header {
+    background: var(--brown);
+    color: var(--cream);
+    padding: 1rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  header h1 { font-size: 1rem; font-weight: 500; }
+  header span { font-size: 0.8rem; opacity: 0.6; }
+  .logout-btn {
+    background: transparent; border: 1px solid rgba(245,240,232,0.3);
+    color: var(--cream); padding: 0.35rem 0.9rem;
+    border-radius: 4px; cursor: pointer; font-size: 0.78rem;
+  }
+
+  .tabs {
+    display: flex; gap: 0; border-bottom: 1px solid var(--border);
+    background: var(--white); padding: 0 2rem;
+  }
+  .tab {
+    padding: 0.9rem 1.25rem;
+    font-size: 0.82rem; cursor: pointer;
+    border-bottom: 2px solid transparent;
+    color: var(--brown-mid);
+    background: none; border-top: none; border-left: none; border-right: none;
+  }
+  .tab.active { border-bottom-color: var(--gold); color: var(--brown); font-weight: 500; }
+
+  .panel { display: none; padding: 2rem; max-width: 900px; margin: 0 auto; }
+  .panel.active { display: block; }
+
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1rem;
+  }
+  .card h3 { font-size: 1rem; font-weight: 500; }
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  label { display: block; font-size: 0.78rem; color: var(--brown-mid); margin-bottom: 0.25rem; font-weight: 500; }
+  input[type=text], input[type=url], textarea, select {
+    width: 100%; padding: 0.6rem 0.8rem;
+    border: 1px solid var(--border); border-radius: 5px;
+    font-size: 0.85rem; background: var(--cream);
+    color: var(--brown); font-family: inherit;
+  }
+  textarea { min-height: 80px; resize: vertical; }
+  .btn { padding: 0.55rem 1.1rem; border-radius: 5px; font-size: 0.8rem; cursor: pointer; border: none; }
+  .btn-primary { background: var(--brown); color: var(--cream); }
+  .btn-primary:hover { background: var(--brown-mid); }
+  .btn-danger { background: var(--red); color: #fff; }
+  .btn-success { background: var(--green); color: #fff; }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--brown-mid); }
+  .btn-outline:hover { border-color: var(--gold); color: var(--brown); }
+
+  .item-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  .item-row {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--cream); border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .item-row img { width: 48px; height: 48px; object-fit: cover; border-radius: 4px; background: #ddd; }
+  .item-row-info { flex: 1; }
+  .item-row-info strong { font-size: 0.9rem; display: block; }
+  .item-row-info span { font-size: 0.75rem; color: var(--brown-mid); }
+  .item-actions { display: flex; gap: 0.4rem; }
+
+  .photo-upload-area {
+    border: 2px dashed var(--border);
+    border-radius: 6px;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    color: var(--brown-mid);
+    font-size: 0.82rem;
+    transition: border-color 0.2s;
+  }
+  .photo-upload-area:hover { border-color: var(--gold); }
+  .photo-upload-area input { display: none; }
+  .photo-preview { width: 80px; height: 80px; object-fit: cover; border-radius: 4px; display: none; margin: 0.5rem auto 0; }
+
+  .status-badge {
+    font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 3px;
+    font-weight: 500;
+  }
+  .status-available { background: rgba(45,106,79,0.12); color: var(--green); }
+  .status-reserved { background: rgba(201,168,76,0.15); color: var(--brown-mid); }
+
+  .save-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--brown);
+    padding: 1rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    display: none;
+    z-index: 50;
+  }
+  .save-bar span { color: var(--cream); font-size: 0.85rem; }
+  .save-bar button { background: var(--gold); color: var(--brown); border: none; padding: 0.6rem 1.5rem; border-radius: 5px; font-weight: 600; cursor: pointer; }
+
+  .toast {
+    position: fixed; top: 1rem; right: 1rem;
+    background: var(--green); color: #fff;
+    padding: 0.75rem 1.25rem; border-radius: 6px;
+    font-size: 0.85rem; display: none; z-index: 100;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+  .toast.error { background: var(--red); }
+
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none; align-items: center; justify-content: center;
+    z-index: 200;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 2rem;
+    width: 560px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+  }
+  .modal h3 { margin-bottom: 1.25rem; }
+  .modal-footer { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem; }
+
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- SETUP (první spuštění) -->
+<div id="setup-screen">
+  <div class="setup-box">
+    <h2>⚙️ Nastavení adminu</h2>
+    <p>Zadej GitHub token a údaje o repozitáři. Toto se uloží jen do tvého prohlížeče a nikde se neodesílá.</p>
+    <label>GitHub Personal Access Token</label>
+    <input type="text" id="setup-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+    <label>GitHub uživatelské jméno</label>
+    <input type="text" id="setup-owner" placeholder="tvoje-github-jmeno">
+    <label>Název repozitáře</label>
+    <input type="text" id="setup-repo" placeholder="crystalvalley-web">
+    <label>Admin heslo (pro přihlášení sem)</label>
+    <input type="text" id="setup-password" placeholder="zvolte heslo">
+    <button onclick="saveSetup()">Uložit a pokračovat</button>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="login-screen" style="display:none">
+  <div class="login-box">
+    <img src="logo.png" alt="Crystal Valley">
+    <h2>Crystal Valley Admin</h2>
+    <p>Přihlašte se pro správu webu</p>
+    <input type="password" id="login-pass" placeholder="Heslo" onkeydown="if(event.key==='Enter')login()">
+    <button onclick="login()">Přihlásit se</button>
+    <p class="login-error" id="login-error">Špatné heslo</p>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="admin-screen">
+  <header>
+    <h1>🐱 Crystal Valley — správa webu</h1>
+    <div style="display:flex;align-items:center;gap:1rem">
+      <span id="header-status">Připojeno k GitHub</span>
+      <button class="logout-btn" onclick="logout()">Odhlásit</button>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('cats')">🐱 Kočky</button>
+    <button class="tab" onclick="showTab('toms')">🐈 Kocouři</button>
+    <button class="tab" onclick="showTab('litters')">🐾 Koťata</button>
+    <button class="tab" onclick="showTab('gallery')">📸 Galerie</button>
+    <button class="tab" onclick="showTab('about')">📝 O nás</button>
+  </div>
+
+  <!-- KOČKY -->
+  <div class="panel active" id="panel-cats">
+    <div class="card">
+      <div class="card-header">
+        <h3>Chovné kočky</h3>
+        <button class="btn btn-primary" onclick="openModal('cat')">+ Přidat kočku</button>
+      </div>
+      <div class="item-list" id="list-cats"></div>
+    </div>
+  </div>
+
+  <!-- KOCOUŘI -->
+  <div class="panel" id="panel-toms">
+    <div class="card">
+      <div class="card-header">
+        <h3>Chovní kocouři</h3>
+        <button class="btn btn-primary" onclick="openModal('tom')">+ Přidat kocour</button>
+      </div>
+      <div class="item-list" id="list-toms"></div>
+    </div>
+  </div>
+
+  <!-- KOŤATA -->
+  <div class="panel" id="panel-litters">
+    <div class="card">
+      <div class="card-header">
+        <h3>Vrhy</h3>
+        <button class="btn btn-primary" onclick="openModal('litter')">+ Přidat vrh</button>
+      </div>
+      <div class="item-list" id="list-litters"></div>
+    </div>
+  </div>
+
+  <!-- GALERIE -->
+  <div class="panel" id="panel-gallery">
+    <div class="card">
+      <div class="card-header">
+        <h3>Galerie</h3>
+        <button class="btn btn-primary" onclick="openModal('gallery')">+ Přidat foto</button>
+      </div>
+      <div id="gallery-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1rem;margin-top:1rem"></div>
+    </div>
+  </div>
+
+  <!-- O NÁS -->
+  <div class="panel" id="panel-about">
+    <div class="card">
+      <h3 style="margin-bottom:1rem">Text „O nás"</h3>
+      <label>Hlavní text</label>
+      <textarea id="about-text" rows="8"></textarea>
+      <div style="margin-top:1rem">
+        <button class="btn btn-success" onclick="saveAbout()">💾 Uložit text</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3 id="modal-title">Přidat položku</h3>
+    <div id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Zrušit</button>
+      <button class="btn btn-success" id="modal-save-btn" onclick="saveModal()">Uložit</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── CONFIG ── */
+const PASS_KEY = 'cv_admin_pass';
+const TOKEN_KEY = 'cv_gh_token';
+const OWNER_KEY = 'cv_gh_owner';
+const REPO_KEY = 'cv_gh_repo';
+
+let GH_TOKEN, GH_OWNER, GH_REPO;
+let DATA = { cats: [], toms: [], litters: [], gallery: [], about: '' };
+let fileSHAs = {};
+let currentModal = null;
+let editIndex = -1;
+
+/* ── INIT ── */
+function init() {
+  const pass = localStorage.getItem(PASS_KEY);
+  GH_TOKEN = localStorage.getItem(TOKEN_KEY);
+  GH_OWNER = localStorage.getItem(OWNER_KEY);
+  GH_REPO = localStorage.getItem(REPO_KEY);
+
+  if (!GH_TOKEN || !pass) {
+    show('setup-screen'); return;
+  }
+  show('login-screen');
+}
+
+function saveSetup() {
+  const token = document.getElementById('setup-token').value.trim();
+  const owner = document.getElementById('setup-owner').value.trim();
+  const repo = document.getElementById('setup-repo').value.trim();
+  const pass = document.getElementById('setup-password').value.trim();
+  if (!token || !owner || !repo || !pass) { alert('Vyplň vše'); return; }
+  localStorage.setItem(TOKEN_KEY, token);
+  localStorage.setItem(OWNER_KEY, owner);
+  localStorage.setItem(REPO_KEY, repo);
+  localStorage.setItem(PASS_KEY, pass);
+  GH_TOKEN = token; GH_OWNER = owner; GH_REPO = repo;
+  show('login-screen');
+}
+
+function login() {
+  const pass = document.getElementById('login-pass').value;
+  if (pass === localStorage.getItem(PASS_KEY)) {
+    show('admin-screen');
+    loadData();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+  }
+}
+
+function logout() {
+  show('login-screen');
+  document.getElementById('login-pass').value = '';
+}
+
+function show(id) {
+  ['setup-screen','login-screen','admin-screen'].forEach(s => {
+    document.getElementById(s).style.display = s === id ? (id === 'admin-screen' ? 'block' : 'flex') : 'none';
+  });
+}
+
+/* ── GITHUB API ── */
+async function ghGet(path) {
+  const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`, {
+    headers: { Authorization: `token ${GH_TOKEN}`, Accept: 'application/vnd.github.v3+json' }
+  });
+  if (!r.ok) return null;
+  return r.json();
+}
+
+async function ghPut(path, content, sha) {
+  const body = { message: `Admin update: ${path}`, content: btoa(unescape(encodeURIComponent(content))) };
+  if (sha) body.sha = sha;
+  const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: { Authorization: `token ${GH_TOKEN}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  const data = await r.json();
+  if (data.content) fileSHAs[path] = data.content.sha;
+  return r.ok;
+}
+
+async function ghUploadImage(filename, base64data) {
+  const path = `images/${filename}`;
+  const existing = await ghGet(path);
+  const body = { message: `Upload image: ${filename}`, content: base64data };
+  if (existing) body.sha = existing.sha;
+  const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: { Authorization: `token ${GH_TOKEN}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (r.ok) return `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${path}`;
+  return null;
+}
+
+/* ── LOAD DATA ── */
+async function loadData() {
+  const files = ['data/cats.json','data/toms.json','data/litters.json','data/gallery.json','data/about.json'];
+  const defaults = { 'data/cats.json': [], 'data/toms.json': [], 'data/litters.json': [], 'data/gallery.json': [], 'data/about.json': { text: '' } };
+
+  for (const f of files) {
+    const res = await ghGet(f);
+    if (res && res.content) {
+      fileSHAs[f] = res.sha;
+      const parsed = JSON.parse(atob(res.content.replace(/\n/g,'')));
+      if (f === 'data/cats.json') DATA.cats = parsed;
+      if (f === 'data/toms.json') DATA.toms = parsed;
+      if (f === 'data/litters.json') DATA.litters = parsed;
+      if (f === 'data/gallery.json') DATA.gallery = parsed;
+      if (f === 'data/about.json') DATA.about = parsed.text || '';
+    } else {
+      // create default file
+      await ghPut(f, JSON.stringify(defaults[f], null, 2), null);
+    }
+  }
+  renderAll();
+  document.getElementById('about-text').value = DATA.about;
+}
+
+/* ── SAVE DATA ── */
+async function saveFile(key, content) {
+  const path = `data/${key}.json`;
+  const ok = await ghPut(path, JSON.stringify(content, null, 2), fileSHAs[path]);
+  if (ok) toast('✅ Uloženo!'); else toast('❌ Chyba při ukládání', true);
+  return ok;
+}
+
+/* ── RENDER ── */
+function renderAll() {
+  renderList('cats', DATA.cats);
+  renderList('toms', DATA.toms);
+  renderLitters();
+  renderGallery();
+}
+
+function renderList(type, items) {
+  const el = document.getElementById(`list-${type}`);
+  if (!items.length) { el.innerHTML = '<p style="color:var(--brown-mid);font-size:0.85rem;padding:0.5rem">Zatím žádné záznamy.</p>'; return; }
+  el.innerHTML = items.map((item, i) => `
+    <div class="item-row">
+      ${item.photo ? `<img src="${item.photo}" alt="">` : `<div style="width:48px;height:48px;background:var(--cream);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:1.5rem">🐱</div>`}
+      <div class="item-row-info">
+        <strong>${item.name}</strong>
+        <span>${item.detail || ''} ${item.achievements ? '· 🏆 ' + item.achievements : ''}</span>
+      </div>
+      <div class="item-actions">
+        <button class="btn btn-outline" onclick="openModal('${type}', ${i})">Upravit</button>
+        <button class="btn btn-danger" onclick="deleteItem('${type}', ${i})">Smazat</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderLitters() {
+  const el = document.getElementById('list-litters');
+  if (!DATA.litters.length) { el.innerHTML = '<p style="color:var(--brown-mid);font-size:0.85rem;padding:0.5rem">Zatím žádné vrhy.</p>'; return; }
+  el.innerHTML = DATA.litters.map((l, i) => `
+    <div class="item-row">
+      <div style="width:48px;height:48px;background:var(--cream);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:1.5rem">🐾</div>
+      <div class="item-row-info">
+        <strong>Vrh ${l.id} — ${l.name}</strong>
+        <span>${l.born || ''} · ${(l.kittens||[]).length} koťat · matka: ${l.mother}</span>
+      </div>
+      <div class="item-actions">
+        <button class="btn btn-outline" onclick="openModal('litter', ${i})">Upravit</button>
+        <button class="btn btn-danger" onclick="deleteItem('litters', ${i})">Smazat</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderGallery() {
+  const el = document.getElementById('gallery-grid');
+  el.innerHTML = DATA.gallery.map((g, i) => `
+    <div style="position:relative">
+      <img src="${g.url}" alt="${g.label}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;border:1px solid var(--border)">
+      <div style="font-size:0.72rem;color:var(--brown-mid);margin-top:0.25rem;text-align:center">${g.label}</div>
+      <button onclick="deleteItem('gallery', ${i})" style="position:absolute;top:4px;right:4px;background:var(--red);color:#fff;border:none;border-radius:3px;padding:2px 6px;font-size:0.7rem;cursor:pointer">✕</button>
+    </div>
+  `).join('') || '<p style="color:var(--brown-mid);font-size:0.85rem">Zatím žádné fotografie.</p>';
+}
+
+/* ── TABS ── */
+function showTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+/* ── MODAL ── */
+function openModal(type, index = -1) {
+  currentModal = type;
+  editIndex = index;
+  const modal = document.getElementById('modal');
+  const body = document.getElementById('modal-body');
+  const title = document.getElementById('modal-title');
+
+  const item = index >= 0 ? (
+    type === 'cats' ? DATA.cats[index] :
+    type === 'toms' ? DATA.toms[index] :
+    type === 'litter' ? DATA.litters[index] :
+    type === 'gallery' ? DATA.gallery[index] : {}
+  ) : {};
+
+  if (type === 'cats' || type === 'tom' || type === 'toms') {
+    const isTom = type === 'tom' || type === 'toms';
+    title.textContent = (index >= 0 ? 'Upravit' : 'Přidat') + (isTom ? ' kocour' : ' kočku');
+    currentModal = isTom ? 'toms' : 'cats';
+    body.innerHTML = catForm(item);
+  } else if (type === 'litter') {
+    title.textContent = index >= 0 ? 'Upravit vrh' : 'Přidat vrh';
+    currentModal = 'litters';
+    body.innerHTML = litterForm(item);
+  } else if (type === 'gallery') {
+    title.textContent = 'Přidat fotografii';
+    currentModal = 'gallery';
+    body.innerHTML = galleryForm();
+  }
+
+  modal.classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  currentModal = null; editIndex = -1;
+}
+
+function catForm(item) {
+  return `
+    <div class="card-grid">
+      <div><label>Jméno</label><input type="text" id="f-name" value="${item.name||''}"></div>
+      <div><label>Detail (NFO n 22 · Kočka)</label><input type="text" id="f-detail" value="${item.detail||''}"></div>
+      <div><label>Výstavní výsledky</label><input type="text" id="f-achievements" value="${item.achievements||''}"></div>
+      <div><label>URL rodokmenu</label><input type="url" id="f-pedigree" value="${item.pedigree||''}"></div>
+    </div>
+    <div style="margin-top:1rem"><label>Tagy (oddělte čárkou)</label><input type="text" id="f-tags" value="${(item.tags||[]).join(', ')}"></div>
+    <div style="margin-top:1rem"><label>Fotografie</label>
+      <div class="photo-upload-area" onclick="document.getElementById('f-photo-input').click()">
+        📷 Klikněte pro nahrání fotografie
+        <input type="file" id="f-photo-input" accept="image/*" onchange="previewPhoto(this)">
+        <img id="f-photo-preview" class="photo-preview" src="${item.photo||''}">
+      </div>
+      <input type="hidden" id="f-photo" value="${item.photo||''}">
+    </div>
+  `;
+}
+
+function litterForm(item) {
+  const kittens = (item.kittens || []).map((k, i) => kittenRow(k, i)).join('');
+  return `
+    <div class="card-grid">
+      <div><label>ID vrhu (A, B, C...)</label><input type="text" id="f-id" value="${item.id||''}"></div>
+      <div><label>Název</label><input type="text" id="f-name" value="${item.name||''}"></div>
+      <div><label>Datum narození</label><input type="text" id="f-born" value="${item.born||''}"></div>
+      <div><label>Matka</label><input type="text" id="f-mother" value="${item.mother||''}"></div>
+      <div><label>Otec</label><input type="text" id="f-father" value="${item.father||''}"></div>
+    </div>
+    <div style="margin-top:1rem"><label>Popis vrhu</label><textarea id="f-desc">${item.description||''}</textarea></div>
+    <div style="margin-top:1.5rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
+        <label style="margin:0">Koťata</label>
+        <button class="btn btn-outline" type="button" onclick="addKittenRow()">+ Přidat kotě</button>
+      </div>
+      <div id="kittens-list">${kittens}</div>
+    </div>
+  `;
+}
+
+function kittenRow(k = {}, i = 0) {
+  return `
+    <div class="item-row" id="kitten-${i}" style="flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem">
+      <input type="text" placeholder="Jméno" value="${k.name||''}" style="flex:2;min-width:140px" class="k-name">
+      <input type="text" placeholder="Pohlaví" value="${k.sex||''}" style="flex:1;min-width:80px" class="k-sex">
+      <input type="text" placeholder="Barva (NFO n 22)" value="${k.color||''}" style="flex:1;min-width:100px" class="k-color">
+      <select class="k-status" style="flex:1;min-width:110px">
+        <option value="available" ${k.status==='available'?'selected':''}>Dostupné</option>
+        <option value="reserved" ${k.status==='reserved'?'selected':''}>Rezervováno</option>
+      </select>
+      <button class="btn btn-danger" onclick="this.closest('.item-row').remove()" style="flex-shrink:0">✕</button>
+    </div>
+  `;
+}
+
+let kittenCount = 10;
+function addKittenRow() {
+  const list = document.getElementById('kittens-list');
+  const div = document.createElement('div');
+  div.innerHTML = kittenRow({}, kittenCount++);
+  list.appendChild(div.firstElementChild);
+}
+
+function galleryForm() {
+  return `
+    <div><label>Popis fotografie</label><input type="text" id="f-label" placeholder="Výstava Praha 2024"></div>
+    <div style="margin-top:1rem"><label>Fotografie</label>
+      <div class="photo-upload-area" onclick="document.getElementById('g-photo-input').click()">
+        📷 Klikněte pro nahrání
+        <input type="file" id="g-photo-input" accept="image/*" onchange="previewGallery(this)">
+        <img id="g-photo-preview" class="photo-preview">
+      </div>
+      <input type="hidden" id="f-photo" value="">
+    </div>
+  `;
+}
+
+function previewPhoto(input) {
+  if (!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const preview = document.getElementById('f-photo-preview');
+    preview.src = e.target.result; preview.style.display = 'block';
+    document.getElementById('f-photo').dataset.file = input.files[0].name;
+    document.getElementById('f-photo').dataset.b64 = e.target.result.split(',')[1];
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function previewGallery(input) {
+  if (!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const preview = document.getElementById('g-photo-preview');
+    preview.src = e.target.result; preview.style.display = 'block';
+    document.getElementById('f-photo').dataset.file = input.files[0].name;
+    document.getElementById('f-photo').dataset.b64 = e.target.result.split(',')[1];
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+/* ── SAVE MODAL ── */
+async function saveModal() {
+  const btn = document.getElementById('modal-save-btn');
+  btn.innerHTML = '<span class="spinner"></span>Ukládám...';
+  btn.disabled = true;
+
+  try {
+    if (currentModal === 'cats' || currentModal === 'toms') {
+      const photoEl = document.getElementById('f-photo');
+      let photoUrl = photoEl.value;
+      if (photoEl.dataset.b64) {
+        photoUrl = await ghUploadImage(Date.now() + '_' + photoEl.dataset.file, photoEl.dataset.b64) || photoUrl;
+      }
+      const item = {
+        name: document.getElementById('f-name').value,
+        detail: document.getElementById('f-detail').value,
+        achievements: document.getElementById('f-achievements').value,
+        pedigree: document.getElementById('f-pedigree').value,
+        tags: document.getElementById('f-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+        photo: photoUrl
+      };
+      const arr = currentModal === 'cats' ? DATA.cats : DATA.toms;
+      if (editIndex >= 0) arr[editIndex] = item; else arr.push(item);
+      await saveFile(currentModal, arr);
+      renderList(currentModal, arr);
+
+    } else if (currentModal === 'litters') {
+      const kittens = [...document.querySelectorAll('#kittens-list .item-row')].map(row => ({
+        name: row.querySelector('.k-name').value,
+        sex: row.querySelector('.k-sex').value,
+        color: row.querySelector('.k-color').value,
+        status: row.querySelector('.k-status').value,
+        photo: ''
+      }));
+      const item = {
+        id: document.getElementById('f-id').value,
+        name: document.getElementById('f-name').value,
+        born: document.getElementById('f-born').value,
+        mother: document.getElementById('f-mother').value,
+        father: document.getElementById('f-father').value,
+        description: document.getElementById('f-desc').value,
+        kittens
+      };
+      if (editIndex >= 0) DATA.litters[editIndex] = item; else DATA.litters.push(item);
+      await saveFile('litters', DATA.litters);
+      renderLitters();
+
+    } else if (currentModal === 'gallery') {
+      const photoEl = document.getElementById('f-photo');
+      let photoUrl = '';
+      if (photoEl.dataset.b64) {
+        photoUrl = await ghUploadImage(Date.now() + '_' + photoEl.dataset.file, photoEl.dataset.b64) || '';
+      }
+      if (!photoUrl) { toast('❌ Nahraj fotografii', true); btn.innerHTML = 'Uložit'; btn.disabled = false; return; }
+      DATA.gallery.push({ url: photoUrl, label: document.getElementById('f-label').value });
+      await saveFile('gallery', DATA.gallery);
+      renderGallery();
+    }
+    closeModal();
+  } catch(e) {
+    toast('❌ Chyba: ' + e.message, true);
+  }
+  btn.innerHTML = 'Uložit'; btn.disabled = false;
+}
+
+async function deleteItem(type, index) {
+  if (!confirm('Opravdu smazat?')) return;
+  if (type === 'cats') { DATA.cats.splice(index,1); await saveFile('cats', DATA.cats); renderList('cats', DATA.cats); }
+  else if (type === 'toms') { DATA.toms.splice(index,1); await saveFile('toms', DATA.toms); renderList('toms', DATA.toms); }
+  else if (type === 'litters') { DATA.litters.splice(index,1); await saveFile('litters', DATA.litters); renderLitters(); }
+  else if (type === 'gallery') { DATA.gallery.splice(index,1); await saveFile('gallery', DATA.gallery); renderGallery(); }
+}
+
+async function saveAbout() {
+  DATA.about = document.getElementById('about-text').value;
+  await saveFile('about', { text: DATA.about });
+}
+
+function toast(msg, error=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast' + (error?' error':'');
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 3000);
+}
+
+init();
+</script>
+</body>
+</html>
