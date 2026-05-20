@@ -28,19 +28,20 @@
     color: var(--brown-deep);
     overflow-x: hidden;
     line-height: 1.6;
+    top: 0 !important; /* Oprava pro Google Translate lištu */
   }
 
-  h1, h2, h3, h4, .serif {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 300;
-  }
+  /* Skrytí originálního Google Translate panelu, abychom měli vlastní design */
+  .skiptranslate, #goog-gt-tt, .goog-te-banner-frame { display: none !important; }
+  body { position: static !important; }
+
+  h1, h2, h3, h4, .serif { font-family: 'Cormorant Garamond', serif; font-weight: 300; }
 
   /* Navigation */
   nav {
     position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
     background: rgba(245, 240, 232, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     display: flex; justify-content: space-between; align-items: center;
     padding: 1.25rem 3rem; transition: all 0.4s ease;
   }
@@ -69,7 +70,6 @@
     letter-spacing: 1px; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s !important;
   }
   .btn-eshop:hover { background: var(--gold) !important; color: var(--white) !important; }
-
   .nav-toggle { display: none; background: none; border: none; cursor: pointer; }
   .nav-toggle span { display: block; width: 24px; height: 1px; background: var(--brown-deep); margin: 6px 0; transition: 0.3s; }
 
@@ -97,7 +97,7 @@
   .about-text h3 { font-size: 2.2rem; margin-bottom: 1.5rem; color: var(--brown-mid); }
   .about-text p { color: var(--brown-mid); font-size: 1.05rem; margin-bottom: 1.5rem; font-weight: 300; white-space: pre-wrap; }
 
-  /* Grid Profiles (Cats & Toms) */
+  /* Grid Profiles */
   .profile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 3rem; }
   .profile-card { background: var(--white); border-radius: 6px; overflow: hidden; box-shadow: 0 12px 30px var(--shadow); transition: all 0.4s ease; transform-style: preserve-3d; cursor: pointer; }
   .profile-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(59,42,26,0.25); }
@@ -111,7 +111,6 @@
   .profile-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
   .profile-tag { font-size: 0.75rem; background: var(--cream); padding: 0.2rem 0.6rem; border-radius: 3px; color: var(--brown-mid); }
   .btn-more { display: inline-block; font-size: 0.85rem; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; font-weight: 500; transition: color 0.3s; }
-  .profile-card:hover .btn-more { color: var(--brown-deep); }
 
   /* Litters Section */
   .litter-box { background: var(--white); border-radius: 6px; padding: 3rem; margin-bottom: 3.5rem; box-shadow: 0 12px 35px var(--shadow); border-left: 3px solid var(--gold); }
@@ -119,7 +118,6 @@
   .litter-title { font-size: 2.2rem; color: var(--brown-deep); }
   .litter-date { font-size: 0.9rem; text-transform: uppercase; color: var(--brown-light); letter-spacing: 1px; }
   .litter-parents { font-size: 1.05rem; margin-bottom: 1.5rem; color: var(--brown-mid); }
-  .litter-parents strong { font-weight: 500; color: var(--brown-deep); }
   .litter-desc { font-weight: 300; font-size: 1rem; color: var(--brown-mid); margin-bottom: 2rem; }
   .kittens-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; }
   .kitten-card { background: var(--cream); padding: 1.25rem; border-radius: 4px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid rgba(201,168,76,0.15); }
@@ -128,17 +126,18 @@
   .kitten-status { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 500; padding: 0.3rem 0.6rem; border-radius: 3px; text-align: center; display: inline-block; width: fit-content; }
   .status-available { background: rgba(74,124,89,0.12); color: var(--green); }
   .status-reserved { background: rgba(201,168,76,0.15); color: var(--brown-mid); }
+  .status-sold { background: rgba(59,42,26,0.08); color: var(--brown-light); }
 
   /* Gallery Section */
   .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
   .gallery-item { aspect-ratio: 1; overflow: hidden; border-radius: 4px; box-shadow: 0 8px 24px var(--shadow); position: relative; cursor: pointer; }
   .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
   .gallery-item:hover img { transform: scale(1.05); }
-  .gallery-overlay { position: absolute; inset: 0; background: rgba(59,42,26,0.4); opacity: 0; transition: opacity 0.4s; display: flex; align-items: center; justify-content: center; padding: 1rem; text-align: center; }
+  .gallery-overlay { position: absolute; inset: 0; background: rgba(59,42,26,0.4); opacity: 0; transition: opacity 0.4s; display: flex; align-items: center; justify-content: center; padding: 1rem; }
   .gallery-item:hover .gallery-overlay { opacity: 1; }
   .gallery-overlay span { color: var(--white); font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; }
 
-  /* MODAL WINDOW (Cat Details Popup) */
+  /* MODAL WINDOW */
   .modal {
     position: fixed; inset: 0; background: rgba(35,25,15,0.6); backdrop-filter: blur(8px);
     z-index: 2000; display: none; align-items: center; justify-content: center; padding: 2rem;
@@ -151,11 +150,9 @@
   .modal-close {
     position: absolute; top: 1.5rem; right: 1.5rem; background: var(--cream);
     border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 1.2rem;
-    cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.3s;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10;
   }
-  .modal-close:hover { background: var(--gold-light); }
   .modal-body { padding: 3rem; }
-  
   .modal-hero { display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; margin-bottom: 3rem; }
   .modal-main-img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 4px; box-shadow: 0 8px 24px var(--shadow); }
   .modal-title { font-size: 2.8rem; margin-bottom: 0.5rem; }
@@ -164,39 +161,31 @@
   .modal-info-table td { padding: 0.6rem 0; border-bottom: 1px solid var(--cream-dark); }
   .modal-info-table td:first-child { font-weight: 500; color: var(--brown-mid); width: 40%; }
   .modal-description { font-weight: 300; font-size: 1.05rem; color: var(--brown-deep); white-space: pre-wrap; margin-bottom: 1.5rem; }
-  .btn-modal-pedigree { display: inline-block; padding: 0.6rem 1.8rem; background: var(--brown-deep); color: var(--white); text-decoration: none; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; border-radius: 3px; transition: background 0.3s; }
-  .btn-modal-pedigree:hover { background: var(--gold); }
-
+  .btn-modal-pedigree { display: inline-block; padding: 0.6rem 1.8rem; background: var(--brown-deep); color: var(--white); text-decoration: none; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; border-radius: 3px; }
   .modal-gallery-title { font-size: 1.8rem; margin-bottom: 1.5rem; border-top: 1px solid var(--cream-dark); padding-top: 2rem; }
   .modal-subgallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; }
-  .modal-subgallery img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px; cursor: pointer; transition: transform 0.3s; box-shadow: 0 4px 12px var(--shadow); }
-  .modal-subgallery img:hover { transform: scale(1.04); }
+  .modal-subgallery img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px; cursor: pointer; transition: transform 0.3s; }
 
-  /* Footer */
   footer { background: var(--brown-deep); color: var(--cream); padding: 4rem 2rem; text-align: center; font-size: 0.9rem; font-weight: 300; }
-  footer p { opacity: 0.7; margin-bottom: 1rem; }
-  footer a { color: var(--gold-light); text-decoration: none; }
-
   @keyframes modalEnter { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-  /* Responsive Design */
+  /* Skrytý element pro Google Translate inicializaci */
+  #google_translate_element { display: none; }
+
   @media (max-width: 968px) {
     nav { padding: 1.25rem 1.5rem; }
-    .nav-right { gap: 1rem; }
-    .nav-links { position: fixed; top: 70px; left: 0; width: 100%; background: var(--cream); flex-direction: column; padding: 2rem 0; gap: 1.5rem; box-shadow: 0 10px 20px rgba(0,0,0,0.05); display: none; }
+    .nav-links { position: fixed; top: 70px; left: 0; width: 100%; background: var(--cream); flex-direction: column; padding: 2rem 0; gap: 1.5rem; display: none; }
     .nav-links.open { display: flex; }
     .nav-toggle { display: block; }
-    section { padding: 6rem 1.5rem 4rem; }
     .about-container { grid-template-columns: 1fr; gap: 2.5rem; }
     .hero-content h1 { font-size: 3rem; }
-    .hero-logo { width: 130px; height: 130px; margin-bottom: 1.5rem; }
-    .section-title { font-size: 2.4rem; margin-bottom: 3rem; }
     .modal-hero { grid-template-columns: 1fr; gap: 2rem; }
-    .modal-body { padding: 1.5rem; }
   }
 </style>
 </head>
 <body>
+
+<div id="google_translate_element"></div>
 
 <nav>
   <a href="#home" class="logo-nav">
@@ -206,20 +195,20 @@
   
   <div class="nav-right">
     <ul class="nav-links" id="navLinks">
-      <li><a href="#about" id="m-about">O nás</a></li>
-      <li><a href="#cats" id="m-cats">Kočky</a></li>
-      <li><a href="#toms" id="m-toms">Kocouři</a></li>
-      <li><a href="#litters" id="m-litters">Koťata</a></li>
-      <li><a href="#gallery" id="m-gallery">Galerie</a></li>
-      <li><a href="#contact" id="m-contact">Kontakt</a></li>
+      <li><a href="#about">O nás</a></li>
+      <li><a href="#cats">Kočky</a></li>
+      <li><a href="#toms">Kocouři</a></li>
+      <li><a href="#litters">Koťata</a></li>
+      <li><a href="#gallery">Galerie</a></li>
+      <li><a href="#contact">Kontakt</a></li>
       <li><a href="https://eshop.crystalvalley.cz" target="_blank" class="btn-eshop">🛒 E-shop</a></li>
     </ul>
 
     <div class="lang-switcher">
-      <div class="lang-circle active" onclick="switchLanguage('cs')">CZ</div>
-      <div class="lang-circle" onclick="switchLanguage('en')">EN</div>
-      <div class="lang-circle" onclick="switchLanguage('de')">DE</div>
-      <div class="lang-circle" onclick="switchLanguage('pl')">PL</div>
+      <div class="lang-circle active" data-lang="cs" onclick="changeLanguage('cs')">CZ</div>
+      <div class="lang-circle" data-lang="en" onclick="changeLanguage('en')">EN</div>
+      <div class="lang-circle" data-lang="de" onclick="changeLanguage('de')">DE</div>
+      <div class="lang-circle" data-lang="pl" onclick="changeLanguage('pl')">PL</div>
     </div>
 
     <button class="nav-toggle" id="navToggle" onclick="toggleMenu()">
@@ -230,262 +219,169 @@
 
 <header id="home">
   <div class="hero-content">
-    <img src="logo.png" class="hero-logo" alt="Crystal Valley Big Logo">
+    <img src="logo.png" class="hero-logo" alt="Crystal Valley Logo">
     <h1>Crystal Valley</h1>
-    <p id="hero-sub">Chovná stanice norských lesních koček</p>
+    <p>Chovná stanice norských lesních koček</p>
   </div>
 </header>
 
 <section id="about">
-  <h2 class="section-title" id="t-about">O nás</h2>
+  <h2 class="section-title">O nás</h2>
   <div class="about-container">
-    <div class="about-img">
-      <img src="about.jpg" alt="About Crystal Valley">
-    </div>
+    <div class="about-img"><img src="about.jpg" alt=""></div>
     <div class="about-text">
-      <h3 id="t-welcome">Vítejte v naší CHS</h3>
+      <h3>Vítejte v naší CHS</h3>
       <p id="about-content">Načítám...</p>
     </div>
   </div>
 </section>
 
 <section id="cats">
-  <h2 class="section-title" id="t-cats">Naše kočky</h2>
+  <h2 class="section-title">Naše kočky</h2>
   <div class="profile-grid" id="cats-container"></div>
 </section>
 
 <section id="toms">
-  <h2 class="section-title" id="t-toms">Naši kocouři</h2>
+  <h2 class="section-title">Naši kocouři</h2>
   <div class="profile-grid" id="toms-container"></div>
 </section>
 
 <section id="litters">
-  <h2 class="section-title" id="t-litters">Plánované & Aktuální vrhy</h2>
+  <h2 class="section-title">Plánované & Aktuální vrhy</h2>
   <div id="litters-container"></div>
 </section>
 
 <section id="gallery">
-  <h2 class="section-title" id="t-gallery">Galerie</h2>
+  <h2 class="section-title">Galerie</h2>
   <div class="gallery-grid" id="gallery-container"></div>
 </section>
 
 <section id="contact" style="background: var(--cream-dark); max-width: 100%; padding: 6rem 2rem;">
   <div style="max-width: 600px; margin: 0 auto; text-align: center;">
-    <h2 class="section-title" id="t-contact" style="margin-bottom: 2rem;">Kontaktujte nás</h2>
+    <h2 class="section-title" style="margin-bottom: 2rem;">Kontaktujte nás</h2>
     <p style="font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 400;">Chovná stanice Crystal Valley</p>
-    <p id="contact-sub" style="margin-bottom: 1.5rem; font-weight: 300; color: var(--brown-mid)">Norská lesní kočka · Chrudim, Česká republika</p>
+    <p style="margin-bottom: 1.5rem; font-weight: 300; color: var(--brown-mid)">Norská lesní kočka · Chrudim, Česká republika</p>
     <p style="margin-bottom: 0.5rem;">📧 <a href="mailto:info@crystalvalley.cz" style="color: var(--brown-deep); text-decoration: none; font-weight: 500;">info@crystalvalley.cz</a></p>
     <p>📞 <a href="tel:+420123456789" style="color: var(--brown-deep); text-decoration: none; font-weight: 500;">+420 123 456 789</a></p>
   </div>
 </section>
 
 <footer>
-  <p>&copy; 2026 Crystal Valley. <span id="f-rights">Všechna práva vyhrazena.</span></p>
+  <p>&copy; 2026 Crystal Valley. Všechna práva vyhrazena.</p>
 </footer>
 
 <div class="modal" id="catModal" onclick="closeModalOnBackdrop(event)">
   <div class="modal-content">
     <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-body" id="modalBody">
-      </div>
+    <div class="modal-body" id="modalBody"></div>
   </div>
 </div>
+
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'cs',
+    includedLanguages: 'cs,en,de,pl',
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <script>
 const GH_OWNER = localStorage.getItem('cv_gh_owner') || 'DOPLN_SVE_GITHUB_JMENO';
 const GH_REPO = localStorage.getItem('cv_gh_repo') || 'DOPLN_NAZEV_REPOZITARE';
 
-let currentLang = 'cs';
 let rawData = { about: {}, cats: [], toms: [], litters: [], gallery: [] };
 
-// Překlady statických textů na webu
-const translations = {
-  cs: {
-    about: "O nás", cats: "Kočky", toms: "Kocouři", litters: "Koťata", gallery: "Galerie", contact: "Kontakt",
-    heroSub: "Chovná stanice norských lesních koček", welcome: "Vítejte v naší CHS", contactSub: "Norská lesní kočka · Chrudim, Česká republika",
-    rights: "Všechna práva vyhrazena.", noCats: "Aktuálně nemáme zadané žádné kočky.", noToms: "Aktuálně nemáme zadané žádné kocoury.",
-    noLitters: "Momentálně neplánujeme žádná koťátka.", noGallery: "Galerie je prázdná.", loading: "Načítám...",
-    born: "Narození", mother: "Matka", father: "Otec", more: "Zobrazit detail →", pedigree: "Rodokmen",
-    status_available: "Volné", status_reserved: "Rezervováno", status_sold: "V novém domově",
-    color: "Barva", ems: "EMS kód", tests: "Zdravotní testy"
-  },
-  en: {
-    about: "About Us", cats: "Our Queens", toms: "Our Studs", litters: "Kittens", gallery: "Gallery", contact: "Contact",
-    heroSub: "Norwegian Forest Cat Cattery", welcome: "Welcome to our Cattery", contactSub: "Norwegian Forest Cat · Chrudim, Czech Republic",
-    rights: "All rights reserved.", noCats: "No queens available at the moment.", noToms: "No studs available at the moment.",
-    noLitters: "No litters planned at the moment.", noGallery: "Gallery is empty.", loading: "Loading...",
-    born: "Born", mother: "Mother", father: "Father", more: "View details →", pedigree: "Pedigree",
-    status_available: "Available", status_reserved: "Reserved", status_sold: "Sold",
-    color: "Color", ems: "EMS Code", tests: "Health Tests"
-  },
-  de: {
-    about: "Über uns", cats: "Katzen", toms: "Kater", litters: "Kätzchen", gallery: "Galerie", contact: "Kontakt",
-    heroSub: "Norwegische Waldkatzenzucht", welcome: "Willkommen in unserer Zucht", contactSub: "Norwegische Waldkatze · Chrudim, Tschechien",
-    rights: "Alle Rechte vorbehalten.", noCats: "Derzeit sind keine Katzen eingetragen.", noToms: "Derzeit sind keine Kater eingetragen.",
-    noLitters: "Im Moment sind keine Würfe geplant.", noGallery: "Die Galerie ist leer.", loading: "Laden...",
-    born: "Geboren", mother: "Mutter", father: "Vater", more: "Details anzeigen →", pedigree: "Stammbaum",
-    status_available: "Frei", status_reserved: "Reserviert", status_sold: "Verkauft",
-    color: "Farbe", ems: "EMS-Code", tests: "Gesundheitstests"
-  },
-  pl: {
-    about: "O nas", cats: "Kotki", toms: "Koty", litters: "Kocięta", gallery: "Galeria", contact: "Kontakt",
-    heroSub: "Hodowla kotów norweskich leśnych", welcome: "Witamy w naszej hodowli", contactSub: "Kot norweski leśny · Chrudim, Czechy",
-    rights: "Wszelkie prawa zastrzeżone.", noCats: "Obecnie nie ma wprowadzonych kotek.", noToms: "Obecnie nie ma wprowadzonych kocurów.",
-    noLitters: "W tej chwili nie planujemy miotów.", noGallery: "Galeria jest pusta.", loading: "Ładowanie...",
-    born: "Urodzony", mother: "Matka", father: "Ojciec", more: "Zobacz szczegóły →", pedigree: "Rodowód",
-    status_available: "Wolny", status_reserved: "Zarezerwowany", status_sold: "W nowym domu",
-    color: "Kolor", ems: "Kod EMS", tests: "Testy zdrowotne"
+// Funkce pro simulaci kliknutí na skrytý Google Translate selectbox
+function changeLanguage(langCode) {
+  const select = document.querySelector('.goog-te-combo');
+  if (select) {
+    select.value = langCode;
+    select.dispatchEvent(new Event('change'));
   }
-};
+  // Označení aktivního kruhu
+  document.querySelectorAll('.lang-circle').forEach(c => {
+    c.classList.toggle('active', c.getAttribute('data-lang') === langCode);
+  });
+}
 
 async function fetchJson(file) {
   try {
     const r = await fetch(`https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/data/${file}?t=${Date.now()}`);
-    if (!r.ok) return null;
-    return await r.json();
-  } catch (e) {
-    console.error("Chyba stahování " + file, e);
-    return null;
-  }
+    return r.ok ? await r.json() : null;
+  } catch (e) { return null; }
 }
 
-// Přepínání jazyků
-function switchLanguage(lang) {
-  currentLang = lang;
-  document.querySelectorAll('.lang-circle').forEach(c => {
-    c.classList.toggle('active', c.textContent.toLowerCase() === lang);
-  });
-  renderStaticTexts();
-  renderDynamicData();
-}
-
-function renderStaticTexts() {
-  const t = translations[currentLang];
-  // Menu
-  document.getElementById('m-about').textContent = t.about;
-  document.getElementById('m-cats').textContent = t.cats;
-  document.getElementById('m-toms').textContent = t.toms;
-  document.getElementById('m-litters').textContent = t.litters;
-  document.getElementById('m-gallery').textContent = t.gallery;
-  document.getElementById('m-contact').textContent = t.contact;
-  // Nadpisy sekcí
-  document.getElementById('hero-sub').textContent = t.heroSub;
-  document.getElementById('t-about').textContent = t.about;
-  document.getElementById('t-welcome').textContent = t.welcome;
-  document.getElementById('t-cats').textContent = t.cats;
-  document.getElementById('t-toms').textContent = t.toms;
-  document.getElementById('t-litters').textContent = t.litters;
-  document.getElementById('t-gallery').textContent = t.gallery;
-  document.getElementById('t-contact').textContent = t.contact;
-  document.getElementById('contact-sub').textContent = t.contactSub;
-  document.getElementById('f-rights').textContent = t.rights;
-}
-
-// Funkce pro bezpečné vytažení lokalizovaného textu z datového objektu
-function getLocField(obj, baseField) {
-  if (!obj) return '';
-  if (currentLang === 'cs') return obj[baseField] || '';
-  return obj[`${baseField}_${currentLang}`] || obj[baseField] || '';
-}
-
-function renderDynamicData() {
-  const t = translations[currentLang];
-
+function renderData() {
   // 1. O Nás
-  document.getElementById('about-content').textContent = getLocField(rawData.about, 'text') || t.loading;
+  document.getElementById('about-content').textContent = rawData.about.text || '';
 
   // 2. Kočky
-  const catsContainer = document.getElementById('cats-container');
-  if (!rawData.cats || rawData.cats.length === 0) {
-    catsContainer.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:var(--brown-mid)">${t.noCats}</p>`;
-  } else {
-    catsContainer.innerHTML = rawData.cats.map((c, idx) => `
-      <div class="profile-card" onmousemove="tiltCard(this, event)" onmouseleave="resetTilt(this)" onclick="openCatModal('cats', ${idx})">
-        <div class="profile-img"><img src="${c.photo || 'about.jpg'}" alt="${c.name}"></div>
-        <div class="profile-info">
-          <h3>${c.name}</h3>
-          <span class="profile-detail">${getLocField(c, 'detail')}</span>
-          <p class="profile-achievements">${getLocField(c, 'achievements') || '—'}</p>
-          <div class="profile-tags">
-            ${(c.tags || []).map(tag => `<span class="profile-tag">${tag}</span>`).join('')}
-          </div>
-          <span class="btn-more">${t.more}</span>
-        </div>
+  document.getElementById('cats-container').innerHTML = rawData.cats.map((c, idx) => `
+    <div class="profile-card" onclick="openCatModal('cats', ${idx})">
+      <div class="profile-img"><img src="${c.photo || 'about.jpg'}" alt=""></div>
+      <div class="profile-info">
+        <h3>${c.name}</h3>
+        <span class="profile-detail">${c.detail || ''}</span>
+        <p class="profile-achievements">${c.achievements || '—'}</p>
+        <div class="profile-tags">${(c.tags || []).map(t => `<span class="profile-tag">${t}</span>`).join('')}</div>
+        <span class="btn-more">Zobrazit detail →</span>
       </div>
-    `).join('');
-  }
+    </div>
+  `).join('') || '<p style="grid-column:1/-1;text-align:center;">Žádné záznamy.</p>';
 
   // 3. Kocouři
-  const tomsContainer = document.getElementById('toms-container');
-  if (!rawData.toms || rawData.toms.length === 0) {
-    tomsContainer.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:var(--brown-mid)">${t.noToms}</p>`;
-  } else {
-    tomsContainer.innerHTML = rawData.toms.map((st, idx) => `
-      <div class="profile-card" onmousemove="tiltCard(this, event)" onmouseleave="resetTilt(this)" onclick="openCatModal('toms', ${idx})">
-        <div class="profile-img"><img src="${st.photo || 'about.jpg'}" alt="${st.name}"></div>
-        <div class="profile-info">
-          <h3>${st.name}</h3>
-          <span class="profile-detail">${getLocField(st, 'detail')}</span>
-          <p class="profile-achievements">${getLocField(st, 'achievements') || '—'}</p>
-          <div class="profile-tags">
-            ${(st.tags || []).map(tag => `<span class="profile-tag">${tag}</span>`).join('')}
-          </div>
-          <span class="btn-more">${t.more}</span>
-        </div>
+  document.getElementById('toms-container').innerHTML = rawData.toms.map((st, idx) => `
+    <div class="profile-card" onclick="openCatModal('toms', ${idx})">
+      <div class="profile-img"><img src="${st.photo || 'about.jpg'}" alt=""></div>
+      <div class="profile-info">
+        <h3>${st.name}</h3>
+        <span class="profile-detail">${st.detail || ''}</span>
+        <p class="profile-achievements">${st.achievements || '—'}</p>
+        <div class="profile-tags">${(st.tags || []).map(t => `<span class="profile-tag">${t}</span>`).join('')}</div>
+        <span class="btn-more">Zobrazit detail →</span>
       </div>
-    `).join('');
-  }
+    </div>
+  `).join('') || '<p style="grid-column:1/-1;text-align:center;">Žádné záznamy.</p>';
 
   // 4. Vrhy
-  const littersContainer = document.getElementById('litters-container');
-  if (!rawData.litters || rawData.litters.length === 0) {
-    littersContainer.innerHTML = `<p style="text-align:center;color:var(--brown-mid)">${t.noLitters}</p>`;
-  } else {
-    littersContainer.innerHTML = rawData.litters.map(l => `
-      <div class="litter-box">
-        <div class="litter-header">
-          <h3 class="litter-title">Vrh ${l.id || ''} — ${l.name || ''}</h3>
-          <span class="litter-date">${t.born}: ${l.born || '—'}</span>
-        </div>
-        <p class="litter-parents">${t.mother}: <strong>${l.mother || ''}</strong> &nbsp;·&nbsp; ${t.father}: <strong>${l.father || ''}</strong></p>
-        <p class="litter-desc">${getLocField(l, 'description')}</p>
-        <div class="kittens-grid">
-          ${(l.kittens || []).map(k => `
-            <div class="kitten-card">
-              <div>
-                <h4 class="kitten-name">${k.name}</h4>
-                <p class="kitten-info">${k.sex === 'Kocour' || k.sex === 'Stud' ? '🐈' : '🐱'} ${getLocField(k, 'sex')} · ${getLocField(k, 'color')}</p>
-              </div>
-              <span class="kitten-status status-${k.status}">${t['status_' + k.status] || k.status}</span>
+  document.getElementById('litters-container').innerHTML = rawData.litters.map(l => `
+    <div class="litter-box">
+      <div class="litter-header">
+        <h3 class="litter-title">Vrh ${l.id || ''} — ${l.name || ''}</h3>
+        <span class="litter-date">Narození: ${l.born || '—'}</span>
+      </div>
+      <p class="litter-parents">Matka: <strong>${l.mother || ''}</strong> &nbsp;·&nbsp; Otec: <strong>${l.father || ''}</strong></p>
+      <p class="litter-desc">${l.description || ''}</p>
+      <div class="kittens-grid">
+        ${(l.kittens || []).map(k => `
+          <div class="kitten-card">
+            <div>
+              <h4 class="kitten-name">${k.name}</h4>
+              <p class="kitten-info">${k.sex === 'Kocour' ? '🐈' : '🐱'} ${k.sex} · ${k.color}</p>
             </div>
-          `).join('')}
-        </div>
+            <span class="kitten-status status-${k.status}">${k.status === 'available' ? 'Volné' : k.status === 'reserved' ? 'Rezervováno' : 'V novém domově'}</span>
+          </div>
+        `).join('')}
       </div>
-    `).join('');
-  }
+    </div>
+  `).join('') || '<p style="text-align:center;">Momentálně neplánujeme žádná koťátka.</p>';
 
-  // 5. Hlavní Galerie
-  const galleryContainer = document.getElementById('gallery-container');
-  if (!rawData.gallery || rawData.gallery.length === 0) {
-    galleryContainer.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:var(--brown-mid)">${t.noGallery}</p>`;
-  } else {
-    galleryContainer.innerHTML = rawData.gallery.map(g => `
-      <div class="gallery-item">
-        <img src="${g.url}" alt="">
-        <div class="gallery-overlay"><span>${getLocField(g, 'label')}</span></div>
-      </div>
-    `).join('');
-  }
+  // 5. Galerie
+  document.getElementById('gallery-container').innerHTML = rawData.gallery.map(g => `
+    <div class="gallery-item">
+      <img src="${g.url}" alt="">
+      <div class="gallery-overlay"><span>${g.label || ''}</span></div>
+    </div>
+  `).join('') || '<p style="grid-column:1/-1;text-align:center;">Galerie je prázdná.</p>';
 }
 
-// OTEVŘENÍ DETAILU KOČKY
 function openCatModal(type, index) {
   const cat = rawData[type][index];
-  const t = translations[currentLang];
-  const modal = document.getElementById('catModal');
   const body = document.getElementById('modalBody');
-
-  // Načtení podgalerie kočky (pokud existuje)
   const subimages = cat.subgallery || [];
 
   body.innerHTML = `
@@ -493,45 +389,34 @@ function openCatModal(type, index) {
       <img src="${cat.photo || 'about.jpg'}" class="modal-main-img" id="modalMainImg" alt="">
       <div>
         <h2 class="modal-title">${cat.name}</h2>
-        <span class="modal-subtitle">${getLocField(cat, 'detail')}</span>
-        
+        <span class="modal-subtitle">${cat.detail || ''}</span>
         <table class="modal-info-table">
-          <tr><td>${t.color}:</td><td>${getLocField(cat, 'color_desc') || '—'}</td></tr>
-          <tr><td>${t.ems}:</td><td>${cat.ems || '—'}</td></tr>
-          <tr><td>${t.tests}:</td><td>${cat.tests || '—'}</td></tr>
+          <tr><td>Barva:</td><td>${cat.color_desc || '—'}</td></tr>
+          <tr><td>EMS kód:</td><td>${cat.ems || '—'}</td></tr>
+          <tr><td>Zdravotní testy:</td><td>${cat.tests || '—'}</td></tr>
         </table>
-
-        <p class="modal-description">${getLocField(cat, 'description') || ''}</p>
-        
-        ${cat.pedigree ? `<a href="${cat.pedigree}" target="_blank" class="btn-modal-pedigree">${t.pedigree}</a>` : ''}
+        <p class="modal-description">${cat.description || ''}</p>
+        ${cat.pedigree ? `<a href="${cat.pedigree}" target="_blank" class="btn-modal-pedigree">Rodokmen</a>` : ''}
       </div>
     </div>
-
     ${subimages.length > 0 ? `
-      <h3 class="modal-gallery-title">${t.gallery}</h3>
+      <h3 class="modal-gallery-title">Další fotografie</h3>
       <div class="modal-subgallery">
-        <img src="${cat.photo || 'about.jpg'}" onclick="changeModalPhoto('${cat.photo}')">
-        ${subimages.map(imgUrl => `<img src="${imgUrl}" onclick="changeModalPhoto('${imgUrl}')">`).join('')}
+        <img src="${cat.photo || 'about.jpg'}" onclick="document.getElementById('modalMainImg').src='${cat.photo}'">
+        ${subimages.map(imgUrl => `<img src="${imgUrl}" onclick="document.getElementById('modalMainImg').src='${imgUrl}'">`).join('')}
       </div>
     ` : ''}
   `;
-
-  modal.style.display = 'flex';
-  document.body.style.overflow = 'hidden'; // Zákaz scrollování pozadí
-}
-
-function changeModalPhoto(url) {
-  document.getElementById('modalMainImg').src = url;
+  document.getElementById('catModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
   document.getElementById('catModal').style.display = 'none';
   document.body.style.overflow = '';
 }
-
-function closeModalOnBackdrop(e) {
-  if (e.target.id === 'catModal') closeModal();
-}
+function closeModalOnBackdrop(e) { if (e.target.id === 'catModal') closeModal(); }
+function toggleMenu() { document.getElementById('navLinks').classList.toggle('open'); }
 
 async function loadAllData() {
   rawData.about = await fetchJson('about.json') || {};
@@ -539,19 +424,8 @@ async function loadAllData() {
   rawData.toms = await fetchJson('toms.json') || [];
   rawData.litters = await fetchJson('litters.json') || [];
   rawData.gallery = await fetchJson('gallery.json') || [];
-
-  switchLanguage('cs'); // Výchozí jazyk při načtení
+  renderData();
 }
-
-// Pomocné funkce pro 3D efekt karet a navigaci
-function tiltCard(el, e) {
-  const r = el.getBoundingClientRect();
-  const x = (e.clientX - r.left) / r.width - 0.5;
-  const y = (e.clientY - r.top) / r.height - 0.5;
-  el.style.transform = `perspective(600px) rotateY(${x*8}deg) rotateX(${-y*8}deg) translateZ(4px)`;
-}
-function resetTilt(el) { el.style.transform = ''; }
-function toggleMenu() { document.getElementById('navLinks').classList.toggle('open'); }
 
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
@@ -564,11 +438,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 
-window.addEventListener('scroll', () => {
-  document.querySelector('nav').style.boxShadow = window.scrollY > 40 ? '0 2px 20px rgba(59,42,26,0.12)' : '';
-});
-
-// Spuštění
 loadAllData();
 </script>
 </body>
