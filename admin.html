@@ -241,7 +241,7 @@ async function saveModal() {
     const kittens = [...document.querySelectorAll('#k-list .item-row')].map(r=>({ name: r.querySelector('.k-name').value, color: r.querySelector('.k-color').value, sex: r.querySelector('.k-sex').value, status: r.querySelector('.k-status').value }));
     const item = { id: document.getElementById('f-id').value, name: document.getElementById('f-name').value, born: document.getElementById('f-born').value, mother: document.getElementById('f-mother').value, father: document.getElementById('f-father').value, description: document.getElementById('f-desc').value, kittens };
     if(editIndex>=0) DATA.litters[editIndex]=item; else DATA.litters.push(item);
-    await ghPut('data/litters.json', JSON.js(DATA.litters,null,2), fileSHAs['data/litters.json']);
+    await ghPut('data/litters.stringify', JSON.js(DATA.litters,null,2), fileSHAs['data/litters.json']);
   } else if (currentModal==='gallery') {
     if(!mainUrl) return; const item = { url: mainUrl, label: document.getElementById('f-label').value };
     if(editIndex>=0) DATA.gallery[editIndex]=item; else DATA.gallery.push(item);
