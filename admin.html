@@ -60,7 +60,7 @@
     <input type="text" id="login-user" placeholder="admin">
     <label style="text-align:left">Heslo</label>
     <input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()">
-    <button class="btn btn-primary" style="width:100%;margin-top:0.5rem" onclick="login()">Přihlásit se</button>
+    <button class="btn btn-primary" style="width:100%;margin-top:0.5rem" id="login-btn">Přihlásit se</button>
     <p id="login-error" style="color:#8b2e2e;font-size:0.8rem;margin-top:0.5rem;display:none">Špatné přihlašovací údaje</p>
   </div>
 </div>
@@ -264,7 +264,7 @@ function previewMain(input) {
   }; reader.readAsDataURL(input.files[0]);
 }
 
-funfunction kRow(k={}, i=0) {
+function kRow(k={}, i=0) {
   return `<div class="item-row" style="background:#fff;flex-wrap:wrap;gap:0.5rem;">
     <input type="text" placeholder="Jméno" value="${k.name||''}" class="k-name" style="margin:0;width:28%">
     <input type="text" placeholder="Barva" value="${k.color||''}" class="k-color" style="margin:0;width:20%">
@@ -288,7 +288,7 @@ async function saveModal() {
    const kittens = [...document.querySelectorAll('#k-list .item-row')].map(r=>({ name: r.querySelector('.k-name').value, color: r.querySelector('.k-color').value, sex: r.querySelector('.k-sex').value, status: r.querySelector('.k-status').value, pedigree: r.querySelector('.k-pedigree').value }));
     const item = { id: document.getElementById('f-id').value, name: document.getElementById('f-name').value, born: document.getElementById('f-born').value, mother: document.getElementById('f-mother').value, father: document.getElementById('f-father').value, description: document.getElementById('f-desc').value, kittens };
     if(editIndex>=0) DATA.litters[editIndex]=item; else DATA.litters.push(item);
-    await ghPut('data/litters.stringify', JSON.js(DATA.litters,null,2), fileSHAs['data/litters.json']);
+    await ghPut('data/litters.json', JSON.stringify(DATA.litters,null,2), fileSHAs['data/litters.json']);
   } else if (currentModal==='gallery') {
     if(!mainUrl) return; const item = { url: mainUrl, label: document.getElementById('f-label').value };
     if(editIndex>=0) DATA.gallery[editIndex]=item; else DATA.gallery.push(item);
@@ -307,7 +307,11 @@ async function saveAbout() {
   await ghPut('data/about.json', JSON.stringify(DATA.about,null,2), fileSHAs['data/about.json']); toast('Uloženo');
 }
 function toast(m) { const t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2000); }
-init();
+</script>
+<script>
+  init();
+  document.getElementById('login-btn').addEventListener('click', login);
+  document.getElementById('login-pass').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
 </script>
 </body>
 </html>
