@@ -347,7 +347,7 @@
 <section id="about">
   <h2 class="section-title">O nás</h2>
   <div class="about-container">
-    <div class="about-img"><img src="about.jpg" alt=""></div>
+    <div class="about-img"><img src="logo.png" alt=""></div>
     <div class="about-text">
       <h3>Vítejte v naší CHS</h3>
       <p id="about-content">Načítám...</p>
@@ -567,6 +567,7 @@ function renderData() {
             <div>
               <h4 class="kitten-name">${k.name}</h4>
               <p class="kitten-info">${k.sex === 'Kocour' ? '🐈' : '🐱'} ${k.sex} · ${k.color}</p>
+              ${k.pedigree ? `<a href="${k.pedigree}" target="_blank" style="font-size:0.75rem;color:var(--gold);text-decoration:none;">Rodokmen →</a>` : ''}
             </div>
             <span class="kitten-status status-${k.status}">${k.status === 'available' ? 'Volné' : k.status === 'reserved' ? 'Rezervováno' : 'V novém domově'}</span>
           </div>
