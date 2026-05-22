@@ -122,7 +122,6 @@ const GH_TOKEN = 'ghp_VnEfZ3wcU7joRBrbrFyh8FIPLCLZWP2FS200g';
 const GH_OWNER = 'PetrBroz-ofc';
 const GH_REPO  = 'crystalvalley-web';
 
-// Výchozí přihlašovací údaje (přepíše se po první změně)
 const DEFAULT_USER = 'admin';
 const DEFAULT_PASS = 'crystalvalley2024';
 
@@ -130,7 +129,6 @@ let DATA = { cats: [], toms: [], litters: [], gallery: [], about: {} };
 let fileSHAs = {}; let currentModal = null; let editIndex = -1; let currentModalSubgallery = [];
 
 function init() {
-  // Nastav výchozí údaje pokud ještě nejsou
   if (!localStorage.getItem('cv_user')) localStorage.setItem('cv_user', DEFAULT_USER);
   if (!localStorage.getItem('cv_pass')) localStorage.setItem('cv_pass', DEFAULT_PASS);
   show('login-screen');
@@ -160,9 +158,7 @@ function changeCredentials() {
   localStorage.setItem('cv_user', user);
   localStorage.setItem('cv_pass', pass);
   msg.style.display='block'; msg.style.color='#2d6a4f'; msg.textContent='✅ Údaje uloženy.';
-  document.getElementById('new-user').value='';
-  document.getElementById('new-pass').value='';
-  document.getElementById('new-pass2').value='';
+  document.getElementById('new-user').value=''; document.getElementById('new-pass').value=''; document.getElementById('new-pass2').value='';
 }
 
 function show(id) {
@@ -193,9 +189,13 @@ async function loadData() {
   for (const f of files) {
     const res = await ghGet(f);
     if (res && res.content) {
-      fileSHAs[f] = res.sha; const parsed = JSON.parse(atob(res.content.replace(/\n/g,'')));
-      if (f.includes('cats')) DATA.cats = parsed; if (f.includes('toms')) DATA.toms = parsed;
-      if (f.includes('litters')) DATA.litters = parsed; if (f.includes('gallery')) DATA.gallery = parsed;
+      fileSHAs[f] = res.sha; 
+      // Oprava pro správné načítání češtiny, aby se soubor nepoškodil
+      const parsed = JSON.parse(decodeURIComponent(escape(atob(res.content.replace(/\n/g,'')))));
+      if (f.includes('cats')) DATA.cats = parsed; 
+      if (f.includes('toms')) DATA.toms = parsed;
+      if (f.includes('litters')) DATA.litters = parsed; 
+      if (f.includes('gallery')) DATA.gallery = parsed;
       if (f.includes('about')) { DATA.about = parsed; document.getElementById('about-text').value = parsed.text || ''; }
     }
   }
@@ -228,7 +228,12 @@ function openModal(type, index = -1) {
       <label>Životopis / Popis</label><textarea id="f-description" rows="4">${item.description||''}</textarea>
       <label>URL rodokmenu</label><input type="url" id="f-pedigree" value="${item.pedigree||''}">
       <label>Hlavní foto</label><div class="photo-upload-area" onclick="document.getElementById('img-i').click()">Klikni pro nahrání foto<input type="file" id="img-i" onchange="previewMain(this)"><img id="p-main" src="${item.photo||''}" style="width:60px;margin-top:5px;display:${item.photo?'block':'none'}"></div>
-      <label>Podgalerie kočky</label><div class="photo-upload-area" style="border-color:var(--gold)" onclick="document.getElementById('sub-i').click()">Přidat další fotku<input type="file" id="sub-i" onchange="uploadSub(this)"></div><div class="subgallery-manager" id="sub-w">${renderThumbs()}</div>
+      <label>Podgalerie kočky</label>
+      <div class="photo-upload-area" style="border-color:var(--gold)" onclick="document.getElementById('sub-i').click()">
+        Přidat další fotky (lze vybrat více naráz)
+        <input type="file" id="sub-i" multiple onchange="uploadSub(this)">
+      </div>
+      <div class="subgallery-manager" id="sub-w">${renderThumbs()}</div>
     `;
   } else if (type === 'litter') {
     currentModal = 'litters';
@@ -250,13 +255,35 @@ function openModal(type, index = -1) {
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
 
 function renderThumbs() { return currentModalSubgallery.map((url,i)=>`<div class="subgallery-thumb"><img src="${url}"><button onclick="currentModalSubgallery.splice(${i},1);document.getElementById('sub-w').innerHTML=renderThumbs()">✕</button></div>`).join(''); }
+
+// Vylepšená funkce pro nahrání více fotek najednou
 async function uploadSub(input) {
-  if(!input.files[0]) return; toast('Nahrávám...');
-  const reader = new FileReader(); reader.onload = async e => {
-    const url = await ghUploadImage(Date.now()+'_sub_'+input.files[0].name, e.target.result.split(',')[1]);
-    if(url) { currentModalSubgallery.push(url); document.getElementById('sub-w').innerHTML = renderThumbs(); toast('Přidáno'); }
-  }; reader.readAsDataURL(input.files[0]);
+  if(!input.files || input.files.length === 0) return; 
+  toast(`Nahrávám ${input.files.length} fotek... čekejte prosím.`);
+  
+  const btn = document.getElementById('modal-save-btn');
+  btn.disabled = true; // Zablokovat uložení dokud se nenahrají fotky
+
+  for (let i = 0; i < input.files.length; i++) {
+    const file = input.files[i];
+    await new Promise((resolve) => {
+      const reader = new FileReader(); 
+      reader.onload = async e => {
+        const url = await ghUploadImage(Date.now()+'_sub_'+file.name, e.target.result.split(',')[1]);
+        if(url) { 
+          currentModalSubgallery.push(url); 
+          document.getElementById('sub-w').innerHTML = renderThumbs(); 
+        }
+        resolve();
+      }; 
+      reader.readAsDataURL(file);
+    });
+  }
+  toast('✅ Všechny fotky byly úspěšně přidány!');
+  input.value = ''; // Vyčistit input
+  btn.disabled = false; // Odblokovat uložení
 }
+
 function previewMain(input) {
   if(!input.files[0]) return; const reader = new FileReader(); reader.onload = e => {
     const img = document.getElementById('p-main'); img.src = e.target.result; img.style.display = 'block';
@@ -306,7 +333,7 @@ async function saveAbout() {
   DATA.about.text = document.getElementById('about-text').value;
   await ghPut('data/about.json', JSON.stringify(DATA.about,null,2), fileSHAs['data/about.json']); toast('Uloženo');
 }
-function toast(m) { const t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2000); }
+function toast(m) { const t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
 </script>
 <script>
   init();
