@@ -261,6 +261,40 @@
     .hero-content h1 { font-size: 3rem; }
     .modal-hero { grid-template-columns: 1fr; gap: 2rem; }
   }
+
+  /* Mobile friendly */
+
+  @media (max-width: 768px) {
+  /* NAV - zmenšit jazyk kruhy */
+  nav { padding: 0.75rem 1rem; }
+  .lang-switcher { gap: 0.3rem; }
+  .lang-circle { width: 26px; height: 26px; font-size: 0.65rem; }
+
+  /* HERO - kočka viditelná, tlačítka pod sebou */
+  header { background-position: center 30%; }
+  .hero-content { padding: 5rem 1.5rem 3rem; }
+  header h1 { font-size: 2.8rem; }
+  .hero-btns { flex-direction: column; width: 100%; }
+  .hero-btn-main, .hero-btn-outline { width: 100%; text-align: center; padding: 1rem; }
+
+  /* SEKCE - padding */
+  section { padding: 4rem 1.25rem; }
+
+  /* KONTAKT - mapa pod kontakty */
+  #contact > div > div:last-of-type,
+  #contact .contact-grid { grid-template-columns: 1fr !important; }
+  #contact iframe { height: 260px; }
+
+  /* FOOTER - sloupce pod sebou */
+  footer div[style*="grid-template-columns"] { 
+    grid-template-columns: 1fr !important; 
+    gap: 2rem !important;
+  }
+
+  /* GALERIE - 2 sloupce místo 4 */
+  .gallery-grid { columns: 2 !important; }
+}
+
 </style>
 </head>
 <body>
@@ -281,7 +315,7 @@
       <li><a href="#litters">Koťata</a></li>
       <li><a href="#gallery">Galerie</a></li>
       <li><a href="#contact">Kontakt</a></li>
-      <li><a href="https://eshop.crystalvalley.cz" target="_blank" class="btn-eshop">🛒 E-shop</a></li>
+      <li><a href="https://www.kocicibydleni.cz/" target="_blank" class="btn-eshop">🛒 E-shop</a></li>
     </ul>
 
     <div class="lang-switcher">
