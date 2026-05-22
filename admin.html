@@ -72,7 +72,7 @@
 
 <div id="admin-screen" style="display:none">
   <header>
-    <h2>Crystal Valley Admin (Pouze v češtině)</h2>
+    <h2>Crystal Valley Admin</h2>
     <button class="btn btn-outline" style="color:white;border-color:white" onclick="logout()">Odhlásit</button>
   </header>
 
@@ -223,8 +223,14 @@ function previewMain(input) {
   }; reader.readAsDataURL(input.files[0]);
 }
 
-function kRow(k={}, i=0) {
-  return `<div class="item-row" style="background:#fff"><input type="text" placeholder="Jméno" value="${k.name||''}" class="k-name" style="margin:0;width:30%"> <input type="text" placeholder="Barva" value="${k.color||''}" class="k-color" style="margin:0;width:30%"> <select class="k-sex" style="margin:0;width:20%"><option value="Kocour" ${k.sex==='Kocour'?'selected':''}>Kocour</option><option value="Kočka" ${k.sex==='Kočka'?'selected':''}>Kočka</option></select> <select class="k-status" style="margin:0;width:20%"><option value="available" ${k.status==='available'?'selected':''}>Volné</option><option value="reserved" ${k.status==='reserved'?'selected':''}>Rezervace</option><option value="sold" ${k.status==='sold'?'selected':''}>V domově</option></select></div>`;
+funfunction kRow(k={}, i=0) {
+  return `<div class="item-row" style="background:#fff;flex-wrap:wrap;gap:0.5rem;">
+    <input type="text" placeholder="Jméno" value="${k.name||''}" class="k-name" style="margin:0;width:28%">
+    <input type="text" placeholder="Barva" value="${k.color||''}" class="k-color" style="margin:0;width:20%">
+    <select class="k-sex" style="margin:0;width:13%"><option value="Kocour" ${k.sex==='Kocour'?'selected':''}>Kocour</option><option value="Kočka" ${k.sex==='Kočka'?'selected':''}>Kočka</option></select>
+    <select class="k-status" style="margin:0;width:15%"><option value="available" ${k.status==='available'?'selected':''}>Volné</option><option value="reserved" ${k.status==='reserved'?'selected':''}>Rezervace</option><option value="sold" ${k.status==='sold'?'selected':''}>V domově</option></select>
+    <input type="url" placeholder="URL rodokmenu" value="${k.pedigree||''}" class="k-pedigree" style="margin:0;width:100%">
+  </div>`;
 }
 function addKittenRow() { const div = document.createElement('div'); div.innerHTML = kRow({}, Date.now()); document.getElementById('k-list').appendChild(div.firstElementChild); }
 
@@ -238,7 +244,7 @@ async function saveModal() {
     const arr = currentModal==='cats'?DATA.cats:DATA.toms; if(editIndex>=0) arr[editIndex]=item; else arr.push(item);
     await ghPut(`data/${currentModal}.json`, JSON.stringify(arr,null,2), fileSHAs[`data/${currentModal}.json`]);
   } else if (currentModal==='litters') {
-    const kittens = [...document.querySelectorAll('#k-list .item-row')].map(r=>({ name: r.querySelector('.k-name').value, color: r.querySelector('.k-color').value, sex: r.querySelector('.k-sex').value, status: r.querySelector('.k-status').value }));
+   const kittens = [...document.querySelectorAll('#k-list .item-row')].map(r=>({ name: r.querySelector('.k-name').value, color: r.querySelector('.k-color').value, sex: r.querySelector('.k-sex').value, status: r.querySelector('.k-status').value, pedigree: r.querySelector('.k-pedigree').value }));
     const item = { id: document.getElementById('f-id').value, name: document.getElementById('f-name').value, born: document.getElementById('f-born').value, mother: document.getElementById('f-mother').value, father: document.getElementById('f-father').value, description: document.getElementById('f-desc').value, kittens };
     if(editIndex>=0) DATA.litters[editIndex]=item; else DATA.litters.push(item);
     await ghPut('data/litters.stringify', JSON.js(DATA.litters,null,2), fileSHAs['data/litters.json']);
