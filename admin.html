@@ -51,22 +51,17 @@
 </head>
 <body>
 
-<div id="setup-screen">
-  <div class="setup-box">
-    <h3 style="margin-bottom:1rem">⚙️ Nastavení repozitáře</h3>
-    <label>GitHub Personal Access Token</label><input type="text" id="setup-token">
-    <label>GitHub Uživatelské jméno</label><input type="text" id="setup-owner">
-    <label>Název repozitáře</label><input type="text" id="setup-repo">
-    <label>Admin heslo sem do správy</label><input type="text" id="setup-password">
-    <button class="btn btn-primary" style="width:100%" onclick="saveSetup()">Uložit</button>
-  </div>
-</div>
-
-<div id="login-screen" style="display:none">
-  <div class="login-box">
-    <h3 style="margin-bottom:1rem">Přihlášení do správy</h3>
-    <input type="password" id="login-pass" placeholder="Zadejte heslo">
-    <button class="btn btn-primary" style="width:100%" onclick="login()">Přihlásit se</button>
+<div id="login-screen" style="display:flex;min-height:100vh;align-items:center;justify-content:center;">
+  <div class="login-box" style="text-align:center;">
+    <img src="logo.png" style="width:80px;margin-bottom:1rem;">
+    <h3 style="margin-bottom:0.25rem">Crystal Valley</h3>
+    <p style="font-size:0.8rem;color:#888;margin-bottom:1.5rem">Správa webu</p>
+    <label style="text-align:left">Uživatelské jméno</label>
+    <input type="text" id="login-user" placeholder="admin">
+    <label style="text-align:left">Heslo</label>
+    <input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()">
+    <button class="btn btn-primary" style="width:100%;margin-top:0.5rem" onclick="login()">Přihlásit se</button>
+    <p id="login-error" style="color:#8b2e2e;font-size:0.8rem;margin-top:0.5rem;display:none">Špatné přihlašovací údaje</p>
   </div>
 </div>
 
@@ -82,6 +77,7 @@
     <button class="tab" onclick="showTab('litters')">Koťata</button>
     <button class="tab" onclick="showTab('gallery')">Galerie</button>
     <button class="tab" onclick="showTab('about')">O nás</button>
+    <button class="tab" onclick="showTab('settings')">⚙️ Nastavení</button>
   </div>
 
   <div class="panel active" id="panel-cats">
@@ -99,6 +95,19 @@
   <div class="panel" id="panel-about">
     <div class="card"><h3>Text sekce O nás</h3><textarea id="about-text" rows="8" style="margin-top:1rem"></textarea><button class="btn btn-success" onclick="saveAbout()">Uložit text</button></div>
   </div>
+  <div class="panel" id="panel-settings">
+    <div class="card">
+      <h3 style="margin-bottom:1.5rem">Změna přihlašovacích údajů</h3>
+      <label>Nové uživatelské jméno</label>
+      <input type="text" id="new-user" placeholder="admin">
+      <label>Nové heslo</label>
+      <input type="password" id="new-pass" placeholder="••••••••">
+      <label>Potvrdit nové heslo</label>
+      <input type="password" id="new-pass2" placeholder="••••••••">
+      <button class="btn btn-success" style="margin-top:0.5rem" onclick="changeCredentials()">Uložit změny</button>
+      <p id="settings-msg" style="font-size:0.8rem;margin-top:0.75rem;display:none"></p>
+    </div>
+  </div>
 </div>
 
 <div class="modal-overlay" id="modal">
@@ -108,28 +117,60 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const PASS_KEY = 'cv_admin_pass'; const TOKEN_KEY = 'cv_gh_token'; const OWNER_KEY = 'cv_gh_owner'; const REPO_KEY = 'cv_gh_repo';
-let GH_TOKEN, GH_OWNER, GH_REPO;
+// ── CONFIG (skryté) ──
+const GH_TOKEN = 'ghp_VnEfZ3wcU7joRBrbrFyh8FIPLCLZWP2FS200g';
+const GH_OWNER = 'PetrBroz-ofc';
+const GH_REPO  = 'crystalvalley-web';
+
+// Výchozí přihlašovací údaje (přepíše se po první změně)
+const DEFAULT_USER = 'admin';
+const DEFAULT_PASS = 'crystalvalley2024';
+
 let DATA = { cats: [], toms: [], litters: [], gallery: [], about: {} };
 let fileSHAs = {}; let currentModal = null; let editIndex = -1; let currentModalSubgallery = [];
 
 function init() {
-  if (!localStorage.getItem(TOKEN_KEY) || !localStorage.getItem(PASS_KEY)) { show('setup-screen'); return; }
-  GH_TOKEN = localStorage.getItem(TOKEN_KEY); GH_OWNER = localStorage.getItem(OWNER_KEY); GH_REPO = localStorage.getItem(REPO_KEY);
+  // Nastav výchozí údaje pokud ještě nejsou
+  if (!localStorage.getItem('cv_user')) localStorage.setItem('cv_user', DEFAULT_USER);
+  if (!localStorage.getItem('cv_pass')) localStorage.setItem('cv_pass', DEFAULT_PASS);
   show('login-screen');
 }
-function saveSetup() {
-  localStorage.setItem(TOKEN_KEY, document.getElementById('setup-token').value.trim());
-  localStorage.setItem(OWNER_KEY, document.getElementById('setup-owner').value.trim());
-  localStorage.setItem(REPO_KEY, document.getElementById('setup-repo').value.trim());
-  localStorage.setItem(PASS_KEY, document.getElementById('setup-password').value.trim());
-  init();
-}
+
 function login() {
-  if (document.getElementById('login-pass').value === localStorage.getItem(PASS_KEY)) { show('admin-screen'); loadData(); } else { alert('Špatné heslo'); }
+  const user = document.getElementById('login-user').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  if (user === localStorage.getItem('cv_user') && pass === localStorage.getItem('cv_pass')) {
+    document.getElementById('login-error').style.display = 'none';
+    show('admin-screen');
+    loadData();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+  }
 }
-function logout() { show('login-screen'); }
-function show(id) { ['setup-screen','login-screen','admin-screen'].forEach(s=>document.getElementById(s).style.display=s===id?(id==='admin-screen'?'block':'flex'):'none'); }
+
+function logout() { show('login-screen'); document.getElementById('login-pass').value = ''; }
+
+function changeCredentials() {
+  const user = document.getElementById('new-user').value.trim();
+  const pass = document.getElementById('new-pass').value;
+  const pass2 = document.getElementById('new-pass2').value;
+  const msg = document.getElementById('settings-msg');
+  if (!user || !pass) { msg.style.display='block'; msg.style.color='#8b2e2e'; msg.textContent='Vyplňte všechna pole.'; return; }
+  if (pass !== pass2) { msg.style.display='block'; msg.style.color='#8b2e2e'; msg.textContent='Hesla se neshodují.'; return; }
+  localStorage.setItem('cv_user', user);
+  localStorage.setItem('cv_pass', pass);
+  msg.style.display='block'; msg.style.color='#2d6a4f'; msg.textContent='✅ Údaje uloženy.';
+  document.getElementById('new-user').value='';
+  document.getElementById('new-pass').value='';
+  document.getElementById('new-pass2').value='';
+}
+
+function show(id) {
+  ['login-screen','admin-screen'].forEach(s => {
+    const el = document.getElementById(s);
+    if (el) el.style.display = s===id ? (id==='admin-screen'?'block':'flex') : 'none';
+  });
+}
 
 async function ghGet(path) {
   const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`, { headers: { Authorization: `token ${GH_TOKEN}` } });
