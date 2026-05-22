@@ -449,7 +449,7 @@
 </section>
 
 <footer>
-  <div style="max-width:900px;margin:0 auto;padding:4rem 2rem;">
+  <div style="max-width:480px;margin:0 auto;padding:4rem 2rem;text-align:left;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;margin-bottom:3rem;">
       <div>
         <p style="font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;text-align:left;">Adresa</p>
@@ -583,6 +583,22 @@ function renderData() {
       <div class="gallery-overlay"><span>${g.label || ''}</span></div>
     </div>
   `).join('') || '<p style="grid-column:1/-1;text-align:center;">Galerie je prázdná.</p>';
+
+  // 6. Překlad 
+  if (typeof google !== 'undefined' && google.translate) {
+    setTimeout(() => {
+      const select = document.querySelector('.goog-te-combo');
+      if (select && select.value && select.value !== 'cs') {
+        const lang = select.value;
+        select.value = 'cs';
+        select.dispatchEvent(new Event('change'));
+        setTimeout(() => {
+          select.value = lang;
+          select.dispatchEvent(new Event('change'));
+        }, 500);
+      }
+    }, 800);
+  }
 }
 
 function openCatModal(type, index) {
