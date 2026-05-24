@@ -467,14 +467,25 @@ const GH_REPO = localStorage.getItem('cv_gh_repo') || 'crystalvalley-web';
 let rawData = { about: {}, cats: [], toms: [], litters: [], gallery: [] };
 
 function changeLanguage(langCode) {
-  const select = document.querySelector('.goog-te-combo');
-  if (select) {
-    select.value = langCode;
-    select.dispatchEvent(new Event('change'));
-  }
   document.querySelectorAll('.lang-circle').forEach(c => {
     c.classList.toggle('active', c.getAttribute('data-lang') === langCode);
   });
+  if (langCode === 'cs') {
+    const bar = document.querySelector('.goog-te-banner-frame');
+    if (bar) bar.style.display = 'none';
+    document.body.style.top = '0';
+    const restore = document.querySelector('#\\:1\\.restore');
+    if (restore) restore.click();
+    return;
+  }
+  const wait = setInterval(() => {
+    const select = document.querySelector('.goog-te-combo');
+    if (select) {
+      clearInterval(wait);
+      select.value = langCode;
+      select.dispatchEvent(new Event('change'));
+    }
+  }, 100);
 }
 
 // ── VYLEPŠENÉ ZÍSKÁVÁNÍ DAT (BEZ CACHE) ──
