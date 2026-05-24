@@ -222,6 +222,8 @@ function openModal(type, index = -1) {
     body.innerHTML = `
       <label>Jméno</label><input type="text" id="f-name" value="${item.name||''}">
       <label>Třída / Podtitul</label><input type="text" id="f-detail" value="${item.detail||''}">
+      <label>Výstavní výsledky</label><input type="text" id="f-achievements" value="${item.achievements||''}">
+      <label>Tagy (oddělené čárkou)</label><input type="text" id="f-tags" value="${(item.tags||[]).join(', ')}">
       <label>EMS kód</label><input type="text" id="f-ems" value="${item.ems||''}">
       <label>Zdravotní testy</label><input type="text" id="f-tests" value="${item.tests||''}">
       <label>Popis barvy</label><input type="text" id="f-color-desc" value="${item.color_desc||''}">
@@ -308,7 +310,7 @@ async function saveModal() {
   if (pMain && pMain.dataset.b64) mainUrl = await ghUploadImage(Date.now()+'_'+pMain.dataset.file, pMain.dataset.b64);
 
   if (currentModal==='cats' || currentModal==='toms') {
-    const item = { name: document.getElementById('f-name').value, detail: document.getElementById('f-detail').value, ems: document.getElementById('f-ems').value, tests: document.getElementById('f-tests').value, color_desc: document.getElementById('f-color-desc').value, description: document.getElementById('f-description').value, pedigree: document.getElementById('f-pedigree').value, photo: mainUrl, subgallery: currentModalSubgallery, tags: [] };
+    const item = { name: document.getElementById('f-name').value, detail: document.getElementById('f-detail').value, achievements: document.getElementById('f-achievements').value, tags: document.getElementById('f-tags').value.split(',').map(t=>t.trim()).filter(Boolean), ems: document.getElementById('f-ems').value, tests: document.getElementById('f-tests').value, color_desc: document.getElementById('f-color-desc').value, description: document.getElementById('f-description').value, pedigree: document.getElementById('f-pedigree').value, photo: mainUrl, subgallery: currentModalSubgallery };
     const arr = currentModal==='cats'?DATA.cats:DATA.toms; if(editIndex>=0) arr[editIndex]=item; else arr.push(item);
     await ghPut(`data/${currentModal}.json`, JSON.stringify(arr,null,2), fileSHAs[`data/${currentModal}.json`]);
   } else if (currentModal==='litters') {
