@@ -318,7 +318,7 @@ async function ghUploadImage(filename, base64data) {
   if (existing) body.sha = existing.sha;
   const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`, {
     method: 'PUT',
-    headers: { , 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
   if (!r.ok) { console.error('Upload failed', r.status); return null; }
