@@ -293,10 +293,9 @@ function show(id) {
 
 // ── GITHUB API ──
 async function ghGet(path) {
-  const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`, {
-    headers: { Authorization: `Bearer ${GH_TOKEN}`, Accept: 'application/vnd.github.v3+json' }
-  });
-  return r.ok ? r.json() : null;
+  const r = await fetch(`https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${path}?t=${Date.now()}`, { cache: 'no-store' });
+  if (!r.ok) return null;
+  try { return await r.json(); } catch(e) { return null; }
 }
 
 async function ghPut(path, content, sha) {
@@ -319,7 +318,7 @@ async function ghUploadImage(filename, base64data) {
   if (existing) body.sha = existing.sha;
   const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`, {
     method: 'PUT',
-    headers: { Authorization: `Bearer ${GH_TOKEN}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+    headers: { , 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
   if (!r.ok) { console.error('Upload failed', r.status); return null; }
@@ -330,15 +329,16 @@ async function ghUploadImage(filename, base64data) {
 async function loadData() {
   const files = ['cats','toms','litters','gallery','about'];
   for (const f of files) {
-    const res = await ghGet(`data/${f}.json`);
-    if (res?.content) {
-      fileSHAs[`data/${f}.json`] = res.sha;
-      try {
-        const parsed = JSON.parse(decodeURIComponent(escape(atob(res.content.replace(/\n/g,'')))));
-        DATA[f] = parsed;
-        if (f === 'about') document.getElementById('about-text').value = parsed.text || '';
-      } catch(e) { console.error('Parse error', f, e); }
+    const parsed = await ghGet(`data/${f}.json`);
+    if (parsed !== null) {
+      DATA[f] = parsed;
+      if (f === 'about') document.getElementById('about-text').value = parsed.text || '';
     }
+  }
+  // Get SHAs separately for saves
+  for (const f of files) {
+    const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/data/${f}.json`);
+    if (r.ok) { const d = await r.json(); fileSHAs[`data/${f}.json`] = d.sha; }
   }
   renderAll();
 }
