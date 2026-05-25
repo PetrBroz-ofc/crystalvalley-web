@@ -601,13 +601,14 @@ function changeLanguage(langCode) {
 // ── VYLEPŠENÉ ZÍSKÁVÁNÍ DAT (BEZ CACHE) ──
 async function fetchJson(file) {
   try {
-    // Obcházíme mezipaměť připojením Date.now() a headers
-    const r = await fetch(`https://cdn.jsdelivr.net/gh/${GH_OWNER}/${GH_REPO}@main/data/${file}?t=${Date.now()}`, {
-        cache: 'no-store',
-        headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
-    });
+    const r = await fetch(
+      `https://cdn.jsdelivr.net/gh/${GH_OWNER}/${GH_REPO}@main/data/${file}?t=${Date.now()}`
+    );
+
     return r.ok ? await r.json() : null;
-  } catch (e) { return null; }
+  } catch (e) {
+    return null;
+  }
 }
 
 function renderData() {
