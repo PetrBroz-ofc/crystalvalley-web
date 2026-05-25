@@ -284,31 +284,75 @@
   #google_translate_element { display: none; }
 
   @media (max-width: 968px) {
-    nav { padding: 1.25rem 1.5rem; }
-    .nav-links { position: fixed; top: 70px; left: 0; width: 100%; background: var(--cream); flex-direction: column; padding: 2rem 0; gap: 1.5rem; display: none; }
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { position: fixed; top: 68px; left: 0; width: 100%; background: var(--cream); flex-direction: column; padding: 1.5rem 0; gap: 1.2rem; display: none; box-shadow: 0 8px 24px var(--shadow); z-index: 999; }
     .nav-links.open { display: flex; }
     .nav-toggle { display: block; }
-    .about-container { grid-template-columns: 1fr; gap: 2.5rem; }
-    .hero-content h1 { font-size: 3rem; }
-    .modal-hero { grid-template-columns: 1fr; gap: 2rem; }
+    .lang-switcher { gap: 0.3rem; }
+    .lang-circle { width: 28px; height: 28px; font-size: 0.68rem; }
+    .btn-eshop { padding: 0.4rem 0.9rem; font-size: 0.78rem !important; }
+    .about-container { grid-template-columns: 1fr; gap: 2rem; }
+    .modal-hero { grid-template-columns: 1fr; gap: 1.5rem; }
   }
 
-  /* Mobile friendly */
   @media (max-width: 768px) {
-    nav { padding: 0.75rem 1rem; }
-    .lang-switcher { gap: 0.3rem; }
-    .lang-circle { width: 26px; height: 26px; font-size: 0.65rem; }
-    header { background-position: center 30%; }
-    .hero-content { padding: 5rem 1.5rem 3rem; }
-    header h1 { font-size: 2.8rem; }
-    .hero-btns { flex-direction: column; width: 100%; }
-    .hero-btn-main, .hero-btn-outline { width: 100%; text-align: center; padding: 1rem; }
-    section { padding: 4rem 1.25rem; }
-    #contact > div > div:last-of-type,
-    #contact .contact-grid { grid-template-columns: 1fr !important; }
-    #contact iframe { height: 260px; }
-    footer div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; gap: 2rem !important; }
-    .gallery-grid { columns: 2 !important; }
+    /* NAV */
+    nav { padding: 0.85rem 1.25rem; }
+    .logo-text { font-size: 0.95rem; letter-spacing: 1px; }
+    .logo-nav img { height: 30px; }
+
+    /* HERO */
+    header { background-position: center 45%; min-height: 100svh; }
+    .hero-content { padding: 0 6% 10%; max-width: 100%; }
+    header h1 { font-size: clamp(2.2rem, 10vw, 3.5rem); margin-bottom: 0.75rem; }
+    header p { font-size: 0.7rem; letter-spacing: 0.15em; }
+    .hero-divider { max-width: 280px; }
+
+    /* SEKCE */
+    section { padding: 4rem 1.25rem 3rem; }
+    .section-title { font-size: 2.2rem; margin-bottom: 2.5rem; }
+
+    /* O NÁS */
+    .about-container { grid-template-columns: 1fr; gap: 2rem; }
+    .about-text h3 { font-size: 1.6rem; }
+    .about-text p { font-size: 0.95rem; }
+
+    /* KOČKY / KOCOUŘI */
+    .profile-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .profile-info { padding: 1.5rem; }
+    .profile-info h3 { font-size: 1.5rem; }
+
+    /* KOŤATA */
+    .litter-box { padding: 1.5rem; }
+    .litter-title { font-size: 1.6rem; }
+    .kittens-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .kitten-card { padding: 1rem; }
+    .kitten-name { font-size: 1rem; }
+
+    /* GALERIE */
+    .gallery-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+    /* KONTAKT */
+    #contact > div > div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; gap: 2rem !important; }
+    #contact iframe { height: 240px !important; }
+
+    /* MODAL */
+    .modal { padding: 1rem; align-items: flex-end; }
+    .modal-content { max-height: 90vh; border-radius: 12px 12px 0 0; }
+    .modal-body { padding: 1.5rem; }
+    .modal-hero { grid-template-columns: 1fr; gap: 1.5rem; }
+    .modal-main-img { aspect-ratio: 3/2; }
+    .modal-title { font-size: 2rem; }
+    .modal-subgallery { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+
+    /* FOOTER */
+    footer > div > div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; gap: 2rem !important; }
+  }
+
+  @media (max-width: 480px) {
+    .kittens-grid { grid-template-columns: 1fr; }
+    .gallery-grid { grid-template-columns: 1fr; }
+    header h1 { font-size: 2rem; }
   }
 
 /* Styl - Loading skeleton */
