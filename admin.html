@@ -730,13 +730,11 @@ function toast(msg, type = 'success') {
   t.textContent = msg;
   t.style.display = 'block';
   setTimeout(() => t.style.display = 'none', 3500);
-
- init();
-  document.getElementById('login-btn').addEventListener('click', login);
-  document.getElementById('login-pass').addEventListener('keydown', e => { if(e.key==='Enter') login(); });  
 }
 
- 
+init();
+document.getElementById('login-btn').addEventListener('click', login);
+document.getElementById('login-pass').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
 </script>
 </body>
 </html>
