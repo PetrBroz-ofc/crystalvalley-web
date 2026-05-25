@@ -94,19 +94,32 @@
   header {
     position: relative;
     min-height: 100vh;
-    display: flex; align-items: center; justify-content: center;
+    display: flex; align-items: flex-start;
     overflow: hidden;
-    background: url('hero.jpg') center/cover no-repeat;
+    background: url('hero.jpg') center 45%/cover no-repeat;
   }
   .hero-overlay {
     position: absolute; inset: 0;
-    background: linear-gradient(to bottom, rgba(20,13,5,0.55) 0%, rgba(20,13,5,0.7) 100%);
+    background: linear-gradient(to top, rgba(10,6,2,0.8) 0%, rgba(10,6,2,0.15) 60%, transparent 100%);
   }
   .hero-content {
-    position: relative; z-index: 1;
-    display: flex; flex-direction: column; align-items: center;
-    text-align: center; padding: 7rem 2rem 4rem;
-  }
+    position: absolute;
+
+    left: 15%;
+    top: 30%;
+
+    transform: translateY(-50%);
+
+    z-index: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    text-align: left;
+
+    max-width: 1000px;
+}
   .hero-logo-ring {
     position: relative;
     width: 180px; height: 180px;
@@ -141,13 +154,27 @@
   }
   header h1 {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(3rem, 7vw, 6rem);
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
     font-weight: 300; color: var(--cream);
-    margin-bottom: 0.5rem; line-height: 1;
+    margin-bottom: 1rem; line-height: 1;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.3);
   }
+  .hero-divider {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 1.25rem; width: 100%;
+    max-width: 420px;
+  }
+  .hero-divider span {
+    flex: 1; height: 1px;
+    background: linear-gradient(to right, var(--gold), rgba(201,168,76,0.3));
+  }
+  .hero-divider span:last-child {
+    background: linear-gradient(to left, var(--gold), rgba(201,168,76,0.3));
+  }
+  .hero-divider { color: var(--gold); font-size: 1rem; }
   header p {
-    font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase;
-    color: rgba(245,240,232,0.55); margin-bottom: 2.5rem;
+    font-size: 0.78rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: rgba(245,240,232,0.65); margin-bottom: 0;
   }
   .hero-btns {
     display: flex; gap: 1rem; margin-bottom: 3rem;
@@ -283,6 +310,29 @@
     footer div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; gap: 2rem !important; }
     .gallery-grid { columns: 2 !important; }
   }
+
+/* Styl - Loading skeleton */
+.skeleton {
+  background: linear-gradient(90deg, #e8dcc8 25%, #f0e8d8 50%, #e8dcc8 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skeleton-card {
+  background: var(--white);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 8px;
+  overflow: hidden;
+  padding-bottom: 1rem;
+}
+.skeleton-img { width:100%; aspect-ratio:3/4; }
+.skeleton-line { height:16px; margin:0.75rem 1rem 0; }
+.skeleton-line.short { width:60%; }
+
 </style>
 </head>
 <body>
@@ -323,9 +373,8 @@
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <h1>Crystal Valley, CZ</h1>
+    <div class="hero-divider"><span></span>◈<span></span></div>
     <p>Chovatelská stanice norských lesních koček</p>
-    <div class="hero-btns">
-    </div>
   </div>
 </header>
 
@@ -631,7 +680,21 @@ function closeModal() {
 function closeModalOnBackdrop(e) { if (e.target.id === 'catModal') closeModal(); }
 function toggleMenu() { document.getElementById('navLinks').classList.toggle('open'); }
 
+function showSkeletons(containerId, count=3) {
+  const html = Array(count).fill(`
+    <div class="skeleton-card">
+      <div class="skeleton skeleton-img"></div>
+      <div class="skeleton skeleton-line"></div>
+      <div class="skeleton skeleton-line short"></div>
+    </div>
+  `).join('');
+  const el = document.getElementById(containerId);
+  if (el) el.innerHTML = html;
+}
+
 async function loadAllData() {
+  showSkeletons('cats-container');
+  showSkeletons('toms-container');
   rawData.about = await fetchJson('about.json') || {};
   rawData.cats = await fetchJson('cats.json') || [];
   rawData.toms = await fetchJson('toms.json') || [];
