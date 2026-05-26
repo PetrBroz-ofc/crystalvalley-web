@@ -1,1 +1,21 @@
-[]
+[
+  {
+    "name": "Susane",
+    "detail": "",
+    "achievements": "",
+    "tags": [],
+    "ems": "",
+    "tests": "",
+    "color_desc": "",
+    "description": "",
+    "pedigree": "",
+    "photo": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779777322909_susane123.jpg",
+    "subgallery": [
+      "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779777306909_susane.jpg",
+      "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779777309701_Susane_12_5_26.jpg",
+      "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779777312557_susane123.jpg",
+      "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779777315211_susane0507.jpg",
+      "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779777317384_zuzi__1_.jpg"
+    ]
+  }
+]
