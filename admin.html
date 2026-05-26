@@ -313,13 +313,10 @@ async function ghPut(path, content, sha) {
 async function ghUploadImage(filename, base64data) {
   const safeName = filename.replace(/[^a-zA-Z0-9._-]/g, '_');
   const path = `images/${Date.now()}_${safeName}`;
-  const existing = await ghGet(path);
-  const body = { message: `Upload: ${safeName}`, content: base64data };
-  if (existing) body.sha = existing.sha;
-  const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`, {
+  const r = await fetch('/api/save', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
+    body: JSON.stringify({ path, content: base64data, isBase64: true })
   });
   if (!r.ok) { console.error('Upload failed', r.status); return null; }
   return `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${path}`;
