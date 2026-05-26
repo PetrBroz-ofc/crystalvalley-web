@@ -602,7 +602,7 @@ function changeLanguage(langCode) {
 async function fetchJson(file) {
   try {
     const r = await fetch(
-      `https://cdn.jsdelivr.net/gh/${GH_OWNER}/${GH_REPO}@main/data/${file}?t=${Date.now()}`
+      `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/data/${file}?t=${Date.now()}`
     );
 
     return r.ok ? await r.json() : null;
