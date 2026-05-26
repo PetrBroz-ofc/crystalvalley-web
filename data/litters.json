@@ -1,1 +1,19 @@
-[]
+[
+  {
+    "id": "A",
+    "name": "",
+    "born": "",
+    "mother": "",
+    "father": "",
+    "description": "",
+    "kittens": [
+      {
+        "name": "Jerry",
+        "color": "",
+        "sex": "Kočka",
+        "status": "available",
+        "pedigree": ""
+      }
+    ]
+  }
+]
