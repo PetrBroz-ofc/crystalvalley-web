@@ -693,7 +693,7 @@ function openCatModal(type, index) {
 
   body.innerHTML = `
     <div class="modal-hero">
-      <img src="${cat.photo || 'about.jpg'}" class="modal-main-img" id="modalMainImg" alt="">
+      <img src="${cat.photo || 'about.jpg'}" class="modal-main-img" id="modalMainImg" onclick="openLightbox(this.src)" style="cursor:zoom-in;" alt="">
       <div>
         <h2 class="modal-title">${cat.name}</h2>
         <span class="modal-subtitle">${cat.detail || ''}</span>
@@ -709,8 +709,8 @@ function openCatModal(type, index) {
     ${subimages.length > 0 ? `
       <h3 class="modal-gallery-title">Další fotografie</h3>
       <div class="modal-subgallery">
-        <img src="${cat.photo || 'about.jpg'}" onclick="document.getElementById('modalMainImg').src='${cat.photo}'">
-        ${subimages.map(imgUrl => `<img src="${imgUrl}" onclick="document.getElementById('modalMainImg').src='${imgUrl}'">`).join('')}
+        <img src="${cat.photo || 'about.jpg'}" onclick="openLightbox(this.src)" style="cursor:zoom-in;">
+        ${subimages.map(imgUrl => `<img src="${imgUrl}" onclick="openLightbox('${imgUrl}')" style="cursor:zoom-in;">`).join('')}
       </div>
     ` : ''}
   `;
@@ -760,6 +760,13 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 });
 
 loadAllData();
+function openLightbox(url) {
+  document.getElementById('lightbox-img').src = url;
+  document.getElementById('lightbox').style.display = 'flex';
+}
 </script>
+<div id="lightbox" onclick="this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;align-items:center;justify-content:center;cursor:zoom-out;">
+  <img id="lightbox-img" style="max-width:90vw;max-height:90vh;object-fit:contain;border-radius:8px;">
+</div>
 </body>
 </html>
