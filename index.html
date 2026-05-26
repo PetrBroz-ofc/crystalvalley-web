@@ -640,23 +640,24 @@ function renderData() {
     </div>
   `).join('') || '<p style="grid-column:1/-1;text-align:center;">Žádné záznamy.</p>';
 
-  document.getElementById('litters-container').innerHTML = rawData.litters.map(l => `
+  document.getElementById('litters-container').innerHTML = rawData.litters.map((l, li) => `
     <div class="litter-box">
       <div class="litter-header">
         <h3 class="litter-title">Vrh ${l.id || ''} — ${l.name || ''}</h3>
         <span class="litter-date">Narození: ${l.born || '—'}</span>
       </div>
-      <p class="litter-parents">Matka: <strong>${l.mother || ''}</strong>  ·  Otec: <strong>${l.father || ''}</strong></p>
+      <p class="litter-parents">Matka: <strong>${l.mother || ''}</strong> · Otec: <strong>${l.father || ''}</strong></p>
       <p class="litter-desc">${l.description || ''}</p>
       <div class="kittens-grid">
-        ${(l.kittens || []).map(k => `
-          <div class="kitten-card">
-            <div>
+        ${(l.kittens || []).map((k, ki) => `
+          <div class="kitten-card" onclick="openKittenModal(${li},${ki})" style="cursor:pointer;">
+            ${k.photo ? `<img src="${k.photo}" alt="${k.name}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px 8px 0 0;">` : ''}
+            <div style="padding:0.75rem;">
               <h4 class="kitten-name">${k.name}</h4>
               <p class="kitten-info">${k.sex === 'Kocour' ? '🐈' : '🐱'} ${k.sex} · ${k.color}</p>
-              ${k.pedigree ? `<a href="${k.pedigree}" target="_blank" style="font-size:0.75rem;color:var(--gold);text-decoration:none;">Rodokmen →</a>` : ''}
+              ${k.pedigree ? `<a href="${k.pedigree}" target="_blank" style="font-size:0.75rem;color:var(--gold);text-decoration:none;" onclick="event.stopPropagation()">Rodokmen →</a>` : ''}
+              <span class="kitten-status status-${k.status}">${k.status === 'available' ? 'Volné' : k.status === 'reserved' ? 'Rezervováno' : 'V novém domově'}</span>
             </div>
-            <span class="kitten-status status-${k.status}">${k.status === 'available' ? 'Volné' : k.status === 'reserved' ? 'Rezervováno' : 'V novém domově'}</span>
           </div>
         `).join('')}
       </div>
@@ -684,6 +685,34 @@ function renderData() {
       }
     }, 800);
   }
+}
+
+function openKittenModal(li, ki) {
+  const k = rawData.litters[li].kittens[ki];
+  const body = document.getElementById('modalBody');
+  const subimages = k.subgallery || [];
+  body.innerHTML = `
+    <div class="modal-hero">
+      <img src="${k.photo || 'about.jpg'}" class="modal-main-img" id="modalMainImg" onclick="openLightbox(this.src)" style="cursor:zoom-in;" alt="">
+      <div>
+        <h2 class="modal-title">${k.name}</h2>
+        <span class="modal-subtitle">${k.sex} · ${k.color}</span>
+        <div style="margin-top:1rem;">
+          <span class="kitten-status status-${k.status}">${k.status === 'available' ? 'Volné' : k.status === 'reserved' ? 'Rezervováno' : 'V novém domově'}</span>
+        </div>
+        ${k.pedigree ? `<a href="${k.pedigree}" target="_blank" class="btn-modal-pedigree" style="margin-top:1rem;display:inline-block;">Rodokmen →</a>` : ''}
+      </div>
+    </div>
+    ${subimages.length > 0 ? `
+      <h3 class="modal-gallery-title">Další fotografie</h3>
+      <div class="modal-subgallery">
+        <img src="${k.photo || 'about.jpg'}" onclick="openLightbox(this.src)" style="cursor:zoom-in;">
+        ${subimages.map(url => `<img src="${url}" onclick="openLightbox('${url}')" style="cursor:zoom-in;">`).join('')}
+      </div>
+    ` : ''}
+  `;
+  document.getElementById('catModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
 }
 
 function openCatModal(type, index) {
