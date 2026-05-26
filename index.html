@@ -760,14 +760,16 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 });
 
 loadAllData();
+
 let lightboxImages = [];
 let lightboxIndex = 0;
 
 function openLightbox(url) {
   const modal = document.getElementById('modalBody');
   const imgs = [...modal.querySelectorAll('img')];
-  lightboxImages = imgs.map(i => i.src);
-  lightboxIndex = lightboxImages.indexOf(url);
+  lightboxImages = imgs.map(i => i.getAttribute('src') || i.src);
+  const cleanUrl = url.split('?')[0];
+  lightboxIndex = lightboxImages.findIndex(s => s.split('?')[0] === cleanUrl);
   if (lightboxIndex < 0) lightboxIndex = 0;
   document.getElementById('lightbox-img').src = lightboxImages[lightboxIndex];
   document.getElementById('lightbox').style.display = 'flex';
@@ -784,6 +786,13 @@ function lightboxPrev() {
   lightboxIndex = (lightboxIndex - 1 + lightboxImages.length) % lightboxImages.length;
   document.getElementById('lightbox-img').src = lightboxImages[lightboxIndex];
 }
+
+document.addEventListener('keydown', e => {
+  if (document.getElementById('lightbox').style.display === 'none') return;
+  if (e.key === 'ArrowRight') lightboxNext();
+  if (e.key === 'ArrowLeft') lightboxPrev();
+  if (e.key === 'Escape') closeLightbox();
+});
 </script>
 <div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;align-items:center;justify-content:center;" onclick="if(event.target===this)closeLightbox()">
   <button onclick="closeLightbox()" style="position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,0.15);border:none;color:white;width:40px;height:40px;border-radius:50%;font-size:1.2rem;cursor:pointer;z-index:1;">✕</button>
