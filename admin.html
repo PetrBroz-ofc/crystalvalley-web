@@ -523,9 +523,18 @@ function galleryForm() {
   `;
 }
 
+let kittenCounter = 0;
 function kRow(k = {}) {
+  const uid = kittenCounter++;
+  const thumbs = (k.subgallery||[]).map((url,i) => `
+    <div class="subgallery-thumb" style="position:relative;width:60px;height:60px;border-radius:4px;overflow:hidden;border:1px solid var(--border);display:inline-block;margin:2px;">
+      <img src="${url}" style="width:100%;height:100%;object-fit:cover;">
+      <button type="button" onclick="removeKittenThumb(${uid},${i})" style="position:absolute;top:1px;right:1px;background:rgba(139,46,46,0.9);color:white;border:none;width:16px;height:16px;border-radius:50%;cursor:pointer;font-size:9px;">✕</button>
+    </div>
+  `).join('');
+
   return `
-    <div class="kitten-row">
+    <div class="kitten-row" data-uid="${uid}" data-subgallery='${JSON.stringify(k.subgallery||[])}'>
       <input type="text" placeholder="Celé jméno kotěte" value="${esc(k.name)}" class="k-name">
       <input type="text" placeholder="Barva (NFO n 22)" value="${esc(k.color)}" class="k-color">
       <select class="k-sex">
@@ -541,8 +550,82 @@ function kRow(k = {}) {
       <div class="kitten-row-pedigree">
         <input type="url" placeholder="URL rodokmenu (nepovinné)" value="${esc(k.pedigree)}" class="k-pedigree">
       </div>
+      <div style="grid-column:1/-1;display:flex;gap:0.75rem;align-items:flex-start;flex-wrap:wrap;padding-top:0.5rem;border-top:1px dashed var(--border);margin-top:0.25rem;">
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <label style="font-size:0.72rem;color:var(--brown-mid);font-weight:600;">Hlavní foto</label>
+          <div style="display:flex;gap:0.5rem;align-items:center;">
+            ${k.photo ? `<img src="${k.photo}" style="width:60px;height:60px;object-fit:cover;border-radius:4px;border:1px solid var(--border);" class="k-photo-preview-${uid}">` : `<div class="k-photo-preview-${uid}" style="width:60px;height:60px;background:var(--cream-dark);border-radius:4px;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:1.2rem;">📷</div>`}
+            <button type="button" class="btn btn-outline" style="font-size:0.75rem;padding:0.4rem 0.75rem;" onclick="document.getElementById('k-photo-${uid}').click()">Nahrát</button>
+            <input type="file" id="k-photo-${uid}" accept="image/*" style="display:none" onchange="handleKittenPhoto(this,${uid})">
+            <input type="hidden" class="k-photo" value="${esc(k.photo)}">
+          </div>
+        </div>
+        <div style="flex:1;min-width:200px;">
+          <label style="font-size:0.72rem;color:var(--brown-mid);font-weight:600;display:block;margin-bottom:0.4rem;">Podgalerie</label>
+          <div class="k-thumbs-${uid}" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:0.4rem;">${thumbs}</div>
+          <button type="button" class="btn btn-outline" style="font-size:0.75rem;padding:0.4rem 0.75rem;" onclick="document.getElementById('k-sub-${uid}').click()">+ Přidat fotky</button>
+          <input type="file" id="k-sub-${uid}" accept="image/*" multiple style="display:none" onchange="handleKittenSub(this,${uid})">
+        </div>
+      </div>
     </div>
   `;
+}
+
+function removeKittenThumb(uid, idx) {
+  const row = document.querySelector(`.kitten-row[data-uid="${uid}"]`);
+  let sub = JSON.parse(row.dataset.subgallery || '[]');
+  sub.splice(idx, 1);
+  row.dataset.subgallery = JSON.stringify(sub);
+  const thumbsEl = row.querySelector(`.k-thumbs-${uid}`);
+  thumbsEl.innerHTML = sub.map((url,i) => `
+    <div style="position:relative;width:60px;height:60px;border-radius:4px;overflow:hidden;border:1px solid var(--border);display:inline-block;margin:2px;">
+      <img src="${url}" style="width:100%;height:100%;object-fit:cover;">
+      <button type="button" onclick="removeKittenThumb(${uid},${i})" style="position:absolute;top:1px;right:1px;background:rgba(139,46,46,0.9);color:white;border:none;width:16px;height:16px;border-radius:50%;cursor:pointer;font-size:9px;">✕</button>
+    </div>
+  `).join('');
+}
+
+async function handleKittenPhoto(input, uid) {
+  if (!input.files[0]) return;
+  const btn = input.nextElementSibling || input;
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const url = await ghUploadImage(input.files[0].name, e.target.result.split(',')[1]);
+    if (!url) return;
+    const row = document.querySelector(`.kitten-row[data-uid="${uid}"]`);
+    row.querySelector('.k-photo').value = url;
+    const prev = row.querySelector(`.k-photo-preview-${uid}`);
+    prev.outerHTML = `<img src="${url}" style="width:60px;height:60px;object-fit:cover;border-radius:4px;border:1px solid var(--border);" class="k-photo-preview-${uid}">`;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+async function handleKittenSub(input, uid) {
+  if (!input.files?.length) return;
+  const row = document.querySelector(`.kitten-row[data-uid="${uid}"]`);
+  let sub = JSON.parse(row.dataset.subgallery || '[]');
+  const thumbsEl = row.querySelector(`.k-thumbs-${uid}`);
+  for (const file of Array.from(input.files)) {
+    await new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = async e => {
+        const url = await ghUploadImage(file.name, e.target.result.split(',')[1]);
+        if (url) {
+          sub.push(url);
+          row.dataset.subgallery = JSON.stringify(sub);
+          const i = sub.length - 1;
+          thumbsEl.innerHTML += `
+            <div style="position:relative;width:60px;height:60px;border-radius:4px;overflow:hidden;border:1px solid var(--border);display:inline-block;margin:2px;">
+              <img src="${url}" style="width:100%;height:100%;object-fit:cover;">
+              <button type="button" onclick="removeKittenThumb(${uid},${i})" style="position:absolute;top:1px;right:1px;background:rgba(139,46,46,0.9);color:white;border:none;width:16px;height:16px;border-radius:50%;cursor:pointer;font-size:9px;">✕</button>
+            </div>`;
+        }
+        resolve();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  input.value = '';
 }
 
 function addKittenRow() {
@@ -666,7 +749,9 @@ async function saveModal() {
         color: r.querySelector('.k-color').value,
         sex: r.querySelector('.k-sex').value,
         status: r.querySelector('.k-status').value,
-        pedigree: r.querySelector('.k-pedigree').value
+        pedigree: r.querySelector('.k-pedigree').value,
+        photo: r.querySelector('.k-photo')?.value || '',
+        subgallery: JSON.parse(r.dataset.subgallery || '[]')
       }));
       const item = {
         id: val('f-id'), name: val('f-name'), born: val('f-born'),
