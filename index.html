@@ -760,13 +760,35 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 });
 
 loadAllData();
+let lightboxImages = [];
+let lightboxIndex = 0;
+
 function openLightbox(url) {
+  const modal = document.getElementById('modalBody');
+  const imgs = [...modal.querySelectorAll('img')];
+  lightboxImages = imgs.map(i => i.src);
+  lightboxIndex = lightboxImages.indexOf(url);
+  if (lightboxIndex < 0) lightboxIndex = 0;
   document.getElementById('lightbox-img').src = url;
   document.getElementById('lightbox').style.display = 'flex';
 }
+
+function closeLightbox() { document.getElementById('lightbox').style.display = 'none'; }
+function lightboxNext() { lightboxIndex = (lightboxIndex+1) % lightboxImages.length; document.getElementById('lightbox-img').src = lightboxImages[lightboxIndex]; }
+function lightboxPrev() { lightboxIndex = (lightboxIndex-1+lightboxImages.length) % lightboxImages.length; document.getElementById('lightbox-img').src = lightboxImages[lightboxIndex]; }
+
+document.addEventListener('keydown', e => {
+  if (document.getElementById('lightbox').style.display === 'none') return;
+  if (e.key === 'ArrowRight') lightboxNext();
+  if (e.key === 'ArrowLeft') lightboxPrev();
+  if (e.key === 'Escape') closeLightbox();
+});
 </script>
-<div id="lightbox" onclick="this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;align-items:center;justify-content:center;cursor:zoom-out;">
-  <img id="lightbox-img" style="max-width:90vw;max-height:90vh;object-fit:contain;border-radius:8px;">
+<div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;align-items:center;justify-content:center;">
+  <button onclick="closeLightbox()" style="position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,0.15);border:none;color:white;width:40px;height:40px;border-radius:50%;font-size:1.2rem;cursor:pointer;">✕</button>
+  <button onclick="lightboxPrev()" style="position:absolute;left:1rem;background:rgba(255,255,255,0.15);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:1.4rem;cursor:pointer;">‹</button>
+  <img id="lightbox-img" style="max-width:70vw;max-height:80vh;object-fit:contain;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.5);">
+  <button onclick="lightboxNext()" style="position:absolute;right:1rem;background:rgba(255,255,255,0.15);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:1.4rem;cursor:pointer;">›</button>
 </div>
 </body>
 </html>
