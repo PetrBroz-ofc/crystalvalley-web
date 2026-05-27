@@ -400,12 +400,10 @@
       <li><a href="https://www.kocicibydleni.cz/" target="_blank" class="btn-eshop">🛒 E-shop</a></li>
     </ul>
 
-    <div class="lang-switcher">
-      <div class="lang-circle active" data-lang="cs" onclick="changeLanguage('cs')">CZ</div>
-      <div class="lang-circle" data-lang="en" onclick="changeLanguage('en')">EN</div>
-      <div class="lang-circle" data-lang="de" onclick="changeLanguage('de')">DE</div>
-      <div class="lang-circle" data-lang="pl" onclick="changeLanguage('pl')">PL</div>
-    </div>
+    <div class="lang-circle active" data-lang="cs" onclick="changeLanguage('cs')">CZ</div>
+<div class="lang-circle" data-lang="en" onclick="changeLanguage('en')">EN</div>
+<div class="lang-circle" data-lang="de" onclick="changeLanguage('de')">DE</div>
+<div class="lang-circle" data-lang="pl" onclick="changeLanguage('pl')">PL</div>
 
     <button class="nav-toggle" id="navToggle" onclick="toggleMenu()">
       <span></span><span></span><span></span>
@@ -804,7 +802,7 @@ document.addEventListener('keydown', e => {
 function googleTranslateElementInit() {
   new google.translate.TranslateElement({
     pageLanguage: 'cs',
-    includedLanguages: 'en,de,pl',
+    includedLanguages: 'cs,en,de,pl',
     autoDisplay: false
   }, 'google_translate_element');
 
@@ -829,17 +827,13 @@ function changeLanguage(langCode) {
   localStorage.setItem('cv_lang', langCode);
 
   if (langCode === 'cs') {
-    // Resetuj překlad
-    const select = document.querySelector('.goog-te-combo');
-    if (select) {
-      select.value = 'cs';
-      select.dispatchEvent(new Event('change'));
-    }
-    // Vyčisti cookies Google Translate
-    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + location.hostname;
-    return;
-  }
+  localStorage.setItem('cv_lang', 'cs');
+  document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + location.hostname;
+  highlightActive('cs');
+  location.reload();
+  return;
+}
 
   // Počkej na widget max 3s
   let tries = 0;
