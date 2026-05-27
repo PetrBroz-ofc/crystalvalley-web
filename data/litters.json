@@ -24,5 +24,28 @@
         ]
       }
     ]
+  },
+  {
+    "id": "B",
+    "name": "",
+    "born": "",
+    "mother": "",
+    "father": "",
+    "description": "",
+    "kittens": [
+      {
+        "name": "Test",
+        "color": "",
+        "sex": "Kočka",
+        "status": "available",
+        "pedigree": "",
+        "photo": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779873315462_bono1.jpg",
+        "subgallery": [
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779873329185_b.b.3.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779873331717_b.b.4.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779873337088_B.B.0202-1.jpg"
+        ]
+      }
+    ]
   }
 ]
