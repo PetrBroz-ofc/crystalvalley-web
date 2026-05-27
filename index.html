@@ -382,7 +382,6 @@
 </head>
 <body>
 
-<div id="google_translate_element"></div>
 
 <nav>
   <a href="#home" class="logo-nav">
@@ -559,17 +558,7 @@
   </div>
 </div>
 
-<script type="text/javascript">
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({
-    pageLanguage: 'cs',
-    includedLanguages: 'cs,en,de,pl',
-    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-    autoDisplay: false
-  }, 'google_translate_element');
-}
-</script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 
 <script>
 const GH_OWNER = localStorage.getItem('cv_gh_owner') || 'PetrBroz-ofc';
@@ -577,50 +566,6 @@ const GH_REPO = localStorage.getItem('cv_gh_repo') || 'crystalvalley-web';
 
 let rawData = { about: {}, cats: [], toms: [], litters: [], gallery: [] };
 
-function changeLanguage(langCode) {
-  document.querySelectorAll('.lang-circle').forEach(c => {
-    c.classList.toggle('active', c.getAttribute('data-lang') === langCode);
-  });
-
-  if (langCode === 'cs') {
-    // Návrat do češtiny
-    const iframe = document.querySelector('.goog-te-banner-frame');
-    if (iframe) {
-      try {
-        const restore = iframe.contentDocument.querySelector('#\\:1\\.restore') ||
-                        iframe.contentDocument.querySelector('[id$=restore]');
-        if (restore) restore.click();
-      } catch(e) {}
-    }
-    // Fallback - reload bez cookie
-    const cookie = document.cookie.match(/googtrans=([^;]+)/);
-    if (cookie) {
-      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + location.hostname;
-      location.reload();
-    }
-    return;
-  }
-
-  // Nastav cookie pro překlad
-  document.cookie = `googtrans=/cs/${langCode}; path=/`;
-  document.cookie = `googtrans=/cs/${langCode}; path=/; domain=${location.hostname}`;
-
-  // Počkej na widget a přepni
-  let attempts = 0;
-  const wait = setInterval(() => {
-    attempts++;
-    const select = document.querySelector('.goog-te-combo');
-    if (select) {
-      clearInterval(wait);
-      select.value = langCode;
-      select.dispatchEvent(new Event('change'));
-    } else if (attempts > 50) {
-      clearInterval(wait);
-      location.reload(); // fallback - reload s cookie
-    }
-  }, 100);
-}
 // ── VYLEPŠENÉ ZÍSKÁVÁNÍ DAT (BEZ CACHE) ──
 async function fetchJson(file) {
   try {
@@ -852,5 +797,53 @@ document.addEventListener('keydown', e => {
   <img id="lightbox-img" style="max-width:70vw;max-height:80vh;object-fit:contain;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.5);" onclick="event.stopPropagation()">
   <button onclick="event.stopPropagation();lightboxNext()" style="position:absolute;right:1rem;background:rgba(255,255,255,0.15);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:1.4rem;cursor:pointer;z-index:1;">›</button>
 </div>
+
+<!-- Google Translate -->
+<div id="google_translate_element" style="display:none"></div>
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'cs',
+    includedLanguages: 'en,de,pl',
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+
+function changeLanguage(langCode) {
+  // Update active button
+  document.querySelectorAll('.lang-circle').forEach(c => {
+    c.classList.toggle('active', c.getAttribute('data-lang') === langCode);
+  });
+
+  if (langCode === 'cs') {
+    // Smazat cookie a reload
+    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + location.hostname;
+    location.reload();
+    return;
+  }
+
+  // Nastavit cookie a reload
+  document.cookie = 'googtrans=/cs/' + langCode + '; path=/';
+  document.cookie = 'googtrans=/cs/' + langCode + '; path=/; domain=.' + location.hostname;
+  location.reload();
+}
+
+// Po načtení stránky — zvýrazni aktivní jazyk podle cookie
+(function() {
+  const match = document.cookie.match(/googtrans=\/cs\/([a-z]+)/);
+  const activeLang = match ? match[1] : 'cs';
+  // Pokud není platný jazyk, vyčisti cookie
+  if (!['en','de','pl'].includes(activeLang)) {
+    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + location.hostname;
+  }
+  document.querySelectorAll('.lang-circle').forEach(c => {
+    c.classList.toggle('active', c.getAttribute('data-lang') === activeLang);
+  });
+})();
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 </body>
 </html>
