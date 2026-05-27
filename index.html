@@ -49,7 +49,7 @@
   }
 
   /* Skrytí originálního Google Translate panelu, abychom měli vlastní design */
-  .skiptranslate, #goog-gt-tt, .goog-te-banner-frame { display: none !important; }
+.skiptranslate, .goog-te-banner-frame { display: none !important; }
   body { position: static !important; }
 
   h1, h2, h3, h4, .serif { font-family: 'Cormorant Garamond', serif; font-weight: 300; }
@@ -580,24 +580,46 @@ function changeLanguage(langCode) {
   document.querySelectorAll('.lang-circle').forEach(c => {
     c.classList.toggle('active', c.getAttribute('data-lang') === langCode);
   });
+
   if (langCode === 'cs') {
-    const bar = document.querySelector('.goog-te-banner-frame');
-    if (bar) bar.style.display = 'none';
-    document.body.style.top = '0';
-    const restore = document.querySelector('#\\:1\\.restore');
-    if (restore) restore.click();
+    // Návrat do češtiny
+    const iframe = document.querySelector('.goog-te-banner-frame');
+    if (iframe) {
+      try {
+        const restore = iframe.contentDocument.querySelector('#\\:1\\.restore') ||
+                        iframe.contentDocument.querySelector('[id$=restore]');
+        if (restore) restore.click();
+      } catch(e) {}
+    }
+    // Fallback - reload bez cookie
+    const cookie = document.cookie.match(/googtrans=([^;]+)/);
+    if (cookie) {
+      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + location.hostname;
+      location.reload();
+    }
     return;
   }
+
+  // Nastav cookie pro překlad
+  document.cookie = `googtrans=/cs/${langCode}; path=/`;
+  document.cookie = `googtrans=/cs/${langCode}; path=/; domain=${location.hostname}`;
+
+  // Počkej na widget a přepni
+  let attempts = 0;
   const wait = setInterval(() => {
+    attempts++;
     const select = document.querySelector('.goog-te-combo');
     if (select) {
       clearInterval(wait);
       select.value = langCode;
       select.dispatchEvent(new Event('change'));
+    } else if (attempts > 50) {
+      clearInterval(wait);
+      location.reload(); // fallback - reload s cookie
     }
   }, 100);
 }
-
 // ── VYLEPŠENÉ ZÍSKÁVÁNÍ DAT (BEZ CACHE) ──
 async function fetchJson(file) {
   try {
