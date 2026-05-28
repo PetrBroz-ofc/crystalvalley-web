@@ -80,17 +80,17 @@
   {
     "id": "B",
     "name": "",
-    "born": "",
-    "mother": "",
-    "father": "",
+    "born": "31.12.2025",
+    "mother": "Susane Diamond Forest*PL",
+    "father": "S*Uncut Diamond Jasper JW",
     "description": "",
     "kittens": [
       {
-        "name": "Test",
-        "color": "",
-        "sex": "Kočka",
-        "status": "available",
-        "pedigree": "",
+        "name": "B.B.King",
+        "color": "NFO n03",
+        "sex": "Kocour",
+        "status": "sold",
+        "pedigree": "https://www.pawpeds.com/db/?a=p&id=1856309&g=4&p=nfo&o=elastic",
         "photo": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779873315462_bono1.jpg",
         "subgallery": [
           "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779873329185_b.b.3.jpg",
