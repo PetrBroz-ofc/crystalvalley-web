@@ -20,14 +20,16 @@
   {
     "name": "S*Uncut Diamond Jasper JW",
     "detail": "",
-    "achievements": "",
+    "achievements": "junior winner",
     "tags": [],
-    "ems": "",
+    "ems": "d 09 24",
     "tests": "",
-    "color_desc": "",
+    "color_desc": "červeno-bílý tygrovaný",
     "description": "",
     "pedigree": "https://www.pawpeds.com/db/?a=p&id=1671469&g=4&p=nfo&o=elastic",
     "photo": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779938524841_Jasper-web.jpg",
-    "subgallery": []
+    "subgallery": [
+      "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983641398_jasper.jpg"
+    ]
   }
 ]
