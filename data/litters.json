@@ -9,10 +9,10 @@
     "kittens": [
       {
         "name": "Adele",
-        "color": "",
+        "color": "f 09 23",
         "sex": "Kočka",
-        "status": "available",
-        "pedigree": "",
+        "status": "sold",
+        "pedigree": "https://www.pawpeds.com/db/?a=p&id=1854799&g=4&p=nfo&o=elastic",
         "photo": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779824077826_Adele_3t.jpg",
         "subgallery": [
           "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779824092920_Adele_4t.jpg",
