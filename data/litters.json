@@ -91,11 +91,48 @@
         "sex": "Kocour",
         "status": "sold",
         "pedigree": "https://www.pawpeds.com/db/?a=p&id=1856309&g=4&p=nfo&o=elastic",
-        "photo": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779873315462_bono1.jpg",
+        "photo": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985507255_BB_14_03.jpg",
         "subgallery": [
-          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779873329185_b.b.3.jpg",
-          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779873331717_b.b.4.jpg",
-          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779873337088_B.B.0202-1.jpg"
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985561651_b.b.3.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985564888_B.B.0202.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985567549_B.B_15_02.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985569803_B.B_28_02.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985572280_B.B_28_02-1.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985574415_BB_14_03-1.jpg"
+        ]
+      },
+      {
+        "name": "BuddyRich",
+        "color": "NFO n 09 23",
+        "sex": "Kocour",
+        "status": "sold",
+        "pedigree": "https://www.pawpeds.com/db/?a=p&id=1856307&g=4&p=nfo&o=elastic",
+        "photo": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985438736_Buddy_28_02.jpg",
+        "subgallery": [
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985474647_Buddy_15_02.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985476961_Buddy_19_04.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985479068_Buddy_22_03.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985481378_Buddy_28_02.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985483388_Buddy_28_02-1.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985486027_Buddy_2302.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985488055_Buddy0202.jpg"
+        ]
+      },
+      {
+        "name": "BonoVox",
+        "color": "NFO n 03 23",
+        "sex": "Kocour",
+        "status": "sold",
+        "pedigree": "https://www.pawpeds.com/db/?a=p&id=1856308&g=4&p=nfo&o=elastic",
+        "photo": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985690781_Bono_14_03.jpg",
+        "subgallery": [
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985748735_Bono.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985750833_Bono_19_04.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985752993_Bono_28_02.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985755342_Bono_2302.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985757368_bono5.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985759739_Bono0202.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779985761822_Bono1701.jpg"
         ]
       }
     ]
