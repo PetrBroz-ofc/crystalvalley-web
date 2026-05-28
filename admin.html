@@ -394,8 +394,9 @@ function renderGalleryAdmin() {
   el.innerHTML = DATA.gallery.map((g, i) => `
     <div class="gallery-admin-item">
       <img src="${g.url}" alt="">
-      <button onclick="deleteItem('gallery',${i})">✕</button>
-      <div class="g-label">${g.label||''}</div>
+      <button onclick="deleteItem('gallery',${i})" style="top:4px;right:4px;">✕</button>
+      <button onclick="openModal('gallery',${i})" style="top:4px;right:30px;background:rgba(45,106,79,0.9);">✏</button>
+      <div class="g-label">${g.label||''} ${(g.subgallery||[]).length > 0 ? '📸'+g.subgallery.length : ''}</div>
     </div>
   `).join('') || '<p style="color:var(--brown-mid);font-size:0.85rem;padding:0.5rem;grid-column:1/-1">Galerie je prázdná.</p>';
 }
@@ -432,8 +433,8 @@ function openModal(type, index = -1) {
     title.textContent = index >= 0 ? 'Upravit vrh' : 'Přidat vrh';
     body.innerHTML = litterForm(item);
   } else if (type === 'gallery') {
-    title.textContent = 'Přidat fotografii';
-    body.innerHTML = galleryForm();
+    title.textContent = index >= 0 ? 'Upravit položku' : 'Přidat fotografii';
+    body.innerHTML = galleryForm(item);
   }
 
   document.getElementById('modal').classList.add('open');
@@ -506,21 +507,91 @@ function litterForm(item) {
   `;
 }
 
-function galleryForm() {
+let currentGallerySubgallery = [];
+
+function galleryForm(item = {}) {
+  currentGallerySubgallery = item.subgallery ? [...item.subgallery] : [];
+  const thumbs = currentGallerySubgallery.map((url, i) => `
+    <div style="position:relative;width:80px;height:80px;border-radius:6px;overflow:hidden;border:1px solid var(--border);display:inline-block;margin:3px;">
+      <img src="${url}" style="width:100%;height:100%;object-fit:cover;">
+      <button type="button" onclick="removeGalleryThumb(${i})" style="position:absolute;top:2px;right:2px;background:rgba(139,46,46,0.9);color:white;border:none;width:18px;height:18px;border-radius:50%;cursor:pointer;font-size:10px;">✕</button>
+    </div>
+  `).join('');
+
   return `
-    <div class="field"><label>Popisek fotografie</label><input type="text" id="f-label" placeholder="Výstava Praha 2024"></div>
+    <div class="field"><label>Název / Popisek</label><input type="text" id="f-label" placeholder="Výstava Praha 2024" value="${esc(item.label)}"></div>
     <div class="field">
-      <label>Fotografie</label>
+      <label>Hlavní fotografie</label>
       <div class="upload-area" onclick="document.getElementById('img-gal').click()">
         <span class="upload-icon">📷</span>
-        Klikněte pro výběr fotografie
+        Klikněte pro výběr hlavní fotografie
         <input type="file" id="img-gal" accept="image/*" onchange="previewMainPhoto(this)">
       </div>
       <div class="upload-preview-wrap">
-        <img id="p-main" class="upload-preview-main">
+        <img id="p-main" class="upload-preview-main" src="${item.url||''}" style="display:${item.url?'block':'none'}">
       </div>
     </div>
+    <div class="field">
+      <label>Podgalerie (více fotek)</label>
+      <div class="upload-area" onclick="document.getElementById('img-gal-sub').click()">
+        <span class="upload-icon">🖼️</span>
+        Klikněte pro přidání dalších fotek
+        <input type="file" id="img-gal-sub" accept="image/*" multiple onchange="handleGallerySub(this)">
+      </div>
+      <div class="subgallery-upload-progress" id="gal-sub-progress">
+        <span id="gal-sub-progress-text">Nahrávám...</span>
+        <div class="progress-bar"><div class="progress-fill" id="gal-sub-progress-fill" style="width:0%"></div></div>
+      </div>
+      <div id="gal-sub-thumbs" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:0.5rem;">${thumbs}</div>
+    </div>
   `;
+}
+
+function removeGalleryThumb(i) {
+  currentGallerySubgallery.splice(i, 1);
+  document.getElementById('gal-sub-thumbs').innerHTML = currentGallerySubgallery.map((url, idx) => `
+    <div style="position:relative;width:80px;height:80px;border-radius:6px;overflow:hidden;border:1px solid var(--border);display:inline-block;margin:3px;">
+      <img src="${url}" style="width:100%;height:100%;object-fit:cover;">
+      <button type="button" onclick="removeGalleryThumb(${idx})" style="position:absolute;top:2px;right:2px;background:rgba(139,46,46,0.9);color:white;border:none;width:18px;height:18px;border-radius:50%;cursor:pointer;font-size:10px;">✕</button>
+    </div>
+  `).join('');
+}
+
+async function handleGallerySub(input) {
+  if (!input.files?.length) return;
+  const progress = document.getElementById('gal-sub-progress');
+  const progressText = document.getElementById('gal-sub-progress-text');
+  const progressFill = document.getElementById('gal-sub-progress-fill');
+  const saveBtn = document.getElementById('modal-save-btn');
+  progress.style.display = 'block';
+  saveBtn.disabled = true;
+  const files = Array.from(input.files);
+  for (let i = 0; i < files.length; i++) {
+    progressText.textContent = `Nahrávám ${i+1} z ${files.length}: ${files[i].name}`;
+    progressFill.style.width = `${(i/files.length)*100}%`;
+    await new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = async e => {
+        const url = await ghUploadImage(files[i].name, e.target.result.split(',')[1]);
+        if (url) {
+          currentGallerySubgallery.push(url);
+          const idx = currentGallerySubgallery.length - 1;
+          document.getElementById('gal-sub-thumbs').innerHTML += `
+            <div style="position:relative;width:80px;height:80px;border-radius:6px;overflow:hidden;border:1px solid var(--border);display:inline-block;margin:3px;">
+              <img src="${url}" style="width:100%;height:100%;object-fit:cover;">
+              <button type="button" onclick="removeGalleryThumb(${idx})" style="position:absolute;top:2px;right:2px;background:rgba(139,46,46,0.9);color:white;border:none;width:18px;height:18px;border-radius:50%;cursor:pointer;font-size:10px;">✕</button>
+            </div>`;
+        }
+        resolve();
+      };
+      reader.readAsDataURL(files[i]);
+    });
+  }
+  progressFill.style.width = '100%';
+  progressText.textContent = `✅ Nahráno ${files.length} fotek`;
+  setTimeout(() => progress.style.display = 'none', 2000);
+  saveBtn.disabled = false;
+  input.value = '';
 }
 
 let kittenCounter = 0;
@@ -764,12 +835,16 @@ async function saveModal() {
 
     } else if (currentModal === 'gallery') {
       const pMain = document.getElementById('p-main');
-      if (!pMain?.dataset?.b64) { toast('❌ Vyberte fotografii', 'error'); btn.disabled = false; btn.textContent = '💾 Uložit'; return; }
-      const url = await ghUploadImage(pMain.dataset.file, pMain.dataset.b64);
-      if (!url) { toast('❌ Nahrání selhalo', 'error'); btn.disabled = false; btn.textContent = '💾 Uložit'; return; }
-      DATA.gallery.push({ url, label: val('f-label') });
+      let mainUrl = editIndex >= 0 ? DATA.gallery[editIndex]?.url || '' : '';
+      if (pMain?.dataset?.b64) {
+        const uploaded = await ghUploadImage(pMain.dataset.file, pMain.dataset.b64);
+        if (uploaded) mainUrl = uploaded;
+      }
+      if (!mainUrl) { toast('❌ Vyberte hlavní fotografii', 'error'); btn.disabled = false; btn.innerHTML = '💾 Uložit'; return; }
+      const item = { url: mainUrl, label: val('f-label'), subgallery: [...currentGallerySubgallery] };
+      if (editIndex >= 0) DATA.gallery[editIndex] = item; else DATA.gallery.push(item);
       const ok = await saveFile('gallery');
-      if (ok) { toast('✅ Fotografie přidána!', 'success'); closeModal(); renderGalleryAdmin(); }
+      if (ok) { toast('✅ Uloženo!', 'success'); closeModal(); renderGalleryAdmin(); }
     }
   } catch(e) {
     console.error(e);
