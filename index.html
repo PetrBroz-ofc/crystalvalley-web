@@ -657,18 +657,17 @@ function openGalleryModal(i) {
   const g = rawData.gallery[i];
   const body = document.getElementById('modalBody');
   const subimages = g.subgallery || [];
+  const allImgs = [g.url, ...subimages];
   body.innerHTML = `
-    <div class="modal-hero" style="grid-template-columns:1fr;">
-      <img src="${g.url}" class="modal-main-img" id="modalMainImg" onclick="openLightbox(this.src)" style="cursor:zoom-in;aspect-ratio:16/9;width:100%;" alt="">
+    ${g.label ? `<h2 class="modal-title" style="margin-bottom:1.5rem;padding:3rem 3rem 0;">${g.label}</h2>` : ''}
+    <div style="padding:${g.label?'0':'3rem'} 3rem 3rem;">
+      <img src="${g.url}" id="modalMainImg" onclick="openLightbox(this.src)" style="width:100%;border-radius:6px;cursor:zoom-in;object-fit:cover;max-height:60vh;">
+      ${allImgs.length > 1 ? `
+        <div class="modal-subgallery" style="margin-top:1.5rem;">
+          ${allImgs.map(url => `<img src="${url}" onclick="openLightbox('${url}')" style="cursor:zoom-in;">`).join('')}
+        </div>
+      ` : ''}
     </div>
-    ${g.label ? `<h2 class="modal-title" style="margin-bottom:1rem;">${g.label}</h2>` : ''}
-    ${subimages.length > 0 ? `
-      <h3 class="modal-gallery-title">Fotografie</h3>
-      <div class="modal-subgallery">
-        <img src="${g.url}" onclick="openLightbox(this.src)" style="cursor:zoom-in;">
-        ${subimages.map(url => `<img src="${url}" onclick="openLightbox('${url}')" style="cursor:zoom-in;">`).join('')}
-      </div>
-    ` : ''}
   `;
   document.getElementById('catModal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
