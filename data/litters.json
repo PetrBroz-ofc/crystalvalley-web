@@ -13,14 +13,16 @@
         "sex": "Kočka",
         "status": "sold",
         "pedigree": "https://www.pawpeds.com/db/?a=p&id=1854799&g=4&p=nfo&o=elastic",
-        "photo": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779824077826_Adele_3t.jpg",
+        "photo": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779982863423_Adele_09_08-1.jpg",
         "subgallery": [
           "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779824092920_Adele_4t.jpg",
           "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779824095775_Adele_2806.jpg",
           "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779824098506_adele_a_susane.jpg",
           "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779824101121_Adele_na_schudku.jpg",
           "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779824103889_adele_n_chod.jpg",
-          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779824106263_Adele.jpg"
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779824106263_Adele.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779982885460_Adele_18_9.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779982922349_Adele_3t.jpg"
         ]
       },
       {
@@ -29,8 +31,16 @@
         "sex": "Kočka",
         "status": "sold",
         "pedigree": "https://www.pawpeds.com/db/?a=p&id=1854801&g=4&p=nfo&o=elastic",
-        "photo": "",
-        "subgallery": []
+        "photo": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779982972970_Anastacia_31_07_1.jpg",
+        "subgallery": [
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983036761_Anastacia_4t.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983039622_Anastacia_3_8-1.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983042433_Anastacia_3_8-4.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983044863_Anastacia_09_08-2.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983047091_Anastacia_24_08_1.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983049296_Anastacia_24_08_2.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983051647_anastacia2.jpg"
+        ]
       },
       {
         "name": "Amy",
@@ -38,8 +48,16 @@
         "sex": "Kočka",
         "status": "sold",
         "pedigree": "https://www.pawpeds.com/db/?a=p&id=1854800&g=4&p=nfo&o=elastic",
-        "photo": "",
-        "subgallery": []
+        "photo": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983071742_Amy_31_07_2.jpg",
+        "subgallery": [
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983124483_Amy_4t.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983128199_Amy_2806-1.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983131056_Amy_09_08-1.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983133811_Amy_09_08-4.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983136468_Amy_17_08-1.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983138936_Amy_17_08-2.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983141582_Amy_17_08-4.jpg"
+        ]
       },
       {
         "name": "Albert",
@@ -47,8 +65,15 @@
         "sex": "Kocour",
         "status": "sold",
         "pedigree": "https://www.pawpeds.com/db/?a=p&id=1854798&g=4&p=nfo&o=elastic",
-        "photo": "",
-        "subgallery": []
+        "photo": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983193611_Albert.jpg",
+        "subgallery": [
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983240940_Albert_4t.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983243469_Albert_2806.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983246329_Albert_3_8-1.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983248703_Albert_09_08-2.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983251065_Albert_31_07_2.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983253386_albert1.jpg"
+        ]
       }
     ]
   },
