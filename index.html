@@ -657,14 +657,20 @@ function openGalleryModal(i) {
   const g = rawData.gallery[i];
   const body = document.getElementById('modalBody');
   const subimages = g.subgallery || [];
-  const allImgs = [g.url, ...subimages];
   body.innerHTML = `
-    ${g.label ? `<h2 class="modal-title" style="margin-bottom:1.5rem;padding:3rem 3rem 0;">${g.label}</h2>` : ''}
-    <div style="padding:${g.label?'0':'3rem'} 3rem 3rem;">
-      <img src="${g.url}" id="modalMainImg" onclick="openLightbox(this.src)" style="width:100%;border-radius:6px;cursor:zoom-in;object-fit:cover;max-height:60vh;">
-      ${allImgs.length > 1 ? `
-        <div class="modal-subgallery" style="margin-top:1.5rem;">
-          ${allImgs.map(url => `<img src="${url}" onclick="openLightbox('${url}')" style="cursor:zoom-in;">`).join('')}
+    <div class="modal-body">
+      <div class="modal-hero">
+        <img src="${g.url}" class="modal-main-img" id="modalMainImg" onclick="openLightbox(this.src)" style="cursor:zoom-in;aspect-ratio:4/3;" alt="">
+        <div>
+          <h2 class="modal-title">${g.label || 'Fotografie'}</h2>
+          ${subimages.length > 0 ? `<p style="color:var(--brown-mid);font-weight:300;margin-top:0.5rem;">${subimages.length + 1} fotografií</p>` : ''}
+        </div>
+      </div>
+      ${subimages.length > 0 ? `
+        <h3 class="modal-gallery-title">Další fotografie</h3>
+        <div class="modal-subgallery">
+          <img src="${g.url}" onclick="openLightbox(this.src)" style="cursor:zoom-in;">
+          ${subimages.map(url => `<img src="${url}" onclick="openLightbox('${url}')" style="cursor:zoom-in;">`).join('')}
         </div>
       ` : ''}
     </div>
