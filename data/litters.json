@@ -31,6 +31,15 @@
         "pedigree": "https://www.pawpeds.com/db/?a=p&id=1854801&g=4&p=nfo&o=elastic",
         "photo": "",
         "subgallery": []
+      },
+      {
+        "name": "Amy",
+        "color": "f 09",
+        "sex": "Kočka",
+        "status": "sold",
+        "pedigree": "https://www.pawpeds.com/db/?a=p&id=1854800&g=4&p=nfo&o=elastic",
+        "photo": "",
+        "subgallery": []
       }
     ]
   },
