@@ -893,6 +893,39 @@ highlightActive(localStorage.getItem('cv_lang') || 'cs');
 </script>
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
+  <!-- Cookie Banner -->
+<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--brown-deep);color:var(--cream);padding:1.25rem 2rem;z-index:9998;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;box-shadow:0 -4px 20px rgba(0,0,0,0.2);">
+  <p style="font-size:0.85rem;font-weight:300;max-width:700px;opacity:0.85;">
+    🍪 Tento web používá Google Translate pro překlad obsahu. Používáním webu souhlasíte s 
+    <a href="https://policies.google.com/privacy" target="_blank" style="color:var(--gold);text-decoration:none;">podmínkami Google</a>.
+  </p>
+  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+    <button onclick="acceptCookies()" style="background:var(--gold);color:var(--brown-deep);border:none;padding:0.6rem 1.5rem;border-radius:3px;font-size:0.82rem;font-weight:600;cursor:pointer;letter-spacing:0.05em;">Souhlasím</button>
+    <button onclick="declineCookies()" style="background:transparent;color:rgba(245,240,232,0.6);border:1px solid rgba(245,240,232,0.2);padding:0.6rem 1.25rem;border-radius:3px;font-size:0.82rem;cursor:pointer;">Odmítnout</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  const consent = localStorage.getItem('cv_cookie_consent');
+  if (!consent) {
+    document.getElementById('cookie-banner').style.display = 'flex';
+  }
+})();
+
+function acceptCookies() {
+  localStorage.setItem('cv_cookie_consent', 'accepted');
+  document.getElementById('cookie-banner').style.display = 'none';
+}
+
+function declineCookies() {
+  localStorage.setItem('cv_cookie_consent', 'declined');
+  document.getElementById('cookie-banner').style.display = 'none';
+  // Vyčisti Google Translate cookie
+  document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + location.hostname;
+}
+</script>
 
 </body>
 </html>
