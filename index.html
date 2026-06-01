@@ -902,39 +902,97 @@ highlightActive(localStorage.getItem('cv_lang') || 'cs');
 </script>
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-  <!-- Cookie Banner -->
-<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--brown-deep);color:var(--cream);padding:1.25rem 2rem;z-index:9998;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;box-shadow:0 -4px 20px rgba(0,0,0,0.2);">
-  <p style="font-size:0.85rem;font-weight:300;max-width:700px;opacity:0.85;">
-    🍪 Tento web používá Google Translate pro překlad obsahu. Používáním webu souhlasíte s 
-    <a href="https://policies.google.com/privacy" target="_blank" style="color:var(--gold);text-decoration:none;">podmínkami Google</a>.
-  </p>
-  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
-    <button onclick="acceptCookies()" style="background:var(--gold);color:var(--brown-deep);border:none;padding:0.6rem 1.5rem;border-radius:3px;font-size:0.82rem;font-weight:600;cursor:pointer;letter-spacing:0.05em;">Souhlasím</button>
-    <button onclick="declineCookies()" style="background:transparent;color:rgba(245,240,232,0.6);border:1px solid rgba(245,240,232,0.2);padding:0.6rem 1.25rem;border-radius:3px;font-size:0.82rem;cursor:pointer;">Odmítnout</button>
-  </div>
+<!-- ========================================================================= -->
+<!-- ELEGANTNÍ COOKIE LIŠTA PRO CRYSTAL VALLEY (ANALYTIKA + GOOGLE TRANSLATE)  -->
+<!-- ========================================================================= -->
+<div id="cookie-bar-container" style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--white); box-shadow: 0 -4px 25px var(--shadow); padding: 20px 40px; z-index: 999999; font-family: 'Jost', sans-serif; box-sizing: border-box; border-top: 3px solid var(--gold);">
+    <div style="max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+        
+        <!-- Text upravený pro chovatelskou stanici -->
+        <div style="flex: 1; min-width: 300px; max-width: 800px;">
+            <h3 style="margin-top: 0; margin-bottom: 6px; color: var(--brown-deep); font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: bold; letter-spacing: 0.5px;">🍪 Ochrana soukromí a nastavení cookies</h3>
+            <p style="margin: 0; font-size: 14px; color: var(--brown-mid); line-height: 1.5;">
+                Abychom vám umožnili pohodlné přepínání jazyků pomocí Google Translate a mohli anonymně měřit návštěvnost pro Google Analytics a Search Console, potřebujeme váš souhlas s ukládáním cookies. Kliknutím na „Přijmout vše“ nám tento souhlas udělíte.
+            </p>
+        </div>
+
+        <!-- Tlačítka v designu Crystal Valley -->
+        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+            <button onclick="cookieManager.rejectAll()" style="background-color: var(--cream); color: var(--brown-deep); border: 1px solid rgba(59,42,26,0.15); padding: 12px 24px; font-size: 13px; font-weight: 500; text-transform: uppercase; border-radius: 2px; cursor: pointer; letter-spacing: 1px; transition: all 0.3s;">Odmítnout vše</button>
+            <button onclick="cookieManager.acceptAll()" style="background-color: var(--brown-deep); color: var(--white); border: none; padding: 12px 28px; font-size: 13px; font-weight: 500; text-transform: uppercase; border-radius: 2px; cursor: pointer; letter-spacing: 1px; transition: all 0.3s;">PŘIJMOUT VŠE</button>
+        </div>
+
+    </div>
 </div>
 
 <script>
-(function() {
-  const consent = localStorage.getItem('cv_cookie_consent');
-  if (!consent) {
-    document.getElementById('cookie-banner').style.display = 'flex';
-  }
-})();
+    // ZDE MŮŽETE VLOŽIT VAŠE G-ID PRO GOOGLE ANALYTICS (pokud ho používáte, např. 'G-XXXXXX')
+    const GA_MEASUREMENT_ID = 'G-W0J0EKJJ24'; 
 
-function acceptCookies() {
-  localStorage.setItem('cv_cookie_consent', 'accepted');
-  document.getElementById('cookie-banner').style.display = 'none';
-}
+    const cookieManager = {
+        init: function() {
+            // Kontrola souhlasu pro aktuální relaci (návštěvu)
+            const consent = sessionStorage.getItem('crystal_valley_cookie_consent');
+            if (!consent) {
+                document.getElementById('cookie-bar-container').style.display = 'block';
+            } else if (consent === 'granted') {
+                this.spustitRozsireneFunkce();
+            }
+        },
+        
+        acceptAll: function() {
+            sessionStorage.setItem('crystal_valley_cookie_consent', 'granted');
+            document.getElementById('cookie-bar-container').style.display = 'none';
+            this.spustitRozsireneFunkce();
+        },
+        
+        rejectAll: function() {
+            sessionStorage.setItem('crystal_valley_cookie_consent', 'denied');
+            document.getElementById('cookie-bar-container').style.display = 'none';
+            console.log('Cookies odmítnuty. Google Analytics a Translate nebudou načteny.');
+        },
 
-function declineCookies() {
-  localStorage.setItem('cv_cookie_consent', 'declined');
-  document.getElementById('cookie-banner').style.display = 'none';
-  // Vyčisti Google Translate cookie
-  document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-  document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + location.hostname;
-}
+        spustitRozsireneFunkce: function() {
+            // A) Spuštění překladače Google Translate po souhlasu
+            this.loadGoogleTranslate();
+
+            // B) Spuštění Google Analytics po souhlasu (pokud je zadáno ID)
+            this.loadGoogleAnalytics();
+        },
+
+        loadGoogleTranslate: function() {
+            if (document.getElementById('google-translate-script')) return; // Zamezení duplicitního načtení
+            
+            const translateScript = document.createElement('script');
+            translateScript.id = 'google-translate-script';
+            translateScript.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            document.head.appendChild(translateScript);
+            console.log('Google Translate úspěšně spuštěn na základě souhlasu.');
+        },
+
+        loadGoogleAnalytics: function() {
+            if (!GA_MEASUREMENT_ID) return;
+
+            const gaScript = document.createElement('script');
+            gaScript.async = true;
+            gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID;
+            document.head.appendChild(gaScript);
+
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', GA_MEASUREMENT_ID);
+            
+            console.log('Google Analytics úspěšně spuštěn na základě souhlasu.');
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        cookieManager.init();
+    });
 </script>
-
+<!-- ========================================================================= -->
+<!-- KONEC COOKIE LIŠTY -->
+<!-- ========================================================================= -->
 </body>
 </html>
