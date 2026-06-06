@@ -510,6 +510,14 @@ function galleryForm() {
   return `
     <div class="field"><label>Popisek fotografie</label><input type="text" id="f-label" placeholder="Výstava Praha 2024"></div>
     <div class="field">
+      <label>Kategorie</label>
+      <select id="f-category">
+        <option value="other">📷 Ostatní</option>
+        <option value="exhibitions">🏆 Výstavy</option>
+        <option value="new_homes">🏡 Z nových domovů</option>
+      </select>
+    </div>
+    <div class="field">
       <label>Fotografie</label>
       <div class="upload-area" onclick="document.getElementById('img-gal').click()">
         <span class="upload-icon">📷</span>
@@ -769,7 +777,7 @@ async function saveModal() {
       if (!pMain?.dataset?.b64) { toast('❌ Vyberte fotografii', 'error'); btn.disabled = false; btn.textContent = '💾 Uložit'; return; }
       const url = await ghUploadImage(pMain.dataset.file, pMain.dataset.b64);
       if (!url) { toast('❌ Nahrání selhalo', 'error'); btn.disabled = false; btn.textContent = '💾 Uložit'; return; }
-      DATA.gallery.push({ url, label: val('f-label') });
+     DATA.gallery.push({ url, label: val('f-label'), category: val('f-category') || 'other' });
       const ok = await saveFile('gallery');
       if (ok) { toast('✅ Fotografie přidána!', 'success'); closeModal(); renderGalleryAdmin(); }
     }
