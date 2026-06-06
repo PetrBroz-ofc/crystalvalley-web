@@ -241,7 +241,7 @@
     .status-booked { background: rgba(100,80,180,0.1); color: #6450b4; }
     .status-stays { background: rgba(180,120,60,0.12); color: var(--brown-mid); }
 
-    /* Gallery Section */
+/* Gallery Section */
     .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 1.5rem; }
     .gallery-item { aspect-ratio: unset; min-height: 300px; overflow: hidden; border-radius: 4px; box-shadow: 0 8px 24px var(--shadow); position: relative; cursor: pointer; }
     .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
@@ -249,6 +249,17 @@
     .gallery-overlay { position: absolute; inset: 0; background: rgba(59,42,26,0.4); opacity: 0; transition: opacity 0.4s; display: flex; align-items: center; justify-content: center; padding: 1rem; }
     .gallery-item:hover .gallery-overlay { opacity: 1; }
     .gallery-overlay span { color: var(--white); font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; }
+
+    /* Gallery Categories */
+    .gallery-categories { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; }
+    .gallery-cat-card { position: relative; aspect-ratio: 4/3; overflow: hidden; border-radius: 6px; box-shadow: 0 12px 30px var(--shadow); cursor: pointer; }
+    .gallery-cat-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
+    .gallery-cat-card:hover img { transform: scale(1.06); }
+    .gallery-cat-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(20,10,0,0.75) 0%, rgba(20,10,0,0.1) 60%, transparent 100%); display: flex; align-items: flex-end; padding: 1.5rem; }
+    .gallery-cat-label { color: var(--white); font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; letter-spacing: 1px; }
+    .gallery-back { display: none; margin-bottom: 1.5rem; background: none; border: 1px solid var(--border, rgba(201,168,76,0.3)); padding: 0.5rem 1.2rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; color: var(--brown-mid); transition: all 0.2s; }
+    .gallery-back:hover { border-color: var(--gold); color: var(--brown-deep); }
+    .gallery-cat-title { display: none; font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; margin-bottom: 1.5rem; }
 
     /* MODAL WINDOW */
     .modal {
@@ -448,9 +459,12 @@
     <div id="litters-container"></div>
   </section>
 
-  <section id="gallery">
+<section id="gallery">
     <h2 class="section-title">Galerie</h2>
-    <div class="gallery-grid" id="gallery-container"></div>
+    <button class="gallery-back" id="gallery-back-btn" onclick="showGalleryCategories()">← Zpět na kategorie</button>
+    <div class="gallery-cat-title" id="gallery-cat-title"></div>
+    <div class="gallery-categories" id="gallery-categories"></div>
+    <div class="gallery-grid" id="gallery-container" style="display:none;"></div>
   </section>
 
   <section id="contact" style="background:var(--cream);padding:6rem 2rem;">
@@ -630,12 +644,7 @@
       </div>
     `).join('') || '<p style="text-align:center;">Momentálně neplánujeme žádná koťátka.</p>';
 
-    document.getElementById('gallery-container').innerHTML = rawData.gallery.map((g, i) => `
-      <div class="gallery-item" onclick="openGalleryModal(${i})" style="cursor:pointer;">
-        <img src="${g.url}" alt="">
-        <div class="gallery-overlay"><span>${g.label || ''}</span></div>
-      </div>
-    `).join('') || '<p style="grid-column:1/-1;text-align:center;">Galerie je prázdná.</p>';
+      renderGalleryCategories();
 
     if (typeof google !== 'undefined' && google.translate) {
       setTimeout(() => {
@@ -677,6 +686,71 @@
     `;
     document.getElementById('catModal').style.display = 'flex';
     document.body.style.overflow = 'hidden';
+  }
+
+  const GALLERY_CATEGORIES = [
+    { key: 'exhibitions', label: 'Výstavy', icon: '🏆' },
+    { key: 'new_homes',   label: 'Z nových domovů', icon: '🏡' },
+    { key: 'other',       label: 'Ostatní', icon: '📷' }
+  ];
+
+  function getCategoryPhotos(key) {
+    return rawData.gallery.filter(g => (g.category || 'other') === key);
+  }
+
+  function renderGalleryCategories() {
+    const container = document.getElementById('gallery-categories');
+    const grid = document.getElementById('gallery-container');
+    const backBtn = document.getElementById('gallery-back-btn');
+    const catTitle = document.getElementById('gallery-cat-title');
+
+    grid.style.display = 'none';
+    backBtn.style.display = 'none';
+    catTitle.style.display = 'none';
+    container.style.display = '';
+
+    container.innerHTML = GALLERY_CATEGORIES.map(cat => {
+      const photos = getCategoryPhotos(cat.key);
+      const thumb = photos[0]?.url || '';
+      return `
+        <div class="gallery-cat-card" onclick="showGalleryCategory('${cat.key}','${cat.label}')">
+          ${thumb ? `<img src="${thumb}" alt="">` : `<div style="width:100%;height:100%;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:3rem;">${cat.icon}</div>`}
+          <div class="gallery-cat-overlay">
+            <span class="gallery-cat-label">${cat.label} <small style="font-size:1rem;opacity:0.7;">(${photos.length})</small></span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function showGalleryCategory(key, label) {
+    const photos = getCategoryPhotos(key);
+    const globalIndexes = rawData.gallery.reduce((acc, g, i) => {
+      if ((g.category || 'other') === key) acc.push(i);
+      return acc;
+    }, []);
+
+    document.getElementById('gallery-categories').style.display = 'none';
+    document.getElementById('gallery-back-btn').style.display = 'inline-block';
+    const catTitle = document.getElementById('gallery-cat-title');
+    catTitle.textContent = label;
+    catTitle.style.display = 'block';
+
+    const grid = document.getElementById('gallery-container');
+    grid.style.display = '';
+    grid.innerHTML = photos.map((g, localIdx) => {
+      const globalIdx = globalIndexes[localIdx];
+      return `
+        <div class="gallery-item" onclick="openGalleryModal(${globalIdx})" style="cursor:pointer;">
+          <img src="${g.url}" alt="">
+          <div class="gallery-overlay"><span>${g.label || ''}</span></div>
+        </div>
+      `;
+    }).join('') || `<p style="grid-column:1/-1;text-align:center;color:var(--brown-mid);">Tato kategorie je prázdná.</p>`;
+  }
+
+  function showGalleryCategories() {
+    renderGalleryCategories();
   }
 
   function openKittenModal(li, ki) {
