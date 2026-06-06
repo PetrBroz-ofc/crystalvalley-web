@@ -545,6 +545,8 @@ function kRow(k = {}) {
         <option value="available" ${k.status==='available'?'selected':''}>✅ Volné</option>
         <option value="reserved" ${k.status==='reserved'?'selected':''}>🔒 Rezervace</option>
         <option value="sold" ${k.status==='sold'?'selected':''}>🏠 V domově</option>
+        <option value="booked" ${k.status==='booked'?'selected':''}>📋 Zamluvené</option>
+        <option value="stays" ${k.status==='stays'?'selected':''}>🏡 Zůstává doma</option>
       </select>
       <button type="button" class="btn btn-danger" onclick="this.closest('.kitten-row').remove()" style="padding:0.4rem 0.6rem">🗑</button>
       <div class="kitten-row-pedigree">
