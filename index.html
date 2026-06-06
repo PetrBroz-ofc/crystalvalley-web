@@ -238,6 +238,8 @@
     .status-available { background: rgba(74,124,89,0.12); color: var(--green); }
     .status-reserved { background: rgba(201,168,76,0.15); color: var(--brown-mid); }
     .status-sold { background: rgba(59,42,26,0.08); color: var(--brown-light); }
+    .status-booked { background: rgba(100,80,180,0.1); color: #6450b4; }
+    .status-stays { background: rgba(180,120,60,0.12); color: var(--brown-mid); }
 
     /* Gallery Section */
     .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 1.5rem; }
@@ -620,10 +622,8 @@
               ${k.photo ? `<img src="${k.photo}" alt="${k.name}" style="width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:8px 8px 0 0;">` : ''}
               <div style="padding:0.75rem;">
                 <h4 class="kitten-name">${k.name}</h4>
-                <p class="kitten-info">${k.sex === 'Kocour' ? '🐈' : '🐱'} ${k.sex} · ${k.color}</p>
                 ${k.pedigree ? `<a href="${k.pedigree}" target="_blank" style="font-size:0.75rem;color:var(--gold);text-decoration:none;" onclick="event.stopPropagation()">Rodokmen →</a>` : ''}
-                <span class="kitten-status status-${k.status}">${k.status === 'available' ? 'Volné' : k.status === 'reserved' ? 'Rezervováno' : 'V novém domově'}</span>
-              </div>
+                <span class="kitten-status status-${k.status}">${k.status === 'available' ? 'Volné' : k.status === 'reserved' ? 'Rezervováno' : k.status === 'booked' ? 'Zamluvené' : k.status === 'stays' ? 'Zůstává doma' : 'V novém domově'}</span>              </div>
             </div>
           `).join('')}
         </div>
@@ -690,8 +690,8 @@
           <h2 class="modal-title">${k.name}</h2>
           <span class="modal-subtitle">${k.sex} · ${k.color}</span>
           <div style="margin-top:1rem;">
-            <span class="kitten-status status-${k.status}">${k.status === 'available' ? 'Volné' : k.status === 'reserved' ? 'Rezervováno' : 'V novém domově'}</span>
-          </div>
+          <span class="kitten-status status-${k.status}">${k.status === 'available' ? 'Volné' : k.status === 'reserved' ? 'Rezervováno' : k.status === 'booked' ? 'Zamluvené' : k.status === 'stays' ? 'Zůstává doma' : 'V novém domově'}</span>
+            </div>
           ${k.pedigree ? `<a href="${k.pedigree}" target="_blank" class="btn-modal-pedigree" style="margin-top:1rem;display:inline-block;">Rodokmen →</a>` : ''}
         </div>
       </div>
