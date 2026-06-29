@@ -81,14 +81,53 @@
     .lang-circle:hover { border-color: var(--gold); color: var(--gold); transform: scale(1.05); }
     .lang-circle.active { background: var(--brown-deep); color: var(--white); border-color: var(--brown-deep); }
 
+    /* Compact globe language switcher (mobile only) */
+    .lang-globe-wrap { display: none; position: relative; }
+    .lang-globe-btn { width: 34px; height: 34px; border-radius: 50%; background: var(--white); border: 1px solid rgba(59,42,26,0.15); font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .lang-dropdown { position: absolute; top: calc(100% + 0.6rem); left: 0; background: var(--white); border: 1px solid rgba(59,42,26,0.12); border-radius: 10px; box-shadow: 0 12px 32px var(--shadow); padding: 0.4rem; display: none; flex-direction: column; min-width: 150px; z-index: 1700; }
+    .lang-dropdown.open { display: flex; }
+    .lang-dropdown-item { background: none; border: none; text-align: left; padding: 0.55rem 0.75rem; border-radius: 6px; font-size: 0.85rem; color: var(--brown-deep); cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-family: inherit; }
+    .lang-dropdown-item:hover { background: var(--cream); }
+    .lang-dropdown-item.active { color: var(--gold); font-weight: 600; }
+
     .btn-eshop {
       background: var(--brown-deep); color: var(--white) !important;
       padding: 0.5rem 1.25rem; border-radius: 2px; font-size: 0.85rem !important;
       letter-spacing: 1px; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s !important;
     }
     .btn-eshop:hover { background: var(--gold) !important; color: var(--white) !important; }
-    .nav-toggle { display: none; background: none; border: none; cursor: pointer; }
-    .nav-toggle span { display: block; width: 24px; height: 1px; background: var(--brown-deep); margin: 6px 0; transition: 0.3s; }
+    .nav-toggle { display: none; position: relative; width: 26px; height: 26px; background: none; border: none; cursor: pointer; flex-shrink: 0; }
+    .nav-toggle span { display: block; position: absolute; left: 50%; top: 50%; width: 20px; height: 2px; background: var(--brown-deep); border-radius: 2px; transition: transform 0.35s ease; }
+    .nav-toggle span:first-child { transform: translate(-50%, -50%) rotate(0deg); }
+    .nav-toggle span:last-child { transform: translate(-50%, -50%) rotate(90deg); }
+    .nav-toggle.open span:first-child { transform: translate(-50%, -50%) rotate(45deg); }
+    .nav-toggle.open span:last-child { transform: translate(-50%, -50%) rotate(-45deg); }
+
+    /* Mobile full-screen menu — vanilla JS/GSAP port of the "StaggeredMenu" component (no React/build step in this project) */
+    .sm-prelayers { position: fixed; inset: 0; pointer-events: none; z-index: 1499; opacity: 0; }
+    .sm-prelayer { position: absolute; inset: 0; transform: translateX(100%); }
+    .staggered-menu-panel {
+      position: fixed; inset: 0; width: 100%; height: 100%;
+      background: var(--cream); display: flex; flex-direction: column;
+      padding: 7rem 2rem 2.5rem; overflow-y: auto; z-index: 1500;
+      transform: translateX(100%); opacity: 0;
+    }
+    .sm-panel-inner { flex: 1; display: flex; flex-direction: column; gap: 2rem; }
+    .sm-panel-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+    .sm-panel-itemWrap { overflow: hidden; line-height: 1; }
+    .sm-panel-item { position: relative; display: inline-block; color: var(--brown-deep); font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 2.3rem; text-decoration: none; padding-right: 1.6em; letter-spacing: 0.5px; }
+    .sm-panel-itemLabel { display: inline-block; will-change: transform; transform-origin: 50% 100%; }
+    .sm-panel-item:hover, .sm-panel-item:active { color: var(--gold); }
+    .sm-panel-list[data-numbering] { counter-reset: smItem; }
+    .sm-panel-list[data-numbering] .sm-panel-item::after {
+      counter-increment: smItem; content: counter(smItem, decimal-leading-zero);
+      position: absolute; top: 0.25em; right: 0; font-size: 0.8rem; font-family: 'Jost', sans-serif;
+      color: var(--gold); opacity: var(--sm-num-opacity, 0);
+    }
+    .sm-socials { margin-top: auto; padding-top: 1.5rem; border-top: 1px solid rgba(201,168,76,0.25); }
+    .sm-socials-title { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+    .sm-socials-list { list-style: none; display: flex; gap: 1rem; flex-wrap: wrap; }
+    .sm-socials-link { color: var(--brown-mid); text-decoration: none; font-size: 0.92rem; }
 
     /* Hero Section */
     header {
@@ -342,13 +381,13 @@
     #google_translate_element { display: none; }
 
     @media (max-width: 968px) {
-      nav { padding: 1rem 1.5rem; }
-      .nav-links { position: fixed; top: 68px; left: 0; width: 100%; background: var(--cream); flex-direction: column; padding: 1.5rem 0; gap: 1.2rem; display: none; box-shadow: 0 8px 24px var(--shadow); z-index: 999; }
-      .nav-links.open { display: flex; }
+      nav { padding: 1rem 1.5rem; gap: 0.75rem; }
+      .nav-links { display: none !important; }
+      .nav-right { gap: 0.6rem; }
       .nav-toggle { display: block; }
-      .lang-switcher { gap: 0.3rem; }
-      .lang-circle { width: 28px; height: 28px; font-size: 0.68rem; }
-      .btn-eshop { padding: 0.4rem 0.9rem; font-size: 0.78rem !important; }
+      .lang-globe-wrap { display: block; }
+      .nav-right > .lang-circle { display: none; }
+      .btn-eshop { display: none; }
       .about-container { grid-template-columns: 1fr; gap: 2rem; }
       .modal-hero { grid-template-columns: 1fr; gap: 1.5rem; }
     }
@@ -469,11 +508,45 @@
   <div class="lang-circle" data-lang="de" onclick="changeLanguage('de')">DE</div>
   <div class="lang-circle" data-lang="pl" onclick="changeLanguage('pl')">PL</div>
 
-      <button class="nav-toggle" id="navToggle" onclick="toggleMenu()">
-        <span></span><span></span><span></span>
+      <div class="lang-globe-wrap">
+        <button class="lang-globe-btn" id="langGlobeBtn" onclick="toggleLangDropdown()" aria-label="Změnit jazyk">🌐</button>
+        <div class="lang-dropdown" id="langDropdown">
+          <button class="lang-dropdown-item active" data-lang="cs" onclick="changeLanguage('cs')">🇨🇿 Čeština</button>
+          <button class="lang-dropdown-item" data-lang="en" onclick="changeLanguage('en')">🇬🇧 English</button>
+          <button class="lang-dropdown-item" data-lang="de" onclick="changeLanguage('de')">🇩🇪 Deutsch</button>
+          <button class="lang-dropdown-item" data-lang="pl" onclick="changeLanguage('pl')">🇵🇱 Polski</button>
+        </div>
+      </div>
+
+      <button class="nav-toggle" id="navToggle" onclick="toggleStaggeredMenu()" aria-label="Otevřít menu" aria-expanded="false" aria-controls="staggeredMenuPanel">
+        <span></span><span></span>
       </button>
     </div>
   </nav>
+
+  <div class="sm-prelayers" id="smPrelayers" aria-hidden="true">
+    <div class="sm-prelayer" style="background:#9c7a35"></div>
+    <div class="sm-prelayer" style="background:#c9a84c"></div>
+  </div>
+  <aside class="staggered-menu-panel" id="staggeredMenuPanel" aria-hidden="true">
+    <div class="sm-panel-inner">
+      <ul class="sm-panel-list" data-numbering>
+        <li class="sm-panel-itemWrap"><a class="sm-panel-item" href="#about" data-index="1"><span class="sm-panel-itemLabel">O nás</span></a></li>
+        <li class="sm-panel-itemWrap"><a class="sm-panel-item" href="#cats" data-index="2"><span class="sm-panel-itemLabel">Kočky</span></a></li>
+        <li class="sm-panel-itemWrap"><a class="sm-panel-item" href="#toms" data-index="3"><span class="sm-panel-itemLabel">Kocouři</span></a></li>
+        <li class="sm-panel-itemWrap"><a class="sm-panel-item" href="#litters" data-index="4"><span class="sm-panel-itemLabel">Koťata</span></a></li>
+        <li class="sm-panel-itemWrap"><a class="sm-panel-item" href="#gallery" data-index="5"><span class="sm-panel-itemLabel">Galerie</span></a></li>
+        <li class="sm-panel-itemWrap"><a class="sm-panel-item" href="#certificates" data-index="6"><span class="sm-panel-itemLabel">Certifikáty</span></a></li>
+        <li class="sm-panel-itemWrap"><a class="sm-panel-item" href="#contact" data-index="7"><span class="sm-panel-itemLabel">Kontakt</span></a></li>
+      </ul>
+      <div class="sm-socials">
+        <h3 class="sm-socials-title">E-shop</h3>
+        <ul class="sm-socials-list">
+          <li><a class="sm-socials-link" href="https://www.kocicibydleni.cz/" target="_blank">🛒 Kočičí bydlení</a></li>
+        </ul>
+      </div>
+    </div>
+  </aside>
 
   <header id="home">
     <div class="hero-overlay"></div>
@@ -630,6 +703,7 @@
 
 
 
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script>
   const GH_OWNER = localStorage.getItem('cv_gh_owner') || 'PetrBroz-ofc';
   const GH_REPO = localStorage.getItem('cv_gh_repo') || 'crystalvalley-web';
@@ -975,7 +1049,93 @@
     document.body.style.overflow = '';
   }
   function closeModalOnBackdrop(e) { if (e.target.id === 'catModal') closeModal(); }
-  function toggleMenu() { document.getElementById('navLinks').classList.toggle('open'); }
+
+  // ── JAZYKOVÉ DROPDOWN (mobilní glóbus) ──
+  function toggleLangDropdown() {
+    document.getElementById('langDropdown').classList.toggle('open');
+  }
+  document.addEventListener('click', e => {
+    const wrap = document.getElementById('langGlobeBtn')?.closest('.lang-globe-wrap');
+    if (wrap && !wrap.contains(e.target)) document.getElementById('langDropdown')?.classList.remove('open');
+  });
+
+  // ── MOBILNÍ MENU — vanilla JS/GSAP port komponenty "StaggeredMenu" ──
+  let smOpen = false;
+
+  function toggleStaggeredMenu() {
+    smOpen ? closeStaggeredMenu() : openStaggeredMenu();
+  }
+
+  function openStaggeredMenu() {
+    smOpen = true;
+    document.getElementById('navToggle').classList.add('open');
+    document.getElementById('navToggle').setAttribute('aria-expanded', 'true');
+    document.getElementById('staggeredMenuPanel').setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+
+    const panel = document.getElementById('staggeredMenuPanel');
+    const layers = [...document.querySelectorAll('.sm-prelayer')];
+    const itemEls = [...panel.querySelectorAll('.sm-panel-itemLabel')];
+    const numberEls = [...panel.querySelectorAll('.sm-panel-list[data-numbering] .sm-panel-item')];
+    const socialTitle = panel.querySelector('.sm-socials-title');
+    const socialLinks = [...panel.querySelectorAll('.sm-socials-link')];
+
+    gsap.set(document.getElementById('smPrelayers'), { opacity: 1 });
+    gsap.set(itemEls, { yPercent: 140, rotate: 10 });
+    if (numberEls.length) gsap.set(numberEls, { '--sm-num-opacity': 0 });
+    if (socialTitle) gsap.set(socialTitle, { opacity: 0 });
+    if (socialLinks.length) gsap.set(socialLinks, { y: 25, opacity: 0 });
+
+    const tl = gsap.timeline();
+    layers.forEach((el, i) => {
+      tl.fromTo(el, { xPercent: 100 }, { xPercent: 0, duration: 0.5, ease: 'power4.out' }, i * 0.07);
+    });
+    const lastTime = layers.length ? (layers.length - 1) * 0.07 : 0;
+    const panelInsertTime = lastTime + (layers.length ? 0.08 : 0);
+    tl.fromTo(panel, { xPercent: 100, opacity: 1 }, { xPercent: 0, duration: 0.65, ease: 'power4.out' }, panelInsertTime);
+
+    if (itemEls.length) {
+      const itemsStart = panelInsertTime + 0.65 * 0.15;
+      tl.to(itemEls, { yPercent: 0, rotate: 0, duration: 1, ease: 'power4.out', stagger: { each: 0.1, from: 'start' } }, itemsStart);
+      if (numberEls.length) {
+        tl.to(numberEls, { duration: 0.6, ease: 'power2.out', '--sm-num-opacity': 1, stagger: { each: 0.08, from: 'start' } }, itemsStart + 0.1);
+      }
+    }
+    if (socialTitle || socialLinks.length) {
+      const socialsStart = panelInsertTime + 0.65 * 0.4;
+      if (socialTitle) tl.to(socialTitle, { opacity: 1, duration: 0.5, ease: 'power2.out' }, socialsStart);
+      if (socialLinks.length) tl.to(socialLinks, { y: 0, opacity: 1, duration: 0.55, ease: 'power3.out', stagger: { each: 0.08, from: 'start' } }, socialsStart + 0.04);
+    }
+  }
+
+  function closeStaggeredMenu() {
+    if (!smOpen) return;
+    smOpen = false;
+    document.getElementById('navToggle').classList.remove('open');
+    document.getElementById('navToggle').setAttribute('aria-expanded', 'false');
+    document.getElementById('staggeredMenuPanel').setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+
+    const panel = document.getElementById('staggeredMenuPanel');
+    const layers = [...document.querySelectorAll('.sm-prelayer')];
+    gsap.to([...layers, panel], {
+      xPercent: 100, duration: 0.32, ease: 'power3.in',
+      onComplete: () => {
+        gsap.set(document.getElementById('smPrelayers'), { opacity: 0 });
+        const itemEls = [...panel.querySelectorAll('.sm-panel-itemLabel')];
+        if (itemEls.length) gsap.set(itemEls, { yPercent: 140, rotate: 10 });
+        const numberEls = [...panel.querySelectorAll('.sm-panel-list[data-numbering] .sm-panel-item')];
+        if (numberEls.length) gsap.set(numberEls, { '--sm-num-opacity': 0 });
+        const socialTitle = panel.querySelector('.sm-socials-title');
+        const socialLinks = [...panel.querySelectorAll('.sm-socials-link')];
+        if (socialTitle) gsap.set(socialTitle, { opacity: 0 });
+        if (socialLinks.length) gsap.set(socialLinks, { y: 25, opacity: 0 });
+      }
+    });
+  }
+
+  document.querySelectorAll('.sm-panel-item').forEach(a => a.addEventListener('click', closeStaggeredMenu));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && smOpen) closeStaggeredMenu(); });
 
   function showSkeletons(containerId, count=3) {
     const html = Array(count).fill(`
@@ -1091,6 +1251,7 @@
   function changeLanguage(langCode) {
     highlightActive(langCode);
     localStorage.setItem('cv_lang', langCode);
+    document.getElementById('langDropdown')?.classList.remove('open');
 
     if (langCode === 'cs') {
     localStorage.setItem('cv_lang', 'cs');
@@ -1116,7 +1277,7 @@
   }
 
   function highlightActive(lang) {
-    document.querySelectorAll('.lang-circle').forEach(c => {
+    document.querySelectorAll('.lang-circle, .lang-dropdown-item').forEach(c => {
       c.classList.toggle('active', c.getAttribute('data-lang') === lang);
     });
   }
