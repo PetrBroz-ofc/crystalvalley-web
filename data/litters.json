@@ -8,6 +8,23 @@
     "description": "",
     "kittens": [
       {
+        "name": "Anastacia ",
+        "color": "f 09 22",
+        "sex": "Kočka",
+        "status": "sold",
+        "pedigree": "https://www.pawpeds.com/db/?a=p&id=1854801&g=4&p=nfo&o=elastic",
+        "photo": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779982972970_Anastacia_31_07_1.jpg",
+        "subgallery": [
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983036761_Anastacia_4t.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983039622_Anastacia_3_8-1.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983042433_Anastacia_3_8-4.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983044863_Anastacia_09_08-2.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983047091_Anastacia_24_08_1.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983049296_Anastacia_24_08_2.jpg",
+          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983051647_anastacia2.jpg"
+        ]
+      },
+      {
         "name": "Adele",
         "color": "f 09 23",
         "sex": "Kočka",
@@ -23,23 +40,6 @@
           "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779824106263_Adele.jpg",
           "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779982885460_Adele_18_9.jpg",
           "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779982922349_Adele_3t.jpg"
-        ]
-      },
-      {
-        "name": "Anastacia ",
-        "color": "f 09 22",
-        "sex": "Kočka",
-        "status": "sold",
-        "pedigree": "https://www.pawpeds.com/db/?a=p&id=1854801&g=4&p=nfo&o=elastic",
-        "photo": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779982972970_Anastacia_31_07_1.jpg",
-        "subgallery": [
-          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983036761_Anastacia_4t.jpg",
-          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983039622_Anastacia_3_8-1.jpg",
-          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983042433_Anastacia_3_8-4.jpg",
-          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983044863_Anastacia_09_08-2.jpg",
-          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983047091_Anastacia_24_08_1.jpg",
-          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983049296_Anastacia_24_08_2.jpg",
-          "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1779983051647_anastacia2.jpg"
         ]
       },
       {
