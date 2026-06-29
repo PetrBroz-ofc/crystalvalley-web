@@ -63,11 +63,18 @@ body { font-family: system-ui, -apple-system, sans-serif; background: var(--crea
 /* ITEM LIST */
 .item-row { display:flex; align-items:center; gap:1rem; padding:0.9rem 1rem; background:var(--cream); border-radius:8px; border:1px solid var(--border); margin-bottom:0.5rem; transition:box-shadow 0.2s; }
 .item-row:hover { box-shadow:0 4px 12px var(--shadow); }
+.item-row.dragging { opacity:0.4; }
+.item-row.drag-over { box-shadow:0 0 0 2px var(--gold) inset; }
 .item-row img { width:52px; height:52px; object-fit:cover; border-radius:6px; flex-shrink:0; background:var(--cream-dark); }
 .item-row-info { flex:1; min-width:0; }
 .item-row-info strong { display:block; font-size:0.92rem; }
 .item-row-info span { font-size:0.78rem; color:var(--brown-mid); }
-.item-actions { display:flex; gap:0.4rem; flex-shrink:0; }
+.item-actions { display:flex; gap:0.4rem; flex-shrink:0; align-items:center; }
+.drag-handle { cursor:grab; font-size:1.1rem; color:var(--brown-mid); flex-shrink:0; user-select:none; padding:0 0.2rem; touch-action:none; }
+.drag-handle:active { cursor:grabbing; }
+.btn-move { background:transparent; border:1px solid var(--border); color:var(--brown-mid); width:28px; height:28px; padding:0; border-radius:6px; cursor:pointer; font-size:0.85rem; display:inline-flex; align-items:center; justify-content:center; }
+.btn-move:hover:not(:disabled) { border-color:var(--gold); color:var(--brown); }
+.btn-move:disabled { opacity:0.35; cursor:not-allowed; }
 
 /* UPLOAD AREAS */
 .upload-area { border:2px dashed var(--border); border-radius:10px; padding:1.5rem; text-align:center; cursor:pointer; color:var(--brown-mid); font-size:0.85rem; transition:all 0.2s; background:var(--cream); }
@@ -88,7 +95,9 @@ body { font-family: system-ui, -apple-system, sans-serif; background: var(--crea
 .progress-fill { height:100%; background:var(--gold); border-radius:2px; transition:width 0.3s; }
 
 /* KITTEN ROWS */
-.kitten-row { background:var(--cream); border:1px solid var(--border); border-radius:8px; padding:0.75rem; margin-bottom:0.5rem; display:grid; grid-template-columns:2fr 1.5fr 1fr 1.2fr auto; gap:0.5rem; align-items:center; }
+.kitten-row { background:var(--cream); border:1px solid var(--border); border-radius:8px; padding:0.75rem; margin-bottom:0.5rem; display:grid; grid-template-columns:auto 2fr 1.5fr 1fr 1.2fr auto; gap:0.5rem; align-items:center; }
+.kitten-row.dragging { opacity:0.4; }
+.kitten-row.drag-over { box-shadow:0 0 0 2px var(--gold) inset; }
 .kitten-row input, .kitten-row select { margin:0; padding:0.5rem 0.6rem; border:1px solid var(--border); border-radius:6px; font-size:0.82rem; background:white; width:100%; }
 .kitten-row-pedigree { grid-column:1/-1; display:flex; gap:0.5rem; align-items:center; }
 .kitten-row-pedigree input { flex:1; margin:0; padding:0.5rem 0.6rem; border:1px solid var(--border); border-radius:6px; font-size:0.82rem; }
@@ -127,7 +136,7 @@ body { font-family: system-ui, -apple-system, sans-serif; background: var(--crea
 @media (max-width:600px) {
   .panel { padding:1rem; }
   .modal-body, .modal-header, .modal-footer { padding:1rem 1.25rem; }
-  .kitten-row { grid-template-columns:1fr 1fr; }
+  .kitten-row { grid-template-columns:auto 1fr 1fr; }
   .field-grid { grid-template-columns:1fr; }
 }
 </style>
@@ -357,18 +366,73 @@ function renderList(type, arr) {
   const el = document.getElementById(`list-${type}`);
   if (!arr.length) { el.innerHTML = `<p style="color:var(--brown-mid);font-size:0.85rem;padding:0.5rem">Zatím žádné záznamy.</p>`; return; }
   el.innerHTML = arr.map((item, i) => `
-    <div class="item-row">
+    <div class="item-row" draggable="true" data-index="${i}"
+      ondragstart="itemDragStart(event,'${type}',${i})"
+      ondragover="itemDragOver(event)"
+      ondragleave="itemDragLeave(event)"
+      ondrop="itemDrop(event,'${type}',${i})"
+      ondragend="itemDragEnd(event)">
+      <span class="drag-handle" title="Přetáhněte pro změnu pořadí">☰</span>
       ${item.photo ? `<img src="${item.photo}" alt="">` : `<div style="width:52px;height:52px;background:var(--cream-dark);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.5rem">🐱</div>`}
       <div class="item-row-info">
         <strong>${item.name || '—'}</strong>
         <span>${item.detail || ''} ${item.achievements ? '· 🏆 '+item.achievements : ''}</span>
       </div>
       <div class="item-actions">
+        <button class="btn-move" onclick="moveItem('${type}',${i},-1)" ${i===0?'disabled':''} title="Posunout nahoru">↑</button>
+        <button class="btn-move" onclick="moveItem('${type}',${i},1)" ${i===arr.length-1?'disabled':''} title="Posunout dolů">↓</button>
         <button class="btn btn-outline" onclick="openModal('${type}',${i})">✏️ Upravit</button>
         <button class="btn btn-danger" onclick="deleteItem('${type}',${i})">🗑</button>
       </div>
     </div>
   `).join('');
+}
+
+// ── REORDER (drag & drop + fallback buttons) ──
+let dragItemType = null, dragItemIndex = null;
+
+function itemDragStart(e, type, i) {
+  dragItemType = type;
+  dragItemIndex = i;
+  e.dataTransfer.effectAllowed = 'move';
+  e.currentTarget.classList.add('dragging');
+}
+
+function itemDragOver(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+}
+
+function itemDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+
+async function itemDrop(e, type, i) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (dragItemType !== type || dragItemIndex === null || dragItemIndex === i) return;
+  const arr = DATA[type];
+  const moved = arr.splice(dragItemIndex, 1)[0];
+  arr.splice(i, 0, moved);
+  dragItemIndex = null; dragItemType = null;
+  renderList(type, arr);
+  const ok = await saveFile(type);
+  if (ok) toast('✅ Pořadí uloženo', 'success');
+}
+
+function itemDragEnd(e) {
+  e.currentTarget.classList.remove('dragging');
+  document.querySelectorAll('.item-row.drag-over').forEach(el => el.classList.remove('drag-over'));
+}
+
+async function moveItem(type, i, dir) {
+  const arr = DATA[type];
+  const j = i + dir;
+  if (j < 0 || j >= arr.length) return;
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+  renderList(type, arr);
+  const ok = await saveFile(type);
+  if (ok) toast('✅ Pořadí uloženo', 'success');
 }
 
 function renderLitters() {
@@ -542,7 +606,13 @@ function kRow(k = {}) {
   `).join('');
 
   return `
-    <div class="kitten-row" data-uid="${uid}" data-subgallery='${JSON.stringify(k.subgallery||[])}'>
+    <div class="kitten-row" draggable="true" data-uid="${uid}" data-subgallery='${JSON.stringify(k.subgallery||[])}'
+      ondragstart="kittenDragStart(event)"
+      ondragover="kittenDragOver(event)"
+      ondragleave="kittenDragLeave(event)"
+      ondrop="kittenDrop(event)"
+      ondragend="kittenDragEnd(event)">
+      <span class="drag-handle" title="Přetáhněte pro změnu pořadí">⠿</span>
       <input type="text" placeholder="Celé jméno kotěte" value="${esc(k.name)}" class="k-name">
       <input type="text" placeholder="Barva (NFO n 22)" value="${esc(k.color)}" class="k-color">
       <select class="k-sex">
@@ -556,7 +626,11 @@ function kRow(k = {}) {
         <option value="booked" ${k.status==='booked'?'selected':''}>📋 Zamluvené</option>
         <option value="stays" ${k.status==='stays'?'selected':''}>🏡 Zůstává doma</option>
       </select>
-      <button type="button" class="btn btn-danger" onclick="this.closest('.kitten-row').remove()" style="padding:0.4rem 0.6rem">🗑</button>
+      <div style="display:flex;gap:0.3rem;">
+        <button type="button" class="btn-move" onclick="moveKittenRow(this,-1)" title="Posunout nahoru">↑</button>
+        <button type="button" class="btn-move" onclick="moveKittenRow(this,1)" title="Posunout dolů">↓</button>
+        <button type="button" class="btn btn-danger" onclick="this.closest('.kitten-row').remove()" style="padding:0.4rem 0.6rem">🗑</button>
+      </div>
       <div class="kitten-row-pedigree">
         <input type="url" placeholder="URL rodokmenu (nepovinné)" value="${esc(k.pedigree)}" class="k-pedigree">
       </div>
@@ -643,6 +717,53 @@ function addKittenRow() {
   const div = document.createElement('div');
   div.innerHTML = kRow();
   list.appendChild(div.firstElementChild);
+}
+
+// ── KITTEN REORDER (drag & drop + fallback buttons) ──
+let draggingKittenRow = null;
+
+function moveKittenRow(btn, dir) {
+  const row = btn.closest('.kitten-row');
+  if (dir < 0) {
+    const prev = row.previousElementSibling;
+    if (prev) row.parentNode.insertBefore(row, prev);
+  } else {
+    const next = row.nextElementSibling;
+    if (next) row.parentNode.insertBefore(next, row);
+  }
+}
+
+function kittenDragStart(e) {
+  draggingKittenRow = e.currentTarget;
+  e.dataTransfer.effectAllowed = 'move';
+  e.currentTarget.classList.add('dragging');
+}
+
+function kittenDragOver(e) {
+  e.preventDefault();
+  const row = e.currentTarget;
+  if (!draggingKittenRow || row === draggingKittenRow) return;
+  row.classList.add('drag-over');
+  const list = document.getElementById('k-list');
+  const rows = [...list.children];
+  const draggingIdx = rows.indexOf(draggingKittenRow);
+  const targetIdx = rows.indexOf(row);
+  if (draggingIdx < targetIdx) row.after(draggingKittenRow);
+  else row.before(draggingKittenRow);
+}
+
+function kittenDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+
+function kittenDrop(e) {
+  e.preventDefault();
+}
+
+function kittenDragEnd(e) {
+  e.currentTarget.classList.remove('dragging');
+  document.querySelectorAll('.kitten-row.drag-over').forEach(el => el.classList.remove('drag-over'));
+  draggingKittenRow = null;
 }
 
 // ── PHOTO UPLOAD ──
