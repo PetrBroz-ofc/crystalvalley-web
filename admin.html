@@ -112,6 +112,16 @@ body { font-family: system-ui, -apple-system, sans-serif; background: var(--crea
 .modal-body { padding:1.5rem 2rem; }
 .modal-footer { padding:1.25rem 2rem; border-top:1px solid var(--border); display:flex; gap:0.75rem; justify-content:flex-end; position:sticky; bottom:0; background:var(--white); border-radius:0 0 16px 16px; }
 
+/* CERTIFICATE ITEMS */
+.cert-items-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:0.75rem; margin-top:0.75rem; }
+.cert-item-card { background:var(--white); border:1px solid var(--border); border-radius:8px; padding:0.6rem; display:flex; flex-direction:column; gap:0.4rem; cursor:grab; position:relative; }
+.cert-item-card.dragging { opacity:0.4; }
+.cert-item-card.drag-over { box-shadow:0 0 0 2px var(--gold) inset; }
+.cert-item-thumb { width:100%; aspect-ratio:1; object-fit:cover; border-radius:6px; background:var(--cream-dark); }
+.cert-item-thumb.cert-pdf { display:flex; align-items:center; justify-content:center; font-size:2rem; color:var(--brown-mid); }
+.cert-item-card .cert-item-name { font-size:0.78rem; padding:0.4rem 0.5rem; }
+.cert-item-card .thumb-del { position:absolute; top:6px; right:6px; background:rgba(139,46,46,0.9); color:white; border:none; width:20px; height:20px; border-radius:50%; cursor:pointer; font-size:11px; display:flex; align-items:center; justify-content:center; }
+
 /* GALLERY GRID */
 .gallery-admin-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:0.75rem; margin-top:1rem; }
 .gallery-admin-item { position:relative; aspect-ratio:1; border-radius:8px; overflow:hidden; border:1px solid var(--border); }
@@ -168,6 +178,7 @@ body { font-family: system-ui, -apple-system, sans-serif; background: var(--crea
     <button class="tab" onclick="showTab('toms',this)">🐈 Kocouři</button>
     <button class="tab" onclick="showTab('litters',this)">🐾 Koťata</button>
     <button class="tab" onclick="showTab('gallery',this)">📸 Galerie</button>
+    <button class="tab" onclick="showTab('certificates',this)">🎓 Certifikáty</button>
     <button class="tab" onclick="showTab('about',this)">📝 O nás</button>
     <button class="tab" onclick="showTab('settings',this)">⚙️ Nastavení</button>
   </div>
@@ -197,6 +208,13 @@ body { font-family: system-ui, -apple-system, sans-serif; background: var(--crea
     <div class="card">
       <div class="card-header"><h3>Galerie</h3><button class="btn btn-primary" onclick="openModal('gallery')">+ Přidat foto</button></div>
       <div class="gallery-admin-grid" id="gallery-grid"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-certificates">
+    <div class="card">
+      <div class="card-header"><h3>Certifikáty</h3><button class="btn btn-primary" onclick="openModal('certfolder')">+ Přidat složku</button></div>
+      <div id="list-certificates"><div class="loading-state">Načítám...</div></div>
     </div>
   </div>
 
@@ -246,11 +264,12 @@ const GH_REPO  = 'crystalvalley-web';
 const DEFAULT_USER = 'admin';
 const DEFAULT_PASS = 'crystalvalley2024';
 
-let DATA = { cats:[], toms:[], litters:[], gallery:[], about:{} };
+let DATA = { cats:[], toms:[], litters:[], gallery:[], certificates:[], about:{} };
 let fileSHAs = {};
 let currentModal = null;
 let editIndex = -1;
 let currentModalSubgallery = [];
+let currentCertItems = [];
 
 // ── AUTH ──
 function init() {
@@ -319,9 +338,9 @@ async function ghPut(path, content, sha) {
   return true;
 }
 
-async function ghUploadImage(filename, base64data) {
+async function ghUploadFile(filename, base64data, folder = 'images') {
   const safeName = filename.replace(/[^a-zA-Z0-9._-]/g, '_');
-  const path = `images/${Date.now()}_${safeName}`;
+  const path = `${folder}/${Date.now()}_${safeName}`;
   const r = await fetch('/api/save', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
@@ -331,9 +350,13 @@ async function ghUploadImage(filename, base64data) {
   return `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${path}`;
 }
 
+async function ghUploadImage(filename, base64data) {
+  return ghUploadFile(filename, base64data, 'images');
+}
+
 // ── DATA ──
 async function loadData() {
-  const files = ['cats','toms','litters','gallery','about'];
+  const files = ['cats','toms','litters','gallery','certificates','about'];
   for (const f of files) {
     const parsed = await ghGet(`data/${f}.json`);
     if (parsed !== null) {
@@ -360,6 +383,12 @@ function renderAll() {
   renderList('toms', DATA.toms);
   renderLitters();
   renderGalleryAdmin();
+  renderCertFolders();
+}
+
+function renderByType(type) {
+  if (type === 'cats' || type === 'toms') renderList(type, DATA[type]);
+  else if (type === 'certificates') renderCertFolders();
 }
 
 function renderList(type, arr) {
@@ -415,7 +444,7 @@ async function itemDrop(e, type, i) {
   const moved = arr.splice(dragItemIndex, 1)[0];
   arr.splice(i, 0, moved);
   dragItemIndex = null; dragItemType = null;
-  renderList(type, arr);
+  renderByType(type);
   const ok = await saveFile(type);
   if (ok) toast('✅ Pořadí uloženo', 'success');
 }
@@ -430,9 +459,36 @@ async function moveItem(type, i, dir) {
   const j = i + dir;
   if (j < 0 || j >= arr.length) return;
   [arr[i], arr[j]] = [arr[j], arr[i]];
-  renderList(type, arr);
+  renderByType(type);
   const ok = await saveFile(type);
   if (ok) toast('✅ Pořadí uloženo', 'success');
+}
+
+function renderCertFolders() {
+  const el = document.getElementById('list-certificates');
+  const arr = DATA.certificates;
+  if (!arr.length) { el.innerHTML = `<p style="color:var(--brown-mid);font-size:0.85rem;padding:0.5rem">Zatím žádné složky.</p>`; return; }
+  el.innerHTML = arr.map((f, i) => `
+    <div class="item-row" draggable="true" data-index="${i}"
+      ondragstart="itemDragStart(event,'certificates',${i})"
+      ondragover="itemDragOver(event)"
+      ondragleave="itemDragLeave(event)"
+      ondrop="itemDrop(event,'certificates',${i})"
+      ondragend="itemDragEnd(event)">
+      <span class="drag-handle" title="Přetáhněte pro změnu pořadí">☰</span>
+      <div style="width:52px;height:52px;background:var(--cream-dark);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.5rem">📁</div>
+      <div class="item-row-info">
+        <strong>${esc(f.name) || '—'}</strong>
+        <span>${(f.items||[]).length} certifikát${(f.items||[]).length===1?'':(f.items||[]).length>=2&&(f.items||[]).length<=4?'y':'ů'}</span>
+      </div>
+      <div class="item-actions">
+        <button class="btn-move" onclick="moveItem('certificates',${i},-1)" ${i===0?'disabled':''} title="Posunout nahoru">↑</button>
+        <button class="btn-move" onclick="moveItem('certificates',${i},1)" ${i===arr.length-1?'disabled':''} title="Posunout dolů">↓</button>
+        <button class="btn btn-outline" onclick="openModal('certfolder',${i})">✏️ Upravit</button>
+        <button class="btn btn-danger" onclick="deleteItem('certificates',${i})">🗑</button>
+      </div>
+    </div>
+  `).join('');
 }
 
 function renderLitters() {
@@ -474,16 +530,19 @@ function showTab(name, btn) {
 
 // ── MODAL ──
 function openModal(type, index = -1) {
-  currentModal = type === 'litter' ? 'litters' : type;
+  currentModal = type === 'litter' ? 'litters' : type === 'certfolder' ? 'certificates' : type;
   editIndex = index;
   currentModalSubgallery = [];
+  currentCertItems = [];
   const item = index >= 0 ? (
     type === 'cats' ? DATA.cats[index] :
     type === 'toms' ? DATA.toms[index] :
     type === 'litter' ? DATA.litters[index] :
+    type === 'certfolder' ? DATA.certificates[index] :
     DATA.gallery[index]
   ) : {};
   if (item?.subgallery) currentModalSubgallery = [...item.subgallery];
+  if (item?.items) currentCertItems = item.items.map(it => ({...it}));
 
   const title = document.getElementById('modal-title');
   const body = document.getElementById('modal-body');
@@ -498,6 +557,9 @@ function openModal(type, index = -1) {
   } else if (type === 'gallery') {
     title.textContent = 'Přidat fotografii';
     body.innerHTML = galleryForm();
+  } else if (type === 'certfolder') {
+    title.textContent = index >= 0 ? 'Upravit složku' : 'Přidat složku';
+    body.innerHTML = certFolderForm(item);
   }
 
   document.getElementById('modal').classList.add('open');
@@ -593,6 +655,112 @@ function galleryForm() {
       </div>
     </div>
   `;
+}
+
+function certFolderForm(item) {
+  return `
+    <div class="field"><label>Název složky</label><input type="text" id="f-cf-name" value="${esc(item.name)}" placeholder="Výstavní certifikáty"></div>
+    <div class="field">
+      <label>Certifikáty ve složce (obrázky nebo PDF)</label>
+      <div class="upload-area" onclick="document.getElementById('cert-upload').click()">
+        <span class="upload-icon">📄</span>
+        Klikněte nebo přetáhněte certifikáty
+        <input type="file" id="cert-upload" accept="image/*,application/pdf" multiple onchange="handleCertUpload(this)">
+      </div>
+      <div class="subgallery-upload-progress" id="cert-progress">
+        <span id="cert-progress-text">Nahrávám...</span>
+        <div class="progress-bar"><div class="progress-fill" id="cert-progress-fill" style="width:0%"></div></div>
+      </div>
+      <div class="cert-items-grid" id="cert-items-grid">${renderCertItems()}</div>
+    </div>
+  `;
+}
+
+function renderCertItems() {
+  if (!currentCertItems.length) return `<p style="color:var(--brown-mid);font-size:0.82rem;grid-column:1/-1">Zatím žádné certifikáty.</p>`;
+  return currentCertItems.map((it, i) => `
+    <div class="cert-item-card" draggable="true"
+      ondragstart="certDragStart(event,${i})"
+      ondragover="certDragOver(event)"
+      ondragleave="certDragLeave(event)"
+      ondrop="certDrop(event,${i})"
+      ondragend="certDragEnd(event)">
+      <button type="button" class="thumb-del" onclick="removeCertItem(${i})" title="Smazat">✕</button>
+      ${it.type === 'pdf'
+        ? `<div class="cert-item-thumb cert-pdf">📄</div>`
+        : `<img src="${it.fileUrl}" class="cert-item-thumb" alt="">`}
+      <input type="text" class="cert-item-name" value="${esc(it.name)}" placeholder="Název certifikátu" oninput="currentCertItems[${i}].name=this.value">
+    </div>
+  `).join('');
+}
+
+function removeCertItem(i) {
+  currentCertItems.splice(i, 1);
+  document.getElementById('cert-items-grid').innerHTML = renderCertItems();
+}
+
+let certDragIdx = null;
+function certDragStart(e, i) {
+  certDragIdx = i;
+  e.dataTransfer.effectAllowed = 'move';
+  e.currentTarget.classList.add('dragging');
+}
+function certDragOver(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+}
+function certDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+function certDrop(e, i) {
+  e.preventDefault();
+  if (certDragIdx === null || certDragIdx === i) return;
+  const moved = currentCertItems.splice(certDragIdx, 1)[0];
+  currentCertItems.splice(i, 0, moved);
+  certDragIdx = null;
+  document.getElementById('cert-items-grid').innerHTML = renderCertItems();
+}
+function certDragEnd(e) {
+  e.currentTarget.classList.remove('dragging');
+  document.querySelectorAll('.cert-item-card.drag-over').forEach(el => el.classList.remove('drag-over'));
+}
+
+async function handleCertUpload(input) {
+  if (!input.files?.length) return;
+  const files = Array.from(input.files);
+  const progress = document.getElementById('cert-progress');
+  const progressText = document.getElementById('cert-progress-text');
+  const progressFill = document.getElementById('cert-progress-fill');
+  const saveBtn = document.getElementById('modal-save-btn');
+
+  progress.style.display = 'block';
+  saveBtn.disabled = true;
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+    progressText.textContent = `Nahrávám ${i+1} z ${files.length}: ${file.name}`;
+    progressFill.style.width = `${(i / files.length) * 100}%`;
+
+    await new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = async e => {
+        const url = await ghUploadFile(file.name, e.target.result.split(',')[1], 'certificates');
+        if (url) {
+          currentCertItems.push({ name: file.name.replace(/\.[^.]+$/, ''), fileUrl: url, type: isPdf ? 'pdf' : 'image' });
+          document.getElementById('cert-items-grid').innerHTML = renderCertItems();
+        }
+        resolve();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  progressFill.style.width = '100%';
+  progressText.textContent = `✅ Nahráno ${files.length} souborů`;
+  setTimeout(() => { progress.style.display = 'none'; }, 2000);
+  saveBtn.disabled = false;
+  input.value = '';
 }
 
 let kittenCounter = 0;
@@ -901,6 +1069,13 @@ async function saveModal() {
      DATA.gallery.push({ url, label: val('f-label'), category: val('f-category') || 'other' });
       const ok = await saveFile('gallery');
       if (ok) { toast('✅ Fotografie přidána!', 'success'); closeModal(); renderGalleryAdmin(); }
+
+    } else if (currentModal === 'certificates') {
+      if (!val('f-cf-name').trim()) { toast('❌ Vyplňte název složky', 'error'); btn.disabled = false; btn.innerHTML = '💾 Uložit'; return; }
+      const folder = { name: val('f-cf-name'), items: [...currentCertItems] };
+      if (editIndex >= 0) DATA.certificates[editIndex] = folder; else DATA.certificates.push(folder);
+      const ok = await saveFile('certificates');
+      if (ok) { toast('✅ Složka uložena!', 'success'); closeModal(); renderCertFolders(); }
     }
   } catch(e) {
     console.error(e);
@@ -920,6 +1095,7 @@ async function deleteItem(type, i) {
     toast('🗑 Smazáno', 'info');
     if (key === 'cats' || key === 'toms') renderList(key, DATA[key]);
     else if (key === 'litters') renderLitters();
+    else if (key === 'certificates') renderCertFolders();
     else renderGalleryAdmin();
   }
 }
