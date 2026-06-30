@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "name": "Registrace",
+    "items": [
+      {
+        "name": "registrace chs",
+        "fileUrl": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/certificates/1782788840797_registrace_chs.jpg",
+        "type": "image"
+      }
+    ]
+  }
+]
