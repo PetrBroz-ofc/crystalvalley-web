@@ -18,6 +18,19 @@
     ]
   },
   {
+    "name": "Sindri Bukowa Dolina*PL",
+    "detail": "",
+    "achievements": "",
+    "tags": [],
+    "ems": "ns 22",
+    "tests": "",
+    "color_desc": "stříbrná mramorovaná",
+    "description": "Náš nový přírustek. Až dospěje, těšíme se na jeho krásná koťat, stejně jako ke sám Sindri.",
+    "pedigree": "",
+    "photo": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1789923943679_sindri.jpg",
+    "subgallery": []
+  },
+  {
     "name": "S*Uncut Diamond Jasper JW",
     "detail": "",
     "achievements": "junior winner",
@@ -35,18 +48,5 @@
       "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1780929465904_Jasper3.jpg",
       "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1780929533786_ZaJ.jpg"
     ]
-  },
-  {
-    "name": "Sindri Bukowa Dolina*PL",
-    "detail": "",
-    "achievements": "",
-    "tags": [],
-    "ems": "ns 22",
-    "tests": "",
-    "color_desc": "stříbrná mramorovaná",
-    "description": "Náš nový přírustek. Až dospěje, těšíme se na jeho krásná koťat, stejně jako ke sám Sindri.",
-    "pedigree": "",
-    "photo": "https://raw.githubusercontent.com/PetrBroz-ofc/crystalvalley-web/main/images/1789923943679_sindri.jpg",
-    "subgallery": []
   }
 ]
