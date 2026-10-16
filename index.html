@@ -371,6 +371,10 @@
     .folder__front { position: absolute; z-index: 3; width: 100%; height: 100%; background: var(--gold); border-radius: 5px 10px 10px 10px; transform-origin: bottom; transition: all 0.3s ease-in-out; }
     .folder:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 10px; }
 
+    /* Ikony v kontaktu */
+    .contact-ico { flex: 0 0 40px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(201, 168, 76, 0.35); display: flex; align-items: center; justify-content: center; color: var(--gold); }
+    .contact-ico svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
     /* Certifikáty jako samotné fotky */
     #cert-folders-grid { gap: 2rem; align-items: flex-start; }
     .cert-photo { display: block; width: min(520px, 100%); padding: 0; border: none; background: #fff; border-radius: 6px; overflow: hidden; cursor: zoom-in; box-shadow: 0 10px 30px rgba(60, 40, 20, 0.12); transition: transform 0.3s ease, box-shadow 0.3s ease; }
@@ -605,42 +609,42 @@
 
         <div style="display:flex;flex-direction:column;gap:1.25rem;">
           <div style="display:flex;gap:1rem;align-items:center;">
-            <span style="font-size:1.2rem;">👤</span>
+            <span class="contact-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
             <div>
               <p style="font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.2rem;">Chovatelka</p>
               <p style="color:var(--black);font-size:0.95rem;">Zdenka Loumová</p>
             </div>
           </div>
           <div style="display:flex;gap:1rem;align-items:center;">
-            <span style="font-size:1.2rem;">📍</span>
+            <span class="contact-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg></span>
             <div>
               <p style="font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.2rem;">Adresa</p>
               <p style="color:var(--black);font-size:0.95rem;">Františka Balatky 913, Železný Brod</p>
             </div>
           </div>
           <div style="display:flex;gap:1rem;align-items:center;">
-            <span style="font-size:1.2rem;">📞</span>
+            <span class="contact-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2"/></svg></span>
             <div>
               <p style="font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.2rem;">Telefon</p>
               <a href="tel:+420733667167" style="color:var(--black);font-size:0.95rem;text-decoration:none;">+420 733 667 167</a>
             </div>
           </div>
           <div style="display:flex;gap:1rem;align-items:center;">
-            <span style="font-size:1.2rem;">✉</span>
+            <span class="contact-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
             <div>
               <p style="font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.2rem;">E-mail</p>
               <a href="mailto:info@crystalvalley.cat" style="color:var(--black);font-size:0.95rem;text-decoration:none;">info@crystalvalley.cat</a>
             </div>
           </div>
           <div style="display:flex;gap:1rem;align-items:center;">
-            <span style="font-size:1.2rem;">🌐</span>
+            <span class="contact-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg></span>
             <div>
               <p style="font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.2rem;">Web</p>
               <a href="https://crystalvalley.cat" style="color:var(--black);font-size:0.95rem;text-decoration:none;">crystalvalley.cat</a>
             </div>
           </div>
           <div style="display:flex;gap:1rem;align-items:center;">
-            <span style="font-size:1.2rem;">📘</span>
+            <span class="contact-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 3h-2.5A3.5 3.5 0 0 0 9 6.5V9H7v3.5h2V21h3.5v-8.5H15l.5-3.5h-3V7a1 1 0 0 1 1-1H15z"/></svg></span>
             <div>
               <p style="font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.2rem;">Facebook</p>
               <a href="https://www.facebook.com/p/CHS-Crystal-Valley-CZ-61576403146596/" target="_blank" style="color:var(--black);font-size:0.95rem;text-decoration:none;">Crystal Valley NFO</a>
@@ -648,7 +652,7 @@
           </div>
           <div style="margin-top:1rem;padding:1.25rem;border:1px solid rgba(201,168,76,0.25);border-radius:6px;display:flex;align-items:center;justify-content:space-between;gap:1rem;">
             <div>
-              <p style="color:var(--black);font-size:0.9rem;font-weight:500;">🛍 Kočičí bydlení</p>
+              <p style="color:var(--black);font-size:0.9rem;font-weight:500;">Kočičí bydlení</p>
               <p style="color:var(--black);font-size:0.78rem;">Vybavení pro vaši kočičku</p>
             </div>
             <a href="https://kocicibydleni.cz" target="_blank" style="padding:0.5rem 1rem;border:1px solid var(--gold);color:var(--gold);text-decoration:none;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;border-radius:3px;white-space:nowrap;">Navštívit →</a>
@@ -673,23 +677,23 @@
         <div>
           <p style="font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;text-align:left;">Adresa</p>
           <div style="display:flex;flex-direction:column;gap:1rem;">
-            <div style="display:flex;align-items:center;gap:0.75rem;color:rgba(245,240,232,0.65);font-size:0.9rem;">📍 <span>Františka Balatky 913, Železný Brod</span></div>
-            <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.9rem;">🗺 <a href="https://maps.google.com/?q=Františka+Balatky+913,+Železný+Brod" target="_blank" style="color:var(--gold);text-decoration:none;">Google Maps</a></div>
-            <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.9rem;">🌐 <a href="https://crystalvalley.cat" style="color:rgba(245,240,232,0.65);text-decoration:none;">crystalvalley.cat</a></div>
+            <div style="display:flex;align-items:center;gap:0.75rem;color:rgba(245,240,232,0.65);font-size:0.9rem;"><span>Františka Balatky 913, Železný Brod</span></div>
+            <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.9rem;"><a href="https://maps.google.com/?q=Františka+Balatky+913,+Železný+Brod" target="_blank" style="color:var(--gold);text-decoration:none;">Google Maps</a></div>
+            <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.9rem;"><a href="https://crystalvalley.cat" style="color:rgba(245,240,232,0.65);text-decoration:none;">crystalvalley.cat</a></div>
           </div>
         </div>
         <div>
           <p style="font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;text-align:left;">Kontakt</p>
           <div style="display:flex;flex-direction:column;gap:1rem;">
-            <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.9rem;">📞 <a href="tel:+420733667167" style="color:rgba(245,240,232,0.65);text-decoration:none;">+420 733 667 167</a></div>
-            <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.9rem;">✉ <a href="mailto:info@crystalvalley.cat" style="color:rgba(245,240,232,0.65);text-decoration:none;">info@crystalvalley.cat</a></div>
-            <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.9rem;">📘 <a href="https://www.facebook.com/p/CHS-Crystal-Valley-CZ-61576403146596/" target="_blank" style="color:rgba(245,240,232,0.65);text-decoration:none;">Facebook</a></div>
-            <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.9rem;">🛍 <a href="https://kocicibydleni.cz" target="_blank" style="color:rgba(245,240,232,0.65);text-decoration:none;">kocicibydleni.cz</a></div>
+            <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.9rem;"><a href="tel:+420733667167" style="color:rgba(245,240,232,0.65);text-decoration:none;">+420 733 667 167</a></div>
+            <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.9rem;"><a href="mailto:info@crystalvalley.cat" style="color:rgba(245,240,232,0.65);text-decoration:none;">info@crystalvalley.cat</a></div>
+            <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.9rem;"><a href="https://www.facebook.com/p/CHS-Crystal-Valley-CZ-61576403146596/" target="_blank" style="color:rgba(245,240,232,0.65);text-decoration:none;">Facebook</a></div>
+            <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.9rem;"><a href="https://kocicibydleni.cz" target="_blank" style="color:rgba(245,240,232,0.65);text-decoration:none;">kocicibydleni.cz</a></div>
           </div>
         </div>
       </div>
       <div style="border-top:1px solid rgba(201,168,76,0.15);padding-top:2rem;text-align:center;">
-        <p style="font-size:0.75rem;color:rgba(245,240,232,0.3);">Vytvořil Petr Brož</p><p><a href="https://broz-petr.cz" target="_blank" style="color:rgba(245,240,232,0.4);text-decoration:none;"></a></a></p><p>© 2026 Crystal Valley </p>
+        <p style="font-size:0.75rem;color:rgba(245,240,232,0.4);margin-bottom:0.4rem;">Web vytvořilo <a href="https://pebmedia.cz" target="_blank" rel="noopener" style="color:rgba(245,240,232,0.6);text-decoration:none;border-bottom:1px solid rgba(245,240,232,0.25);">PEBMedia</a></p><p style="font-size:0.75rem;color:rgba(245,240,232,0.4);">© 2026 Crystal Valley</p>
       </div>
     </div>
   </footer>
