@@ -616,7 +616,25 @@
   .bk-close:hover { border-color: var(--gold); color: var(--gold-light); }
   .bk-close svg, .bk-arrow svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .bk-stage { position: relative; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 0.75rem 1.5rem; touch-action: pan-y; -webkit-user-select: none; user-select: none; }
-  .bk-stage:not(.is-ready) .bk-shift { visibility: hidden; }
+  .bk-stage:not(.is-ready) .bk-shift, .bk-stage.is-zoom .bk-shift { visibility: hidden; }
+  .bk-tool { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; height: 44px; min-width: 44px; padding: 0 1.1rem; background: none; border: 1px solid rgba(201, 168, 76, 0.65); border-radius: 999px; color: var(--gold-light); font: 500 0.8rem 'Jost', sans-serif; letter-spacing: 0.05em; cursor: pointer; transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, opacity 0.25s ease; }
+  .bk-tool:hover:not(:disabled) { background: rgba(201, 168, 76, 0.18); }
+  .bk-tool:disabled { opacity: 0.35; cursor: default; }
+  .bk-tool:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 3px; }
+  .bk-tool[hidden] { display: none; }
+  .bk-tool svg { width: 20px; height: 20px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .bk-step { width: 44px; padding: 0; font-size: 1.5rem; line-height: 1; }
+  .bk-zoom-toggle .ico-book { display: none; }
+  .bk-zoom-toggle.is-on { background: var(--gold); border-color: var(--gold); color: var(--brown-deep); }
+  .bk-zoom-toggle.is-on:hover { background: var(--gold-light); }
+  .bk-zoom-toggle.is-on .ico-book { display: block; }
+  .bk-zoom-toggle.is-on .ico-lens { display: none; }
+  .bk-overlay.is-zoom .bk-dl { display: none; }
+  .bk-zoomview { position: absolute; inset: 0; overflow: auto; padding: 0.5rem 1.5rem 1.5rem; touch-action: pan-x pan-y pinch-zoom; overscroll-behavior: contain; cursor: grab; -webkit-user-select: none; user-select: none; scrollbar-width: thin; scrollbar-color: rgba(201, 168, 76, 0.6) transparent; }
+  .bk-zoomview:focus { outline: none; }
+  .bk-zoomview.is-drag { cursor: grabbing; }
+  .bk-zoomview[hidden] { display: none; }
+  .bk-zoomview canvas { display: block; margin: 0 auto; background: #fff; border-radius: 2px; box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.7); transition: opacity 0.2s ease; }
   .bk-shift { transition: transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1); }
   .bk-book { position: relative; perspective: 2600px; }
   .bk-book.is-single { perspective: 1800px; }
@@ -665,6 +683,10 @@
     .bk-dl { padding: 0.5rem 0.95rem; font-size: 0.75rem; letter-spacing: 0.1em; }
     .bk-dl-long { display: none; }
     .bk-dl-short { display: inline; }
+    .bk-top-actions { gap: 0.5rem; }
+    .bk-zoom-toggle { width: 44px; padding: 0; }
+    .bk-tool-label { display: none; }
+    .bk-zoomview { padding: 0.25rem 0.5rem 1rem; }
     .bk-bar { padding-bottom: 1rem; gap: 1rem; }
     .bk-arrow { width: 48px; height: 48px; }
     .bk-count { min-width: 8rem; }
@@ -1469,12 +1491,20 @@
     <div class="bk-top">
       <p class="bk-top-title">Historie plemene</p>
       <div class="bk-top-actions">
+        <button type="button" class="bk-tool bk-step" id="bkZoomOut" aria-label="Zmenšit text" hidden>−</button>
+        <button type="button" class="bk-tool bk-step" id="bkZoomIn" aria-label="Zvětšit text" hidden>+</button>
+        <button type="button" class="bk-tool bk-zoom-toggle" id="bkZoomBtn" aria-pressed="false" aria-label="Přiblížit text" disabled>
+          <svg class="ico-lens" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5M11 8.2v5.6M8.2 11h5.6"/></svg>
+          <svg class="ico-book" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v15H5.5A1.5 1.5 0 0 0 4 20.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v15h5.5a1.5 1.5 0 0 1 1.5 1.5z"/></svg>
+          <span class="bk-tool-label" id="bkZoomLabel">Přiblížit text</span>
+        </button>
         <a class="bk-dl" id="bkDownload" href="data/history.pdf" target="_blank" rel="noopener" aria-label="Zobrazit knihu jako PDF"><span class="bk-dl-long">Zobrazit jako PDF</span><span class="bk-dl-short">PDF</span></a>
         <button type="button" class="bk-close" id="bkClose" aria-label="Zavřít knihu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
     </div>
     <div class="bk-stage" id="bkStage">
       <div class="bk-shift" id="bkShift"><div class="bk-book" id="bkBook"></div></div>
+      <div class="bk-zoomview" id="bkZoomView" tabindex="-1" hidden><canvas id="bkZoomCanvas" role="img" aria-label="Zvětšená stránka knihy"></canvas></div>
       <div class="bk-status" id="bkStatus" hidden></div>
     </div>
     <div class="bk-bar">
@@ -1502,12 +1532,14 @@
       meta: null, sources: [], title: DEFAULT_TITLE,
       lib: null, doc: null, docKey: '', loading: null,
       n: 0, pr: 1 / 1.414, renderW: 0, gen: 0, cache: new Map(), chain: Promise.resolve(),
-      open: false, wide: true, spread: 0, spreads: 1, page: 0, busy: false, pw: 0, ph: 0, opener: null, prevOverflow: ''
+      open: false, wide: true, spread: 0, spreads: 1, page: 0, busy: false, pw: 0, ph: 0, opener: null, prevOverflow: '',
+      zoom: false, zpage: 1, zlevel: 1, zr: 0, zt: 0
     };
 
     const reader = $('#bookReader'), stage = $('#bkStage'), shift = $('#bkShift'), book = $('#bkBook');
     const openBtn = $('#historyOpen'), bookBtn = $('#historyBook');
-    if (!reader || !stage || !book || !openBtn || !bookBtn) return;
+    const zoomView = $('#bkZoomView'), zoomCanvas = $('#bkZoomCanvas'), zoomBtn = $('#bkZoomBtn'), zoomIn = $('#bkZoomIn'), zoomOut = $('#bkZoomOut');
+    if (!reader || !stage || !book || !openBtn || !bookBtn || !zoomView || !zoomBtn) return;
 
     // ── obálka (na webu i v knize) ──
     function fillCover(node, back) {
@@ -1732,8 +1764,119 @@
       anim.finished.then(done, done);
     }
 
+    // ── přiblížení textu: jedna stránka ve čtecí velikosti, posouvá se rolováním nebo tažením ──
+    const ZMIN_WIDE = 0.6, ZMIN_NARROW = 1, ZMAX = 3.5, ZSTEP = 1.25;
+    const zoomMin = () => (S.wide ? ZMIN_WIDE : ZMIN_NARROW);
+    function layoutZoom() {
+      const cs = getComputedStyle(zoomView);
+      const avail = zoomView.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      const base = S.wide ? Math.min(avail, 980) : avail;   // 100 % = šířka okna (na počítači nejvýš 980 px)
+      const w = Math.max(200, Math.round(base * S.zlevel));
+      zoomCanvas.style.width = w + 'px';
+      zoomCanvas.style.height = Math.round(w / S.pr) + 'px';
+      zoomIn.disabled = S.zlevel >= ZMAX - 0.01;
+      zoomOut.disabled = S.zlevel <= zoomMin() + 0.01;
+      return w;
+    }
+    async function renderZoom() {
+      if (!S.zoom || !S.doc) return;
+      const token = ++S.zr;
+      zoomCanvas.style.opacity = '0.45';
+      try {
+        const cssW = layoutZoom();
+        const page = await S.doc.getPage(S.zpage);
+        const base = page.getViewport({ scale: 1 });
+        const pxW = Math.min(2800, Math.round(cssW * Math.min(window.devicePixelRatio || 1, 2)));
+        const vp = page.getViewport({ scale: pxW / base.width });
+        const off = D.createElement('canvas');
+        off.width = Math.ceil(vp.width); off.height = Math.ceil(vp.height);
+        const ctx = off.getContext('2d', { alpha: false });
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, off.width, off.height);
+        await page.render({ canvasContext: ctx, viewport: vp }).promise;
+        page.cleanup();
+        if (token !== S.zr || !S.zoom) return;       // mezitím se přiblížilo jinak nebo přelistovalo
+        zoomCanvas.width = off.width; zoomCanvas.height = off.height;
+        zoomCanvas.getContext('2d').drawImage(off, 0, 0);
+        zoomCanvas.setAttribute('aria-label', `Strana ${S.zpage} z ${S.n}`);
+        zoomCanvas.style.opacity = '1';
+      } catch (e) { if (token === S.zr) zoomCanvas.style.opacity = '1'; }
+    }
+    function setZoomUi(on) {
+      stage.classList.toggle('is-zoom', on);
+      reader.classList.toggle('is-zoom', on);
+      zoomView.hidden = !on;
+      zoomIn.hidden = zoomOut.hidden = !on;
+      zoomBtn.classList.toggle('is-on', on);
+      zoomBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      const label = on ? 'Zpět na celou knihu' : 'Přiblížit text';
+      zoomBtn.setAttribute('aria-label', label);
+      $('#bkZoomLabel').textContent = label;
+    }
+    function enterZoom() {
+      if (!S.open || !S.n || S.busy || S.zoom) return;
+      const p = S.wide ? 2 * S.spread - 1 : S.page;   // levá strana dvoustrany, nebo právě zobrazená
+      S.zpage = Math.min(S.n, Math.max(1, p));
+      S.zoom = true;
+      S.zlevel = S.wide ? 1 : 1.8;                    // na telefonu rovnou 1,8× šířka okna, ať je text čitelný
+      setZoomUi(true);
+      zoomView.scrollTop = 0;
+      const w = layoutZoom();
+      zoomView.scrollLeft = S.wide ? 0 : Math.round(w * 0.09);   // na telefonu začít u levého okraje textu, ne u okraje papíru
+      zoomCanvas.getContext('2d').clearRect(0, 0, zoomCanvas.width, zoomCanvas.height);
+      renderZoom();
+      updateUi();
+      zoomView.focus({ preventScroll: true });
+    }
+    function exitZoom() {
+      if (!S.zoom) return;
+      S.zoom = false; S.zr++;
+      clearTimeout(S.zt);
+      setZoomUi(false);
+      zoomCanvas.width = zoomCanvas.height = 0;
+      metrics();                                       // okno se mohlo mezitím změnit
+      if (S.wide) S.spread = Math.ceil(S.zpage / 2); else S.page = S.zpage;
+      view();
+      zoomBtn.focus({ preventScroll: true });
+    }
+    function zoomBy(f) {
+      if (!S.zoom) return;
+      const nl = Math.min(ZMAX, Math.max(zoomMin(), S.zlevel * f));
+      if (Math.abs(nl - S.zlevel) < 0.001) return;
+      const cx = (zoomView.scrollLeft + zoomView.clientWidth / 2) / zoomView.scrollWidth;
+      const cy = (zoomView.scrollTop + zoomView.clientHeight / 2) / zoomView.scrollHeight;
+      S.zlevel = nl;
+      layoutZoom();                                    // hned se změní velikost, ostrost se dokreslí vzápětí
+      zoomView.scrollLeft = cx * zoomView.scrollWidth - zoomView.clientWidth / 2;
+      zoomView.scrollTop = cy * zoomView.scrollHeight - zoomView.clientHeight / 2;
+      clearTimeout(S.zt); S.zt = setTimeout(renderZoom, 150);
+    }
+    zoomBtn.addEventListener('click', () => (S.zoom ? exitZoom() : enterZoom()));
+    zoomIn.addEventListener('click', () => zoomBy(ZSTEP));
+    zoomOut.addEventListener('click', () => zoomBy(1 / ZSTEP));
+    // tažení myší po zvětšené stránce
+    let drag = null;
+    zoomView.addEventListener('pointerdown', e => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      drag = { x: e.clientX, y: e.clientY, l: zoomView.scrollLeft, t: zoomView.scrollTop };
+      zoomView.setPointerCapture(e.pointerId); zoomView.classList.add('is-drag');
+    });
+    zoomView.addEventListener('pointermove', e => {
+      if (!drag) return;
+      zoomView.scrollLeft = drag.l - (e.clientX - drag.x);
+      zoomView.scrollTop = drag.t - (e.clientY - drag.y);
+    });
+    ['pointerup', 'pointercancel'].forEach(ev => zoomView.addEventListener(ev, () => { drag = null; zoomView.classList.remove('is-drag'); }));
+
     function go(d) {
       if (!S.open || !S.n) return;
+      if (S.zoom) {
+        const p = S.zpage + d;
+        if (p < 1 || p > S.n) return;
+        S.zpage = p;
+        zoomView.scrollTop = 0;
+        renderZoom(); updateUi();
+        return;
+      }
       if (S.wide) {
         if (S.busy) return;
         if ((d > 0 && S.spread < S.spreads - 1) || (d < 0 && S.spread > 0)) flip(d);
@@ -1746,6 +1889,12 @@
 
     function updateUi() {
       const n = S.n; let t;
+      if (S.zoom) {
+        $('#bkCount').textContent = `Strana ${S.zpage} z ${n}`;
+        $('#bkPrev').disabled = S.zpage <= 1;
+        $('#bkNext').disabled = S.zpage >= n;
+        return;
+      }
       if (S.wide) {
         const a = 2 * S.spread - 1, b = 2 * S.spread;
         if (S.spread === 0) t = 'Obálka';
@@ -1773,6 +1922,13 @@
     }
     let rafId = 0;
     function relayout() {
+      if (S.zoom) {
+        S.wide = window.innerWidth >= 900;
+        S.zlevel = Math.min(ZMAX, Math.max(zoomMin(), S.zlevel));
+        layoutZoom();
+        clearTimeout(S.zt); S.zt = setTimeout(renderZoom, 200);
+        return;
+      }
       if (!S.open || !S.n || !stage.classList.contains('is-ready') || S.busy) return;
       const wasWide = S.wide;
       const sharper = metrics();
@@ -1801,6 +1957,8 @@
       S.open = true; S.opener = opener || D.activeElement;
       S.prevOverflow = D.body.style.overflow; D.body.style.overflow = 'hidden';
       stage.classList.remove('is-ready');
+      if (S.zoom) { S.zoom = false; S.zr++; setZoomUi(false); }
+      zoomBtn.disabled = true;
       reader.setAttribute('aria-hidden', 'false');
       requestAnimationFrame(() => reader.classList.add('is-open'));
       $('#bkClose').focus({ preventScroll: true });
@@ -1808,16 +1966,18 @@
       getDoc().then(() => {
         if (!S.open) return;
         S.spread = 0; S.page = 0; S.busy = false;
+        zoomBtn.disabled = false;
         stage.classList.add('is-ready');
         metrics();
         setStatus(null);
         view();
         if (!REDUCED.matches) book.animate([{ opacity: 0, transform: 'translateY(18px) scale(0.94)' }, { opacity: 1, transform: 'none' }], { duration: 650, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' });
-      }).catch(() => { if (S.open) setStatus('error'); });
+      }).catch(e => { console.error('Kniha se nenačetla:', e); if (S.open) setStatus('error'); });
     }
     function closeBook() {
       if (!S.open) return;
       S.open = false;
+      if (S.zoom) { S.zoom = false; S.zr++; clearTimeout(S.zt); setZoomUi(false); zoomCanvas.width = zoomCanvas.height = 0; }
       reader.classList.remove('is-open');
       reader.setAttribute('aria-hidden', 'true');
       D.body.style.overflow = S.prevOverflow;
@@ -1834,9 +1994,11 @@
 
     D.addEventListener('keydown', e => {
       if (!S.open) return;
-      if (e.key === 'Escape') { e.preventDefault(); closeBook(); }
+      if (e.key === 'Escape') { e.preventDefault(); if (S.zoom) exitZoom(); else closeBook(); }
       else if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
       else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      else if ((e.key === '+' || e.key === '=') && S.zoom) { e.preventDefault(); zoomBy(ZSTEP); }
+      else if ((e.key === '-' || e.key === '_') && S.zoom) { e.preventDefault(); zoomBy(1 / ZSTEP); }
       else if (e.key === 'Tab') {
         const f = [...reader.querySelectorAll('a[href], button:not([disabled])')].filter(n => n.offsetParent !== null);
         if (!f.length) return;
@@ -1849,10 +2011,10 @@
 
     // tažení prstem / klik na levou či pravou stranu / klik mimo knihu zavře
     let down = null;
-    stage.addEventListener('pointerdown', e => { if (e.button === 0 || e.pointerType === 'touch') down = { x: e.clientX, y: e.clientY }; });
+    stage.addEventListener('pointerdown', e => { if (!S.zoom && (e.button === 0 || e.pointerType === 'touch')) down = { x: e.clientX, y: e.clientY }; });
     stage.addEventListener('pointercancel', () => { down = null; });
     stage.addEventListener('pointerup', e => {
-      if (!down) return;
+      if (!down || S.zoom) { down = null; return; }
       const dx = e.clientX - down.x, dy = e.clientY - down.y;
       down = null;
       if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) { go(dx < 0 ? 1 : -1); return; }
