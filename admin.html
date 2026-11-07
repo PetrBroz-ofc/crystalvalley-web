@@ -373,10 +373,16 @@ async function ghPut(path, content, sha) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ path, content, sha })
   });
-  if (!r.ok) { toast('❌ Chyba uložení', 'error'); return false; }
+  if (!r.ok) { toast('❌ ' + await apiErrorText(r, 'Chyba uložení'), 'error'); return false; }
   const d = await r.json();
   if (d.content) fileSHAs[path] = d.content.sha;
   return true;
+}
+
+// Srozumitelná hláška ze serveru (třeba „Nepodporovaný typ souboru“), jinak výchozí text
+async function apiErrorText(r, fallback) {
+  try { const d = await r.json(); if (d && d.message) return d.message; } catch (e) { /* bez zprávy */ }
+  return fallback || `Chyba serveru (${r.status}).`;
 }
 
 async function ghUploadFile(filename, base64data, folder = 'images') {
@@ -387,7 +393,7 @@ async function ghUploadFile(filename, base64data, folder = 'images') {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ path, content: base64data, isBase64: true })
   });
-  if (!r.ok) { console.error('Upload failed', r.status); return null; }
+  if (!r.ok) { console.error('Upload failed', r.status); toast('❌ ' + await apiErrorText(r, 'Soubor se nepodařilo nahrát'), 'error'); return null; }
   return `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${path}`;
 }
 
@@ -1281,7 +1287,7 @@ async function saveHistory() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ path: HISTORY_PDF_PATH, content, isBase64: true })
       });
-      if (!r.ok) throw new Error(r.status === 413 ? 'Soubor je na nahrání příliš velký. Zmenšete ho a zkuste to znovu.' : `Nahrání PDF se nepovedlo (chyba ${r.status}).`);
+      if (!r.ok) throw new Error(r.status === 413 ? 'Soubor je na nahrání příliš velký. Zmenšete ho a zkuste to znovu.' : await apiErrorText(r, `Nahrání PDF se nepovedlo (chyba ${r.status}).`));
       meta.file = HISTORY_PDF_PATH;
       meta.pages = historyPending.pages;
       meta.size = historyPending.file.size;
