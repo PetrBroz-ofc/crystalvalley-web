@@ -129,6 +129,21 @@ body { font-family: system-ui, -apple-system, sans-serif; background: var(--crea
 .gallery-admin-item button { position:absolute; top:4px; right:4px; background:rgba(139,46,46,0.9); color:white; border:none; width:22px; height:22px; border-radius:50%; cursor:pointer; font-size:12px; }
 .gallery-admin-item .g-label { position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.6); color:white; font-size:0.65rem; padding:3px 6px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
+/* HISTORIE (kniha z PDF) */
+.hint { font-size:0.84rem; color:var(--brown-mid); line-height:1.55; margin-bottom:1.25rem; }
+.history-current { display:flex; gap:1rem; align-items:center; padding:0.9rem 1rem; background:var(--cream); border:1px solid var(--border); border-radius:8px; margin-bottom:1.25rem; font-size:0.85rem; }
+.history-current strong { display:block; font-size:0.92rem; margin-bottom:0.15rem; }
+.history-current span { color:var(--brown-mid); }
+.history-current a { color:var(--brown-mid); }
+.history-pick { margin:0.75rem 0 1rem; display:none; gap:1rem; align-items:center; padding:0.9rem 1rem; background:rgba(45,106,79,0.07); border:1px solid rgba(45,106,79,0.35); border-radius:8px; font-size:0.85rem; }
+.history-pick.show { display:flex; }
+.history-pick canvas { width:72px; height:auto; border-radius:4px; border:1px solid var(--border); background:#fff; flex-shrink:0; }
+.history-pick strong { display:block; margin-bottom:0.15rem; word-break:break-word; }
+.history-pick span { color:var(--brown-mid); }
+.history-msg { display:none; margin:0.75rem 0 0; padding:0.7rem 0.9rem; border-radius:8px; font-size:0.84rem; line-height:1.5; background:rgba(139,46,46,0.08); border:1px solid rgba(139,46,46,0.35); color:var(--red); }
+.history-msg.show { display:block; }
+.upload-area.is-over { border-color:var(--gold); background:rgba(201,168,76,0.08); }
+
 /* TOAST */
 .toast { position:fixed; bottom:1.5rem; right:1.5rem; padding:0.85rem 1.5rem; border-radius:10px; font-size:0.88rem; font-weight:500; display:none; z-index:999; box-shadow:0 8px 24px rgba(0,0,0,0.2); animation:slideUp 0.3s ease; }
 .toast.success { background:var(--green); color:white; }
@@ -179,6 +194,7 @@ body { font-family: system-ui, -apple-system, sans-serif; background: var(--crea
     <button class="tab" onclick="showTab('litters',this)">🐾 Koťata</button>
     <button class="tab" onclick="showTab('gallery',this)">📸 Galerie</button>
     <button class="tab" onclick="showTab('certificates',this)">🎓 Certifikáty</button>
+    <button class="tab" onclick="showTab('history',this);loadHistory()">📖 Historie</button>
     <button class="tab" onclick="showTab('about',this)">📝 O nás</button>
     <button class="tab" onclick="showTab('settings',this)">⚙️ Nastavení</button>
   </div>
@@ -215,6 +231,31 @@ body { font-family: system-ui, -apple-system, sans-serif; background: var(--crea
     <div class="card">
       <div class="card-header"><h3>Certifikáty</h3><button class="btn btn-primary" onclick="openModal('certfolder')">+ Přidat složku</button></div>
       <div id="list-certificates"><div class="loading-state">Načítám...</div></div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-history">
+    <div class="card">
+      <div class="card-header"><h3>Historie norské lesní kočky</h3></div>
+      <p class="hint">Na webu se z nahraného PDF automaticky vytvoří listovací kniha. Když nahrajete nové PDF, kniha na webu se sama aktualizuje a původní soubor se nahradí.</p>
+
+      <div class="history-current" id="history-current"><span>Načítám…</span></div>
+
+      <div class="field"><label>Název knihy (na obálce)</label><input type="text" id="history-title" maxlength="120" placeholder="Z norských lesů ke světovým vítězům"></div>
+      <div class="field"><label>Krátký popis (vedle knihy na webu)</label><textarea id="history-perex" rows="3" maxlength="400" placeholder="Pár vět, které přivedou návštěvníka k otevření knihy."></textarea></div>
+
+      <div class="field">
+        <label>PDF s knihou</label>
+        <div class="upload-area" id="history-drop" onclick="document.getElementById('history-file').click()">
+          <span class="upload-icon">📖</span>
+          Klikněte a vyberte PDF, nebo ho sem přetáhněte (maximálně 3 MB)
+          <input type="file" id="history-file" accept="application/pdf,.pdf" onchange="pickHistoryFile(this.files[0]); this.value=''">
+        </div>
+        <div class="history-pick" id="history-pick"></div>
+        <div class="history-msg" id="history-msg" role="alert"></div>
+      </div>
+
+      <button class="btn btn-success" id="history-save-btn" onclick="saveHistory()">💾 Nahrát a zveřejnit</button>
     </div>
   </div>
 
@@ -1108,6 +1149,168 @@ async function saveAbout() {
   if (ok) toast('✅ Text uložen!', 'success');
   btn.disabled = false; btn.innerHTML = '💾 Uložit text';
 }
+
+// ── HISTORIE (kniha z PDF) ──
+// PDF se ukládá vždy na stejné místo (data/history.pdf), popis a čas změny do data/history.json.
+// Web si z history.json vezme čas změny a podle něj si stáhne vždy čerstvé PDF.
+const HISTORY_PDF_PATH = 'data/history.pdf';
+const HISTORY_JSON_PATH = 'data/history.json';
+const MAX_PDF_BYTES = 3 * 1024 * 1024; // do limitu 4,5 MB, který má funkce /api/save (PDF se posílá jako base64, tedy o třetinu větší)
+let historyMeta = null;
+let historyPending = null;
+let historyLoaded = false;
+let pdfLibPromise = null;
+
+function loadPdfLib() {
+  if (!pdfLibPromise) {
+    pdfLibPromise = import('./vendor/pdfjs/pdf.min.js').then(lib => {
+      lib.GlobalWorkerOptions.workerSrc = new URL('vendor/pdfjs/pdf.worker.min.js', location.href).href;
+      return lib;
+    });
+    pdfLibPromise.catch(() => { pdfLibPromise = null; });
+  }
+  return pdfLibPromise;
+}
+
+function historyError(text) {
+  const box = document.getElementById('history-msg');
+  box.textContent = text || '';
+  box.classList.toggle('show', !!text);
+}
+
+function fmtMB(bytes) { return (bytes / 1048576).toLocaleString('cs-CZ', { maximumFractionDigits: 1 }) + ' MB'; }
+function pagesWord(n) { return n === 1 ? 'strana' : n < 5 ? 'strany' : 'stran'; }
+
+async function loadHistory(force) {
+  if (historyLoaded && !force) return;
+  historyLoaded = true;
+  const m = await ghGet(HISTORY_JSON_PATH);
+  historyMeta = (m && typeof m === 'object') ? m : null;
+  renderHistory();
+}
+
+function renderHistory() {
+  const box = document.getElementById('history-current');
+  box.replaceChildren();
+  const m = historyMeta;
+  if (!m || !m.file) {
+    const s = document.createElement('span');
+    s.textContent = 'Zatím nebyla nahrána žádná kniha. Vyberte PDF níže.';
+    box.append(s);
+    return;
+  }
+  document.getElementById('history-title').value = m.title || '';
+  document.getElementById('history-perex').value = m.perex || '';
+  const info = document.createElement('div');
+  const strong = document.createElement('strong');
+  strong.textContent = 'Aktuální kniha na webu';
+  const meta = document.createElement('span');
+  const parts = [];
+  if (m.pages) parts.push(`${m.pages} ${pagesWord(m.pages)}`);
+  if (m.size) parts.push(fmtMB(m.size));
+  if (m.updated && !isNaN(new Date(m.updated))) parts.push('nahráno ' + new Date(m.updated).toLocaleString('cs-CZ', { dateStyle: 'medium', timeStyle: 'short' }));
+  meta.textContent = parts.join(' · ');
+  info.append(strong, meta);
+  const link = document.createElement('a');
+  link.href = 'index.html#history'; link.target = '_blank'; link.rel = 'noopener';
+  link.textContent = 'Zobrazit na webu →';
+  link.style.marginLeft = 'auto';
+  box.append(info, link);
+}
+
+async function pickHistoryFile(file) {
+  if (!file) return;
+  historyError('');
+  historyPending = null;
+  document.getElementById('history-pick').classList.remove('show');
+  if (!/\.pdf$/i.test(file.name) && file.type !== 'application/pdf') { historyError('Vyberte prosím soubor ve formátu PDF.'); return; }
+  if (file.size > MAX_PDF_BYTES) {
+    historyError(`Soubor má ${fmtMB(file.size)}, ale maximum je ${fmtMB(MAX_PDF_BYTES)}. Zmenšete ho (například nástrojem „Komprimovat PDF“ na ilovepdf.com) a nahrajte znovu.`);
+    return;
+  }
+  try {
+    const buf = await file.arrayBuffer();
+    if (String.fromCharCode(...new Uint8Array(buf.slice(0, 5))) !== '%PDF-') throw new Error('not-pdf');
+    const lib = await loadPdfLib();
+    const doc = await lib.getDocument({ data: new Uint8Array(buf.slice(0)), isEvalSupported: false, enableXfa: false }).promise;
+    const page = await doc.getPage(1);
+    const base = page.getViewport({ scale: 1 });
+    const vp = page.getViewport({ scale: 220 / base.width });
+    const cv = document.createElement('canvas');
+    cv.width = Math.ceil(vp.width); cv.height = Math.ceil(vp.height);
+    const ctx = cv.getContext('2d', { alpha: false });
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cv.width, cv.height);
+    await page.render({ canvasContext: ctx, viewport: vp }).promise;
+    historyPending = { file, pages: doc.numPages };
+    const pick = document.getElementById('history-pick');
+    pick.replaceChildren();
+    const text = document.createElement('div');
+    const strong = document.createElement('strong');
+    strong.textContent = file.name;
+    const meta = document.createElement('span');
+    meta.textContent = `${doc.numPages} ${pagesWord(doc.numPages)} · ${fmtMB(file.size)} · připraveno k nahrání`;
+    text.append(strong, meta);
+    pick.append(cv, text);
+    pick.classList.add('show');
+  } catch (e) {
+    console.error('PDF', e);
+    historyError('Tento soubor se nepodařilo přečíst jako PDF. Zkuste ho prosím uložit znovu nebo vyberte jiný.');
+  }
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(String(r.result).split(',')[1]);
+    r.onerror = () => reject(r.error);
+    r.readAsDataURL(file);
+  });
+}
+
+async function saveHistory() {
+  const btn = document.getElementById('history-save-btn');
+  if (!historyPending && !(historyMeta && historyMeta.file)) { historyError('Nejdřív vyberte PDF soubor.'); return; }
+  historyError('');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Nahrávám...';
+  try {
+    const meta = Object.assign({}, historyMeta || {});
+    if (historyPending) {
+      const content = await fileToBase64(historyPending.file);
+      const r = await fetch(API_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: HISTORY_PDF_PATH, content, isBase64: true })
+      });
+      if (!r.ok) throw new Error(r.status === 413 ? 'Soubor je na nahrání příliš velký. Zmenšete ho a zkuste to znovu.' : `Nahrání PDF se nepovedlo (chyba ${r.status}).`);
+      meta.file = HISTORY_PDF_PATH;
+      meta.pages = historyPending.pages;
+      meta.size = historyPending.file.size;
+      meta.updated = new Date().toISOString();
+    }
+    meta.title = val('history-title').trim();
+    meta.perex = val('history-perex').trim();
+    const ok = await ghPut(HISTORY_JSON_PATH, JSON.stringify(meta, null, 2));
+    if (!ok) throw new Error('Uložení popisu knihy se nepovedlo. Zkuste to prosím znovu.');
+    historyMeta = meta;
+    historyPending = null;
+    document.getElementById('history-pick').classList.remove('show');
+    renderHistory();
+    toast('✅ Kniha je zveřejněná. Na webu se ukáže během chvilky.', 'success');
+  } catch (e) {
+    console.error(e);
+    historyError(e && e.message ? e.message : 'Něco se nepovedlo. Zkuste to prosím znovu.');
+  } finally {
+    btn.disabled = false; btn.innerHTML = '💾 Nahrát a zveřejnit';
+  }
+}
+
+(function initHistoryDrop() {
+  const drop = document.getElementById('history-drop');
+  if (!drop) return;
+  ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('is-over'); }));
+  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('is-over'); }));
+  drop.addEventListener('drop', e => { const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) pickHistoryFile(f); });
+})();
 
 // ── HELPERS ──
 function val(id) { const el = document.getElementById(id); return el ? el.value : ''; }

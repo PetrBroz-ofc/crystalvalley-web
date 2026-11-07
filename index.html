@@ -112,6 +112,7 @@
     .mnav.open .mnav-links li:nth-child(2) { transition-delay: .04s; } .mnav.open .mnav-links li:nth-child(3) { transition-delay: .08s; }
     .mnav.open .mnav-links li:nth-child(4) { transition-delay: .12s; } .mnav.open .mnav-links li:nth-child(5) { transition-delay: .16s; }
     .mnav.open .mnav-links li:nth-child(6) { transition-delay: .2s; } .mnav.open .mnav-links li:nth-child(7) { transition-delay: .24s; }
+    .mnav.open .mnav-links li:nth-child(8) { transition-delay: .28s; }
     .mnav-links a { display: flex; align-items: baseline; gap: 1rem; padding: 0.85rem 0; text-decoration: none; color: var(--brown-deep); font-family: 'Cormorant Garamond', serif; font-size: 1.9rem; font-weight: 400; line-height: 1.1; }
     .mnav-num { font-family: 'Jost', sans-serif; font-size: 0.7rem; letter-spacing: 0.1em; color: var(--gold); }
     .mnav-foot { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-top: 2rem; }
@@ -542,6 +543,137 @@
       header h1 { font-size: 2rem; }
     }
 
+  /* ── HISTORIE: kniha o plemeni ── */
+  #history { position: relative; max-width: none; margin: 0; padding: 7rem 2rem 6.5rem; overflow: hidden; color: var(--cream);
+    background: radial-gradient(55% 70% at 26% 52%, rgba(201, 168, 76, 0.17), transparent 72%), linear-gradient(180deg, #2a1c10 0%, #3b2a1a 50%, #2a1c10 100%); }
+  #history::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.5; background-image: radial-gradient(rgba(232, 208, 154, 0.07) 1px, transparent 1.5px); background-size: 28px 28px; }
+  #history .section-title { color: var(--cream); }
+  .history-inner { position: relative; max-width: 1100px; margin: 0 auto; }
+  .history-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(2rem, 6vw, 5rem); align-items: center; }
+  .history-kicker { font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+  .history-book-title { font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: clamp(2rem, 3.6vw, 3rem); line-height: 1.08; color: var(--cream); margin-bottom: 1.25rem; }
+  .history-perex { font-weight: 300; font-size: 1.08rem; color: rgba(245, 240, 232, 0.78); max-width: 34rem; margin-bottom: 2rem; }
+  .history-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.9rem 1.5rem; }
+  .history-btn { display: inline-flex; align-items: center; gap: 0.7rem; padding: 0.95rem 1.9rem; background: var(--gold); color: var(--brown-deep); border: 0; border-radius: 3px; font: 600 0.78rem 'Jost', sans-serif; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: background 0.25s ease, transform 0.25s ease; }
+  .history-btn:hover:not([disabled]) { background: var(--gold-light); transform: translateY(-2px); }
+  .history-btn[disabled] { opacity: 0.5; cursor: default; }
+  .history-btn:focus-visible, .history-link:focus-visible, .bk-dl:focus-visible, .bk-close:focus-visible, .bk-arrow:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 3px; }
+  .history-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .history-link { color: rgba(245, 240, 232, 0.75); font-size: 0.85rem; letter-spacing: 0.04em; text-decoration: none; border-bottom: 1px solid rgba(201, 168, 76, 0.45); padding-bottom: 2px; transition: color 0.25s ease, border-color 0.25s ease; }
+  .history-link:hover { color: var(--cream); border-color: var(--gold); }
+  .history-meta { margin-top: 1.75rem; min-height: 1.2em; font-size: 0.76rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(245, 240, 232, 0.45); }
+
+  /* Postupné odhalení sekce (jen když to prohlížeč umí a uživatel nemá vypnuté animace) */
+  #history.js-rv .rv { opacity: 0; transform: translateY(26px); transition: opacity 0.9s ease, transform 1s cubic-bezier(.2, .8, .2, 1); }
+  #history.js-rv .history-copy.rv { transition-delay: 0.15s; }
+  #history.js-rv .rv.is-in { opacity: 1; transform: none; }
+
+  /* Zavřená 3D kniha */
+  .hbook-stage { display: flex; justify-content: center; padding: 1rem 0 2.2rem; }
+  .hbook-float { animation: hbookFloat 7s ease-in-out infinite; }
+  @keyframes hbookFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+  .hbook { --bw: clamp(210px, 25vw, 290px); --bh: calc(var(--bw) * 1.414); --bd: 44px; position: relative; display: block; width: var(--bw); height: var(--bh); padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; perspective: 1700px; -webkit-tap-highlight-color: transparent; }
+  .hbook::before { content: ''; position: absolute; left: 4%; right: -16%; bottom: -30px; height: 34px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0, 0, 0, 0.6), transparent); filter: blur(7px); transition: transform 0.9s cubic-bezier(.2, .8, .2, 1), opacity 0.9s ease; }
+  .hbook:hover::before, .hbook:focus-visible::before { transform: translateX(-4%) scaleX(0.92); opacity: 0.8; }
+  .hbook:focus-visible { outline: 2px solid var(--gold); outline-offset: 16px; border-radius: 6px; }
+  .hbook-body { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateX(-6deg) rotateY(27deg); transition: transform 0.9s cubic-bezier(.2, .8, .2, 1); }
+  .hbook:hover .hbook-body, .hbook:focus-visible .hbook-body { transform: rotateX(-3deg) rotateY(11deg) translateY(-6px); }
+  .hbook-face { position: absolute; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .hbook-front { inset: 0; transform: translateZ(calc(var(--bd) / 2)); border-radius: 2px 7px 7px 2px; }
+  .hbook-back { inset: 0; transform: rotateY(180deg) translateZ(calc(var(--bd) / 2)); background: #24170c; border-radius: 7px 2px 2px 7px; }
+  .hbook-spine { top: 0; bottom: 0; left: calc((var(--bw) - var(--bd)) / 2); width: var(--bd); transform: rotateY(-90deg) translateZ(calc(var(--bw) / 2)); background: linear-gradient(90deg, #1b1007, #3d2a16 35%, #2c1c0e 65%, #1b1007); border-radius: 2px 0 0 2px; }
+  .hbook-spine::before, .hbook-spine::after { content: ''; position: absolute; left: 0; right: 0; height: 1px; background: rgba(201, 168, 76, 0.6); box-shadow: 0 5px 0 rgba(201, 168, 76, 0.3); }
+  .hbook-spine::before { top: 11%; }
+  .hbook-spine::after { bottom: 11%; }
+  .hbook-top { left: 0; width: var(--bw); height: var(--bd); top: calc((var(--bh) - var(--bd)) / 2); transform: rotateX(90deg) translateZ(calc(var(--bh) / 2));
+    background: linear-gradient(180deg, #2c1c0e 0 5px, transparent 5px calc(100% - 5px), #2c1c0e calc(100% - 5px)), repeating-linear-gradient(180deg, #f6f1e5 0 2px, #d8cfbb 2px 3px); }
+
+  /* Obálka (na webu i v otevřené knize) */
+  .bk-cover { position: relative; container-type: inline-size; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; padding: 11% 9%; text-align: center; overflow: hidden; color: var(--gold-light);
+    background: radial-gradient(120% 80% at 28% 0%, rgba(255, 230, 170, 0.12), transparent 55%), linear-gradient(135deg, #4d3421 0%, #2f2013 55%, #231509 100%); }
+  .bk-cover::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.55; background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 3px), repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.06) 0 1px, transparent 1px 3px); }
+  .bk-frame { position: absolute; inset: 6%; border: 1px solid rgba(201, 168, 76, 0.7); border-radius: 2px; pointer-events: none; }
+  .bk-frame::after { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(201, 168, 76, 0.28); }
+  .bk-label { position: relative; display: block; width: 64%; aspect-ratio: 1; border-radius: 4px; overflow: hidden; background: var(--cream); border: 1px solid rgba(201, 168, 76, 0.75); box-shadow: 0 0 0 3px rgba(35, 21, 9, 0.9), 0 0 0 4px rgba(201, 168, 76, 0.35), 0 10px 24px rgba(0, 0, 0, 0.4); }
+  .bk-label img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .bk-kicker { position: relative; display: block; margin-top: 8cqw; font-size: 3.1cqw; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); }
+  .bk-title { position: relative; display: block; margin-top: 3cqw; font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 7.6cqw; line-height: 1.1; color: #f3e6c4; text-shadow: 0 1px 0 rgba(0, 0, 0, 0.45); }
+  .bk-orn { position: relative; display: block; margin-top: 4cqw; font-size: 3.6cqw; letter-spacing: 0.4em; color: var(--gold); }
+  .bk-cover.is-back .bk-label { width: 34%; }
+  .bk-cover.is-back .bk-kicker { margin-top: 6cqw; font-size: 4cqw; }
+  .bk-cover.is-back .bk-orn { font-size: 2.8cqw; letter-spacing: 0.22em; text-transform: uppercase; }
+
+  /* Čtečka: otevřená kniha na celou obrazovku */
+  .bk-overlay { position: fixed; inset: 0; z-index: 3000; display: flex; flex-direction: column; color: var(--cream); background: radial-gradient(ellipse at 50% 32%, #4e3521, #160e07 72%); opacity: 0; visibility: hidden; transition: opacity 0.35s ease, visibility 0.35s; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+  .bk-overlay.is-open { opacity: 1; visibility: visible; }
+  .bk-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.25rem 0; }
+  .bk-top-title { min-width: 0; font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bk-top-actions { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+  .bk-dl { padding: 0.6rem 1.05rem; border: 1px solid rgba(245, 240, 232, 0.25); border-radius: 999px; color: rgba(245, 240, 232, 0.85); font-size: 0.8rem; letter-spacing: 0.05em; text-decoration: none; transition: border-color 0.25s ease, color 0.25s ease; }
+  .bk-dl:hover { border-color: var(--gold); color: var(--gold-light); }
+  .bk-dl-short { display: none; }
+  .bk-close { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; background: none; border: 1px solid rgba(245, 240, 232, 0.25); border-radius: 50%; color: var(--cream); cursor: pointer; transition: border-color 0.25s ease, color 0.25s ease; }
+  .bk-close:hover { border-color: var(--gold); color: var(--gold-light); }
+  .bk-close svg, .bk-arrow svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .bk-stage { position: relative; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 0.75rem 1.5rem; touch-action: pan-y; -webkit-user-select: none; user-select: none; }
+  .bk-stage:not(.is-ready) .bk-shift { visibility: hidden; }
+  .bk-shift { transition: transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1); }
+  .bk-book { position: relative; perspective: 2600px; }
+  .bk-book.is-single { perspective: 1800px; }
+  .bk-under { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; }
+  .bk-slot { position: relative; }
+  .bk-slot.is-cover { box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.75); }
+  .bk-slot.is-paper.is-left { border-radius: 3px 0 0 3px; box-shadow: -3px 3px 0 -1px #efe9dc, -6px 6px 0 -2px #e0d8c6, 0 30px 60px -20px rgba(0, 0, 0, 0.75); }
+  .bk-slot.is-paper.is-right { border-radius: 0 3px 3px 0; box-shadow: 3px 3px 0 -1px #efe9dc, 6px 6px 0 -2px #e0d8c6, 0 30px 60px -20px rgba(0, 0, 0, 0.75); }
+  .bk-sheet { position: relative; container-type: inline-size; width: 100%; height: 100%; overflow: hidden; }
+  .bk-page { background: #fff; }
+  .bk-sheet::after { content: ''; position: absolute; top: 0; bottom: 0; width: 9%; pointer-events: none; z-index: 4; }
+  .bk-sheet.is-left::after { right: 0; background: linear-gradient(to left, rgba(0, 0, 0, 0.26), transparent); }
+  .bk-sheet.is-right::after { left: 0; background: linear-gradient(to right, rgba(0, 0, 0, 0.26), transparent); }
+  .bk-sheet.is-single::after { left: 0; width: 5%; background: linear-gradient(to right, rgba(0, 0, 0, 0.18), transparent); }
+  .bk-page img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+  .bk-page.is-loading { background: linear-gradient(90deg, #efe8d8 25%, #f8f3e8 50%, #efe8d8 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+  .bk-page.is-error::before { content: 'Stranu se nepodařilo načíst'; position: absolute; inset: 0; display: grid; place-items: center; padding: 1rem; text-align: center; color: var(--brown-mid); font-size: 0.85rem; }
+  .bk-num { position: absolute; left: 0; right: 0; bottom: 1.4%; text-align: center; font-size: 2.2cqw; color: rgba(59, 42, 26, 0.45); font-variant-numeric: tabular-nums; pointer-events: none; z-index: 3; }
+  .bk-leaf { position: absolute; top: 0; bottom: 0; width: 50%; z-index: 3; transform-style: preserve-3d; will-change: transform; }
+  .bk-leaf.is-next { right: 0; transform-origin: left center; }
+  .bk-leaf.is-prev { left: 0; transform-origin: right center; }
+  .bk-face { position: absolute; inset: 0; overflow: hidden; background: #fff; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .bk-face.is-back { transform: rotateY(180deg); }
+  .bk-shade { position: absolute; inset: 0; z-index: 6; background: #000; opacity: 0; pointer-events: none; }
+  .bk-single { position: absolute; inset: 0; transform-origin: left center; border-radius: 3px; overflow: hidden; box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.75); }
+  .bk-bar { display: flex; align-items: center; justify-content: center; gap: 1.25rem; padding: 0.5rem 1rem 1.25rem; }
+  .bk-arrow { display: grid; place-items: center; width: 52px; height: 52px; padding: 0; border: 0; border-radius: 50%; background: var(--cream); color: var(--brown-deep); cursor: pointer; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); transition: background 0.25s ease, opacity 0.25s ease, transform 0.25s ease; }
+  .bk-arrow:hover:not(:disabled) { background: var(--gold-light); transform: scale(1.06); }
+  .bk-arrow:disabled { opacity: 0.25; cursor: default; }
+  .bk-count { min-width: 9.5rem; text-align: center; font-size: 0.85rem; letter-spacing: 0.06em; color: rgba(245, 240, 232, 0.7); font-variant-numeric: tabular-nums; }
+  .bk-status { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 2rem; text-align: center; color: rgba(245, 240, 232, 0.8); pointer-events: none; }
+  .bk-status[hidden] { display: none; }
+  .bk-status.is-error { pointer-events: auto; }
+  .bk-status a { color: var(--gold-light); }
+  .bk-spin { width: 34px; height: 34px; border: 2px solid rgba(201, 168, 76, 0.25); border-top-color: var(--gold); border-radius: 50%; animation: bkSpin 0.8s linear infinite; }
+  @keyframes bkSpin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 900px) {
+    #history { padding: 4.5rem 1.25rem 4.5rem; }
+    .history-grid { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
+    .history-perex { margin-left: auto; margin-right: auto; }
+    .history-actions { justify-content: center; }
+    .hbook { --bw: min(60vw, 240px); --bd: 36px; }
+    .bk-stage { padding: 0.5rem 0.75rem; }
+    .bk-top { padding: 0.75rem 1rem 0; }
+    .bk-dl { padding: 0.5rem 0.95rem; font-size: 0.75rem; letter-spacing: 0.1em; }
+    .bk-dl-long { display: none; }
+    .bk-dl-short { display: inline; }
+    .bk-bar { padding-bottom: 1rem; gap: 1rem; }
+    .bk-arrow { width: 48px; height: 48px; }
+    .bk-count { min-width: 8rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hbook-float { animation: none; }
+    .hbook-body, .hbook::before, .bk-shift, .bk-overlay { transition: none; }
+  }
+
   /* Styl - Loading skeleton */
   .skeleton {
     background: linear-gradient(90deg, #e8dcc8 25%, #f0e8d8 50%, #e8dcc8 75%);
@@ -582,6 +714,7 @@
         <li><a href="#toms" data-nav>Kocouři</a></li>
         <li><a href="#litters" data-nav>Koťata</a></li>
         <li><a href="#gallery" data-nav>Galerie</a></li>
+        <li><a href="#history" data-nav>Historie</a></li>
         <li><a href="#certificates" data-nav>Certifikáty</a></li>
         <li><a href="#contact" data-nav>Kontakt</a></li>
       </ul>
@@ -615,8 +748,9 @@
         <li><a href="#toms"><span class="mnav-num">03</span>Kocouři</a></li>
         <li><a href="#litters"><span class="mnav-num">04</span>Koťata</a></li>
         <li><a href="#gallery"><span class="mnav-num">05</span>Galerie</a></li>
-        <li><a href="#certificates"><span class="mnav-num">06</span>Certifikáty</a></li>
-        <li><a href="#contact"><span class="mnav-num">07</span>Kontakt</a></li>
+        <li><a href="#history"><span class="mnav-num">06</span>Historie</a></li>
+        <li><a href="#certificates"><span class="mnav-num">07</span>Certifikáty</a></li>
+        <li><a href="#contact"><span class="mnav-num">08</span>Kontakt</a></li>
     </ul>
     <div class="mnav-foot">
       <div class="mnav-langs">
@@ -670,6 +804,39 @@
     <div class="gallery-cat-title" id="gallery-cat-title"></div>
     <div class="gallery-categories" id="gallery-categories"></div>
     <div class="gallery-grid" id="gallery-container" style="display:none;"></div>
+  </section>
+
+  <section id="history" aria-labelledby="history-heading">
+    <div class="history-inner">
+      <h2 class="section-title" id="history-heading">Historie plemene</h2>
+      <div class="history-grid">
+        <div class="hbook-stage rv">
+          <div class="hbook-float">
+            <button type="button" class="hbook" id="historyBook" aria-haspopup="dialog" aria-label="Otevřít knihu o historii norské lesní kočky">
+              <span class="hbook-body">
+                <span class="hbook-face hbook-front bk-cover" id="hbookFront"></span>
+                <span class="hbook-face hbook-back"></span>
+                <span class="hbook-face hbook-spine"></span>
+                <span class="hbook-face hbook-top"></span>
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="history-copy rv">
+          <p class="history-kicker">Kniha o plemeni</p>
+          <h3 class="history-book-title" id="historyTitle">Z norských lesů ke světovým vítězům</h3>
+          <p class="history-perex" id="historyPerex">Příběh plemene od původních norských domácích koček až po současné světové výstavy. Otevřete knihu a prolistujte si ji stránku po stránce.</p>
+          <div class="history-actions">
+            <button type="button" class="history-btn" id="historyOpen" disabled>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v15H5.5A1.5 1.5 0 0 0 4 20.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v15h5.5a1.5 1.5 0 0 1 1.5 1.5z"/></svg>
+              <span>Otevřít knihu</span>
+            </button>
+            <a class="history-link" id="historyPdf" href="data/history.pdf" target="_blank" rel="noopener" hidden>Zobrazit jako PDF</a>
+          </div>
+          <p class="history-meta" id="historyMeta"></p>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section id="certificates">
@@ -764,6 +931,7 @@
             <a href="#toms">Kocouři</a>
             <a href="#litters">Koťata</a>
             <a href="#gallery">Galerie</a>
+            <a href="#history">Historie</a>
             <a href="#certificates">Certifikáty</a>
             <a href="#contact">Kontakt</a>
           </nav>
@@ -1295,6 +1463,418 @@
       <iframe id="cert-lightbox-pdf" style="display:none;"></iframe>
     </div>
   </div>
+
+  <!-- Historie: čtečka knihy (otevírá se přes tlačítko v sekci Historie) -->
+  <div class="bk-overlay" id="bookReader" role="dialog" aria-modal="true" aria-label="Kniha o historii norské lesní kočky" aria-hidden="true">
+    <div class="bk-top">
+      <p class="bk-top-title">Historie plemene</p>
+      <div class="bk-top-actions">
+        <a class="bk-dl" id="bkDownload" href="data/history.pdf" target="_blank" rel="noopener" aria-label="Zobrazit knihu jako PDF"><span class="bk-dl-long">Zobrazit jako PDF</span><span class="bk-dl-short">PDF</span></a>
+        <button type="button" class="bk-close" id="bkClose" aria-label="Zavřít knihu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+    </div>
+    <div class="bk-stage" id="bkStage">
+      <div class="bk-shift" id="bkShift"><div class="bk-book" id="bkBook"></div></div>
+      <div class="bk-status" id="bkStatus" hidden></div>
+    </div>
+    <div class="bk-bar">
+      <button type="button" class="bk-arrow" id="bkPrev" aria-label="Předchozí strana"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <p class="bk-count" id="bkCount" aria-live="polite"></p>
+      <button type="button" class="bk-arrow" id="bkNext" aria-label="Další strana"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+  </div>
+
+  <script>
+  /* ── HISTORIE: listovací kniha z PDF ──
+     Stránky se vykreslují přímo z PDF (knihovna PDF.js leží ve složce vendor/pdfjs a načítá se až při otevření knihy).
+     PDF a jeho popis (data/history.pdf, data/history.json) se nahrávají v administraci, záložka Historie. */
+  (function () {
+    'use strict';
+    const D = document;
+    const $ = (s, r) => (r || D).querySelector(s);
+    const el = (tag, cls, text) => { const n = D.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+    const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const EASE = 'cubic-bezier(0.645, 0.045, 0.355, 1)';
+    const FLIP_MS = 850;
+    const DEFAULT_TITLE = 'Z norských lesů ke světovým vítězům';
+
+    const S = {
+      meta: null, sources: [], title: DEFAULT_TITLE,
+      lib: null, doc: null, docKey: '', loading: null,
+      n: 0, pr: 1 / 1.414, renderW: 0, gen: 0, cache: new Map(), chain: Promise.resolve(),
+      open: false, wide: true, spread: 0, spreads: 1, page: 0, busy: false, pw: 0, ph: 0, opener: null, prevOverflow: ''
+    };
+
+    const reader = $('#bookReader'), stage = $('#bkStage'), shift = $('#bkShift'), book = $('#bkBook');
+    const openBtn = $('#historyOpen'), bookBtn = $('#historyBook');
+    if (!reader || !stage || !book || !openBtn || !bookBtn) return;
+
+    // ── obálka (na webu i v knize) ──
+    function fillCover(node, back) {
+      node.replaceChildren();
+      const label = el('span', 'bk-label');
+      const img = new Image();
+      img.src = 'logo.png'; img.alt = ''; img.draggable = false;
+      label.append(img);
+      node.append(el('span', 'bk-frame'), label);
+      if (back) node.append(el('span', 'bk-kicker', 'Crystal Valley'), el('span', 'bk-orn', 'Norwegian Forest Cat'));
+      else node.append(el('span', 'bk-kicker', 'Historie plemene'), el('span', 'bk-title', S.title), el('span', 'bk-orn', '◈'));
+    }
+
+    // ── data o knize (history.json z GitHubu, jako ostatní data webu; záloha je kopie na webu) ──
+    async function loadMeta() {
+      let m = null;
+      try { m = await fetchJson('history.json'); } catch (e) { /* použije se záloha */ }
+      if (!m) {
+        try { const r = await fetch('data/history.json?t=' + Date.now(), { cache: 'no-store' }); if (r.ok) m = await r.json(); } catch (e) { /* bez knihy */ }
+      }
+      if (!m || typeof m.file !== 'string' || !/^data\/[A-Za-z0-9._-]+\.pdf$/.test(m.file)) { showEmpty(); return; }
+      S.meta = m;
+      const v = encodeURIComponent(String(m.updated || m.size || '1'));
+      S.sources = [`https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${m.file}?v=${v}`, `${m.file}?v=${v}`];
+      S.title = String(m.title || '').trim() || DEFAULT_TITLE;
+      $('#historyTitle').textContent = S.title;
+      if (m.perex) $('#historyPerex').textContent = String(m.perex);
+      const pdf = $('#historyPdf'); pdf.href = S.sources[0]; pdf.hidden = false;
+      $('#bkDownload').href = S.sources[0];
+      const parts = [];
+      if (Number(m.pages) > 0) parts.push(`${m.pages} ${m.pages === 1 ? 'strana' : m.pages < 5 ? 'strany' : 'stran'}`);
+      const d = m.updated ? new Date(m.updated) : null;
+      if (d && !isNaN(d)) parts.push('aktualizováno ' + d.toLocaleDateString('cs-CZ'));
+      $('#historyMeta').textContent = parts.join(' · ');
+      fillCover($('#hbookFront'), false);
+      openBtn.disabled = false;
+    }
+    function showEmpty() {
+      $('#historyTitle').textContent = 'Kniha se připravuje';
+      $('#historyPerex').textContent = 'Historii norské lesní kočky pro vás chystáme. Brzy ji zde najdete.';
+      fillCover($('#hbookFront'), false);
+      openBtn.querySelector('span').textContent = 'Připravujeme';
+      bookBtn.disabled = true;
+      bookBtn.style.cursor = 'default';
+    }
+
+    // ── PDF.js a dokument ──
+    async function getLib() {
+      if (S.lib) return S.lib;
+      const lib = await import('./vendor/pdfjs/pdf.min.js');
+      lib.GlobalWorkerOptions.workerSrc = new URL('vendor/pdfjs/pdf.worker.min.js', location.href).href;
+      return (S.lib = lib);
+    }
+    function getDoc() {
+      const key = S.sources[0];
+      if (S.doc && S.docKey === key) return Promise.resolve(S.doc);
+      if (S.loading && S.loadingKey === key) return S.loading;
+      S.loadingKey = key;
+      S.loading = (async () => {
+        const lib = await getLib();
+        let buf = null;
+        for (const src of S.sources) {
+          try { const r = await fetch(src, { cache: 'no-cache' }); if (r.ok) { buf = await r.arrayBuffer(); break; } } catch (e) { /* zkusí další zdroj */ }
+        }
+        if (!buf || String.fromCharCode(...new Uint8Array(buf.slice(0, 5))) !== '%PDF-') throw new Error('pdf');
+        // isEvalSupported:false = pojistka proti zneužití zmanipulovaného PDF
+        const doc = await lib.getDocument({ data: new Uint8Array(buf), isEvalSupported: false, enableXfa: false }).promise;
+        const p1 = await doc.getPage(1);
+        const vp = p1.getViewport({ scale: 1 });
+        p1.cleanup();
+        S.pr = vp.width / vp.height;
+        S.n = doc.numPages;
+        S.spreads = Math.ceil((S.n + 3) / 2);
+        S.gen++; clearCache();
+        S.doc = doc; S.docKey = key;
+        return doc;
+      })();
+      const p = S.loading;
+      p.then(() => { if (S.loading === p) S.loading = null; }, () => { if (S.loading === p) S.loading = null; });
+      return p;
+    }
+
+    // ── vykreslení stránek (JPEG z canvasu, drží se v paměti jen okolní strany) ──
+    function clearCache() {
+      S.cache.forEach(e => { if (e.url) URL.revokeObjectURL(e.url); });
+      S.cache.clear();
+      S.chain = Promise.resolve();
+    }
+    async function renderPage(i, gen) {
+      if (gen !== S.gen) throw new Error('stale');
+      const page = await S.doc.getPage(i);
+      const base = page.getViewport({ scale: 1 });
+      const vp = page.getViewport({ scale: S.renderW / base.width });
+      const cv = D.createElement('canvas');
+      cv.width = Math.ceil(vp.width); cv.height = Math.ceil(vp.height);
+      const ctx = cv.getContext('2d', { alpha: false });
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cv.width, cv.height);
+      await page.render({ canvasContext: ctx, viewport: vp }).promise;
+      const blob = await new Promise(res => cv.toBlob(res, 'image/jpeg', 0.92));
+      cv.width = cv.height = 0;
+      page.cleanup();
+      if (!blob || gen !== S.gen) throw new Error('stale');
+      return URL.createObjectURL(blob);
+    }
+    function ensure(i) {
+      const hit = S.cache.get(i);
+      if (hit) return hit.p;
+      const gen = S.gen, e = { url: '', p: null };
+      S.chain = S.chain.catch(() => {}).then(() => renderPage(i, gen));
+      e.p = S.chain.then(u => (e.url = u));
+      S.cache.set(i, e);
+      return e.p;
+    }
+    function warm() {
+      const c = S.wide ? 2 * S.spread : S.page;
+      (S.wide ? [c - 1, c, c + 1, c + 2, c - 2, c - 3, c + 3] : [c, c + 1, c - 1, c + 2]).forEach(i => { if (i >= 1 && i <= S.n) ensure(i).catch(() => {}); });
+    }
+
+    // ── obsah knihy: 0 = obálka, 1..n = stránky PDF, n+1 = zadní deska ──
+    function pageNode(i, side) {
+      const p = el('div', 'bk-sheet bk-page is-' + side);
+      const img = new Image();
+      img.alt = `Strana ${i} z ${S.n}`; img.draggable = false; img.decoding = 'async';
+      p.append(img, el('span', 'bk-num', String(i)));
+      const hit = S.cache.get(i);
+      if (hit && hit.url) img.src = hit.url;
+      else {
+        p.classList.add('is-loading');
+        ensure(i).then(u => { img.src = u; p.classList.remove('is-loading'); }, () => { p.classList.remove('is-loading'); p.classList.add('is-error'); });
+      }
+      return p;
+    }
+    function node(i, side) {
+      if (i < 0 || i > S.n + 1) return null;
+      if (i === 0 || i === S.n + 1) {
+        const c = el('div', 'bk-sheet bk-cover is-' + side + (i ? ' is-back' : ''));
+        fillCover(c, i !== 0);
+        return c;
+      }
+      return pageNode(i, side);
+    }
+    const idxL = s => 2 * s - 1, idxR = s => 2 * s;
+
+    function setSlot(slot, n) {
+      slot.classList.remove('is-cover', 'is-paper');
+      slot.replaceChildren();
+      if (!n) return;
+      slot.append(n);
+      slot.classList.add(n.classList.contains('bk-cover') ? 'is-cover' : 'is-paper');
+    }
+    function makeUnder(l, r) {
+      const u = el('div', 'bk-under'), sl = el('div', 'bk-slot is-left'), sr = el('div', 'bk-slot is-right');
+      setSlot(sl, l); setSlot(sr, r);
+      u.append(sl, sr);
+      return u;
+    }
+    function applyShift(instant) {
+      let t = '';
+      if (S.wide) t = S.spread === 0 ? 'translateX(-25%)' : (idxR(S.spread) > S.n + 1 ? 'translateX(25%)' : '');
+      if (instant) { shift.style.transition = 'none'; shift.style.transform = t; void shift.offsetWidth; shift.style.transition = ''; }
+      else shift.style.transform = t;
+    }
+
+    // ── zobrazení: dvoustrana (počítač) / jedna strana (mobil) ──
+    function viewSpread() {
+      book.className = 'bk-book is-wide';
+      book.replaceChildren(makeUnder(node(idxL(S.spread), 'left'), node(idxR(S.spread), 'right')));
+      applyShift(true);
+    }
+    function viewSingle(dir) {
+      book.className = 'bk-book is-single';
+      applyShift(true);
+      const wrap = el('div', 'bk-single');
+      wrap.append(node(S.page, 'single'));
+      const olds = [...book.querySelectorAll('.bk-single')];
+      olds.slice(0, -1).forEach(o => o.remove());
+      const old = olds[olds.length - 1];
+      if (!olds.length) book.replaceChildren();
+      book.append(wrap);
+      if (old && dir && !REDUCED.matches) {
+        old.style.zIndex = '1'; wrap.style.zIndex = '2';
+        const d = dir > 0 ? 1 : -1;
+        old.animate([{ transform: 'none', opacity: 1 }, { transform: `translateX(${-12 * d}%) rotateY(${-70 * d}deg)`, opacity: 0 }], { duration: 500, easing: EASE, fill: 'forwards' }).finished.then(() => old.remove(), () => old.remove());
+        wrap.animate([{ transform: `translateX(${12 * d}%) rotateY(${70 * d}deg)`, opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 500, easing: EASE });
+      } else if (old) old.remove();
+    }
+    function view(dir) {
+      if (S.wide) viewSpread(); else viewSingle(dir);
+      updateUi(); warm();
+    }
+
+    function flip(dir) {
+      const s = S.spread, next = dir > 0;
+      S.busy = true;
+      const under = book.querySelector('.bk-under');
+      const [sl, sr] = under.children;
+      const front = (next ? sr : sl).firstElementChild;      // list, který se zvedá, je ten, co je právě vidět
+      const back = node(next ? idxL(s + 1) : idxR(s - 1), next ? 'left' : 'right');
+      if (next) setSlot(sr, node(idxR(s + 1), 'right')); else setSlot(sl, node(idxL(s - 1), 'left'));
+
+      const leaf = el('div', 'bk-leaf ' + (next ? 'is-next' : 'is-prev'));
+      const ff = el('div', 'bk-face'), fb = el('div', 'bk-face is-back');
+      const shF = el('div', 'bk-shade'), shB = el('div', 'bk-shade');
+      if (front) ff.append(front);
+      if (back) fb.append(back);
+      ff.append(shF); fb.append(shB);
+      leaf.append(ff, fb);
+      book.append(leaf);
+      shift.style.transform = '';
+
+      const dur = REDUCED.matches ? 1 : FLIP_MS;
+      const anim = leaf.animate([{ transform: 'rotateY(0deg)' }, { transform: `rotateY(${next ? -180 : 180}deg)` }], { duration: dur, easing: EASE, fill: 'forwards' });
+      shF.animate([{ opacity: 0 }, { opacity: 0.4 }], { duration: dur, easing: 'ease-in', fill: 'forwards' });
+      shB.animate([{ opacity: 0.4 }, { opacity: 0 }], { duration: dur, easing: 'ease-out', fill: 'forwards' });
+      const done = () => {
+        S.spread += dir;
+        setSlot(next ? sl : sr, back);
+        leaf.remove();
+        S.busy = false;
+        applyShift(false); updateUi(); warm();
+      };
+      anim.finished.then(done, done);
+    }
+
+    function go(d) {
+      if (!S.open || !S.n) return;
+      if (S.wide) {
+        if (S.busy) return;
+        if ((d > 0 && S.spread < S.spreads - 1) || (d < 0 && S.spread > 0)) flip(d);
+      } else {
+        const p = S.page + d;
+        if (p < 0 || p > S.n + 1) return;
+        S.page = p; view(d);
+      }
+    }
+
+    function updateUi() {
+      const n = S.n; let t;
+      if (S.wide) {
+        const a = 2 * S.spread - 1, b = 2 * S.spread;
+        if (S.spread === 0) t = 'Obálka';
+        else { const ps = [a, b].filter(i => i >= 1 && i <= n); t = ps.length === 2 ? `Strany ${ps[0]}–${ps[1]} z ${n}` : ps.length === 1 ? `Strana ${ps[0]} z ${n}` : 'Zadní strana'; }
+      } else t = S.page === 0 ? 'Obálka' : S.page > n ? 'Zadní strana' : `Strana ${S.page} z ${n}`;
+      $('#bkCount').textContent = t;
+      $('#bkPrev').disabled = S.wide ? S.spread <= 0 : S.page <= 0;
+      $('#bkNext').disabled = S.wide ? S.spread >= S.spreads - 1 : S.page >= n + 1;
+    }
+
+    // ── rozměry knihy podle okna; vrací true, když je potřeba přerenderovat stránky ostřeji ──
+    function metrics() {
+      const cs = getComputedStyle(stage);
+      const w = stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      const h = stage.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+      S.wide = window.innerWidth >= 900;
+      const ph = Math.max(120, Math.floor(Math.min(h, S.wide ? w / (2 * S.pr) : w / S.pr)));
+      S.ph = ph; S.pw = Math.floor(ph * S.pr);
+      book.style.width = (S.wide ? 2 * S.pw : S.pw) + 'px';
+      book.style.height = S.ph + 'px';
+      const need = Math.min(1600, Math.max(700, Math.round(S.pw * Math.min(window.devicePixelRatio || 1, 2))));
+      if (!S.renderW) { S.renderW = need; return false; }
+      if (need > S.renderW * 1.25) { S.renderW = need; S.gen++; clearCache(); return true; }
+      return false;
+    }
+    let rafId = 0;
+    function relayout() {
+      if (!S.open || !S.n || !stage.classList.contains('is-ready') || S.busy) return;
+      const wasWide = S.wide;
+      const sharper = metrics();
+      if (wasWide !== S.wide) { if (S.wide) S.spread = Math.ceil(S.page / 2); else S.page = Math.min(S.n + 1, 2 * S.spread); }
+      if (wasWide !== S.wide || sharper) view();
+      else applyShift(true);
+    }
+    if ('ResizeObserver' in window) new ResizeObserver(() => { cancelAnimationFrame(rafId); rafId = requestAnimationFrame(relayout); }).observe(stage);
+    else window.addEventListener('resize', () => { cancelAnimationFrame(rafId); rafId = requestAnimationFrame(relayout); });
+
+    // ── otevření a zavření ──
+    function setStatus(kind) {
+      const st = $('#bkStatus');
+      st.className = 'bk-status'; st.replaceChildren();
+      if (!kind) { st.hidden = true; return; }
+      st.hidden = false;
+      if (kind === 'loading') st.append(el('span', 'bk-spin'), el('p', '', 'Načítám knihu…'));
+      else {
+        st.classList.add('is-error');
+        const a = el('a', '', 'Otevřít PDF přímo'); a.href = S.sources[0]; a.target = '_blank'; a.rel = 'noopener';
+        st.append(el('p', '', 'Knihu se nepodařilo načíst. Zkuste to prosím za chvíli.'), a);
+      }
+    }
+    function openBook(opener) {
+      if (!S.meta || S.open) return;
+      S.open = true; S.opener = opener || D.activeElement;
+      S.prevOverflow = D.body.style.overflow; D.body.style.overflow = 'hidden';
+      stage.classList.remove('is-ready');
+      reader.setAttribute('aria-hidden', 'false');
+      requestAnimationFrame(() => reader.classList.add('is-open'));
+      $('#bkClose').focus({ preventScroll: true });
+      setStatus('loading');
+      getDoc().then(() => {
+        if (!S.open) return;
+        S.spread = 0; S.page = 0; S.busy = false;
+        stage.classList.add('is-ready');
+        metrics();
+        setStatus(null);
+        view();
+        if (!REDUCED.matches) book.animate([{ opacity: 0, transform: 'translateY(18px) scale(0.94)' }, { opacity: 1, transform: 'none' }], { duration: 650, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' });
+      }).catch(() => { if (S.open) setStatus('error'); });
+    }
+    function closeBook() {
+      if (!S.open) return;
+      S.open = false;
+      reader.classList.remove('is-open');
+      reader.setAttribute('aria-hidden', 'true');
+      D.body.style.overflow = S.prevOverflow;
+      if (S.opener && S.opener.focus) S.opener.focus({ preventScroll: true });
+    }
+
+    openBtn.addEventListener('click', () => openBook(openBtn));
+    bookBtn.addEventListener('click', () => openBook(bookBtn));
+    // knihovna a PDF se předem stáhnou, jakmile návštěvník projeví zájem (najetí, dotyk, fokus)
+    ['pointerenter', 'focus', 'touchstart'].forEach(ev => [openBtn, bookBtn].forEach(b => b.addEventListener(ev, () => { if (S.meta) getDoc().catch(() => {}); }, { passive: true, once: true })));
+    $('#bkClose').addEventListener('click', closeBook);
+    $('#bkPrev').addEventListener('click', () => go(-1));
+    $('#bkNext').addEventListener('click', () => go(1));
+
+    D.addEventListener('keydown', e => {
+      if (!S.open) return;
+      if (e.key === 'Escape') { e.preventDefault(); closeBook(); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      else if (e.key === 'Tab') {
+        const f = [...reader.querySelectorAll('a[href], button:not([disabled])')].filter(n => n.offsetParent !== null);
+        if (!f.length) return;
+        const first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && D.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && D.activeElement === last) { e.preventDefault(); first.focus(); }
+        else if (!reader.contains(D.activeElement)) { e.preventDefault(); first.focus(); }
+      }
+    });
+
+    // tažení prstem / klik na levou či pravou stranu / klik mimo knihu zavře
+    let down = null;
+    stage.addEventListener('pointerdown', e => { if (e.button === 0 || e.pointerType === 'touch') down = { x: e.clientX, y: e.clientY }; });
+    stage.addEventListener('pointercancel', () => { down = null; });
+    stage.addEventListener('pointerup', e => {
+      if (!down) return;
+      const dx = e.clientX - down.x, dy = e.clientY - down.y;
+      down = null;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) { go(dx < 0 ? 1 : -1); return; }
+      if (Math.abs(dx) > 8 || Math.abs(dy) > 8) return;
+      if (!e.target.closest('.bk-book')) { if (!e.target.closest('.bk-status a')) closeBook(); return; }
+      if (S.wide && S.spread === 0) { go(1); return; }
+      const r = book.getBoundingClientRect(), x = (e.clientX - r.left) / r.width;
+      go(S.wide ? (x > 0.5 ? 1 : -1) : (x > 0.35 ? 1 : -1));
+    });
+
+    // ── jemné odhalení sekce při rolování ──
+    const sec = $('#history');
+    if (sec && 'IntersectionObserver' in window && !REDUCED.matches) {
+      sec.classList.add('js-rv');
+      const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); } }), { threshold: 0.15 });
+      sec.querySelectorAll('.rv').forEach(n => io.observe(n));
+    }
+
+    fillCover($('#hbookFront'), false);
+    loadMeta();
+  })();
+  </script>
 
   <!-- Google Translate -->
   <div id="google_translate_element" style="display:none"></div>
