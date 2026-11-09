@@ -1567,11 +1567,7 @@
       if (m.perex) $('#historyPerex').textContent = String(m.perex);
       const pdf = $('#historyPdf'); pdf.href = S.sources[0]; pdf.hidden = false;
       $('#bkDownload').href = S.sources[0];
-      const parts = [];
-      if (Number(m.pages) > 0) parts.push(`${m.pages} ${m.pages === 1 ? 'strana' : m.pages < 5 ? 'strany' : 'stran'}`);
-      const d = m.updated ? new Date(m.updated) : null;
-      if (d && !isNaN(d)) parts.push('aktualizováno ' + d.toLocaleDateString('cs-CZ'));
-      $('#historyMeta').textContent = parts.join(' · ');
+      if (Number(m.pages) > 0) $('#historyMeta').textContent = `${m.pages} ${m.pages === 1 ? 'strana' : m.pages < 5 ? 'strany' : 'stran'}`;
       fillCover($('#hbookFront'), false);
       openBtn.disabled = false;
     }
