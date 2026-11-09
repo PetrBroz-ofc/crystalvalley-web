@@ -174,9 +174,10 @@ body { font-family: system-ui, -apple-system, sans-serif; background: var(--crea
     <img src="logo.png" alt="Crystal Valley" onerror="this.style.display='none'">
     <h2>Crystal Valley</h2>
     <p>Správa webu — přihlašte se</p>
+    <div class="field"><label>Uživatelské jméno</label><input type="text" id="login-user" placeholder="Uživatelské jméno" autocomplete="username" autocapitalize="none" spellcheck="false"></div>
     <div class="field"><label>Heslo</label><input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"></div>
     <button class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center;margin-top:0.5rem">Přihlásit se</button>
-    <p id="login-error" role="alert" style="color:var(--red);font-size:0.8rem;margin-top:0.75rem;display:none">❌ Špatné heslo</p>
+    <p id="login-error" role="alert" style="color:var(--red);font-size:0.8rem;margin-top:0.75rem;display:none">❌ Špatné jméno nebo heslo</p>
   </div>
 </div>
 
@@ -268,12 +269,18 @@ body { font-family: system-ui, -apple-system, sans-serif; background: var(--crea
 
   <div class="panel" id="panel-settings">
     <div class="card">
-      <h3 style="margin-bottom:1rem">Změna hesla do administrace</h3>
-      <p class="hint">Heslo si můžete kdykoli změnit. Zvolte aspoň 10 znaků, nejlépe delší větu, kterou snadno zapamatujete. Po změně platí jen nové heslo. Přihlášení platí 12 hodin nebo do odhlášení.</p>
-      <div class="field"><label>Stávající heslo</label><input type="password" id="pw-current" autocomplete="current-password"></div>
-      <div class="field"><label>Nové heslo</label><input type="password" id="pw-new" autocomplete="new-password" minlength="10"></div>
-      <div class="field"><label>Nové heslo znovu</label><input type="password" id="pw-new2" autocomplete="new-password" minlength="10"></div>
-      <button class="btn btn-success" id="pw-save-btn" onclick="changePassword()">🔑 Změnit heslo</button>
+      <h3 style="margin-bottom:1rem">Změna přihlašovacích údajů</h3>
+      <p class="hint">Jméno i heslo si můžete kdykoli změnit. Jméno může zůstat stejné. Heslo zvolte aspoň 10 znaků, nejlépe delší větu, kterou snadno zapamatujete. Po změně platí jen nové údaje. Přihlášení platí 12 hodin nebo do odhlášení.</p>
+      <div class="field-grid">
+        <div class="field"><label>Stávající jméno</label><input type="text" id="pw-current-user" autocomplete="username" autocapitalize="none" spellcheck="false"></div>
+        <div class="field"><label>Stávající heslo</label><input type="password" id="pw-current" autocomplete="current-password"></div>
+      </div>
+      <div class="field"><label>Nové uživatelské jméno</label><input type="text" id="pw-new-user" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="60"></div>
+      <div class="field-grid">
+        <div class="field"><label>Nové heslo</label><input type="password" id="pw-new" autocomplete="new-password" minlength="10"></div>
+        <div class="field"><label>Nové heslo znovu</label><input type="password" id="pw-new2" autocomplete="new-password" minlength="10"></div>
+      </div>
+      <button class="btn btn-success" id="pw-save-btn" onclick="changePassword()">🔑 Uložit nové údaje</button>
       <p id="settings-msg" role="alert" style="font-size:0.82rem;margin-top:0.75rem;display:none"></p>
     </div>
     <div class="card">
@@ -334,16 +341,17 @@ function init() {
 }
 
 async function login() {
+  const user = document.getElementById('login-user').value.trim();
   const pass = document.getElementById('login-pass').value;
   const err = document.getElementById('login-error');
   const btn = document.getElementById('login-btn');
-  if (!pass) { err.textContent = '❌ Zadejte heslo'; err.style.display = 'block'; return; }
+  if (!user || !pass) { err.textContent = '❌ Zadejte jméno i heslo'; err.style.display = 'block'; return; }
   btn.disabled = true;
   try {
     const r = await fetch('/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: pass })
+      body: JSON.stringify({ username: user, password: pass })
     });
     const d = await r.json().catch(() => ({}));
     if (r.ok && d.token) {
@@ -368,6 +376,7 @@ function logout() {
   try { sessionStorage.removeItem(SESSION_KEY); } catch (e) { /* nevadí */ }
   show('login-screen');
   document.getElementById('login-pass').value = '';
+  document.getElementById('login-user').focus();
 }
 
 // Uložení na server s tokenem. Když přihlášení vyprší, admin se vrátí na přihlašovací obrazovku.
@@ -381,12 +390,15 @@ async function apiSave(payload) {
 }
 
 async function changePassword() {
+  const curUser = document.getElementById('pw-current-user').value.trim();
   const cur = document.getElementById('pw-current').value;
+  const nextUser = document.getElementById('pw-new-user').value.trim();
   const next = document.getElementById('pw-new').value;
   const next2 = document.getElementById('pw-new2').value;
   const msg = document.getElementById('settings-msg');
   const btn = document.getElementById('pw-save-btn');
-  if (!cur || !next || !next2) { showMsg(msg, '❌ Vyplňte všechna pole.', false); return; }
+  if (!curUser || !cur || !nextUser || !next || !next2) { showMsg(msg, '❌ Vyplňte všechna pole.', false); return; }
+  if (nextUser.length < 3) { showMsg(msg, '❌ Nové jméno musí mít aspoň 3 znaky.', false); return; }
   if (next !== next2) { showMsg(msg, '❌ Nová hesla se neshodují.', false); return; }
   if (next.length < 10) { showMsg(msg, '❌ Nové heslo musí mít aspoň 10 znaků.', false); return; }
   const s = getSession();
@@ -395,14 +407,14 @@ async function changePassword() {
     const r = await fetch('/api/login', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', ...(s ? { Authorization: 'Bearer ' + s.token } : {}) },
-      body: JSON.stringify({ current: cur, next })
+      body: JSON.stringify({ currentUser: curUser, current: cur, nextUser, next })
     });
     const d = await r.json().catch(() => ({}));
     if (r.ok) {
-      ['pw-current', 'pw-new', 'pw-new2'].forEach(id => document.getElementById(id).value = '');
-      showMsg(msg, '✅ Heslo je změněné. Příště se přihlaste novým heslem.', true);
+      ['pw-current-user', 'pw-current', 'pw-new-user', 'pw-new', 'pw-new2'].forEach(id => document.getElementById(id).value = '');
+      showMsg(msg, '✅ Přihlašovací údaje jsou změněné. Příště se přihlaste novým jménem a heslem.', true);
     } else {
-      showMsg(msg, '❌ ' + (d.message || 'Heslo se nepodařilo změnit.'), false);
+      showMsg(msg, '❌ ' + (d.message || 'Údaje se nepodařilo změnit.'), false);
       if (r.status === 401 && /^Přihlášení vypršelo/.test(d.message || '')) logout();
     }
   } catch (e) {
