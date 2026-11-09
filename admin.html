@@ -174,10 +174,9 @@ body { font-family: system-ui, -apple-system, sans-serif; background: var(--crea
     <img src="logo.png" alt="Crystal Valley" onerror="this.style.display='none'">
     <h2>Crystal Valley</h2>
     <p>Správa webu — přihlašte se</p>
-    <div class="field"><label>Uživatelské jméno</label><input type="text" id="login-user" placeholder="admin" autocomplete="username"></div>
     <div class="field"><label>Heslo</label><input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"></div>
     <button class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center;margin-top:0.5rem">Přihlásit se</button>
-    <p id="login-error" style="color:var(--red);font-size:0.8rem;margin-top:0.75rem;display:none">❌ Špatné přihlašovací údaje</p>
+    <p id="login-error" role="alert" style="color:var(--red);font-size:0.8rem;margin-top:0.75rem;display:none">❌ Špatné heslo</p>
   </div>
 </div>
 
@@ -269,12 +268,17 @@ body { font-family: system-ui, -apple-system, sans-serif; background: var(--crea
 
   <div class="panel" id="panel-settings">
     <div class="card">
-      <h3 style="margin-bottom:1.5rem">Změna přihlašovacích údajů</h3>
-      <div class="field"><label>Nové uživatelské jméno</label><input type="text" id="new-user" placeholder="admin"></div>
-      <div class="field"><label>Nové heslo</label><input type="password" id="new-pass" placeholder="••••••••"></div>
-      <div class="field"><label>Potvrdit nové heslo</label><input type="password" id="new-pass2" placeholder="••••••••"></div>
-      <button class="btn btn-success" onclick="changeCredentials()">Uložit změny</button>
-      <p id="settings-msg" style="font-size:0.82rem;margin-top:0.75rem;display:none"></p>
+      <h3 style="margin-bottom:1rem">Změna hesla do administrace</h3>
+      <p class="hint">Heslo si můžete kdykoli změnit. Zvolte aspoň 10 znaků, nejlépe delší větu, kterou snadno zapamatujete. Po změně platí jen nové heslo. Přihlášení platí 12 hodin nebo do odhlášení.</p>
+      <div class="field"><label>Stávající heslo</label><input type="password" id="pw-current" autocomplete="current-password"></div>
+      <div class="field"><label>Nové heslo</label><input type="password" id="pw-new" autocomplete="new-password" minlength="10"></div>
+      <div class="field"><label>Nové heslo znovu</label><input type="password" id="pw-new2" autocomplete="new-password" minlength="10"></div>
+      <button class="btn btn-success" id="pw-save-btn" onclick="changePassword()">🔑 Změnit heslo</button>
+      <p id="settings-msg" role="alert" style="font-size:0.82rem;margin-top:0.75rem;display:none"></p>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:1rem">Odhlášení</h3>
+      <button class="btn btn-outline" onclick="logout()">Odhlásit se</button>
     </div>
   </div>
 </div>
@@ -302,8 +306,7 @@ body { font-family: system-ui, -apple-system, sans-serif; background: var(--crea
 const API_URL = '/api/save';
 const GH_OWNER = 'PetrBroz-ofc';
 const GH_REPO  = 'crystalvalley-web';
-const DEFAULT_USER = 'admin';
-const DEFAULT_PASS = 'crystalvalley2024';
+const SESSION_KEY = 'cv_admin_session';
 
 let DATA = { cats:[], toms:[], litters:[], gallery:[], certificates:[], about:{} };
 let fileSHAs = {};
@@ -313,38 +316,100 @@ let currentModalSubgallery = [];
 let currentCertItems = [];
 
 // ── AUTH ──
-function init() {
-  if (!localStorage.getItem('cv_user')) localStorage.setItem('cv_user', DEFAULT_USER);
-  if (!localStorage.getItem('cv_pass')) localStorage.setItem('cv_pass', DEFAULT_PASS);
-  show('login-screen');
+// Heslo se ověřuje na serveru (/api/login). Po přihlášení dostane prohlížeč podepsaný token na 12 hodin,
+// který se drží jen v této záložce (sessionStorage) a posílá se s každým uložením (viz apiSave).
+function getSession() {
+  try {
+    const s = JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null');
+    if (s && s.token && s.exp > Date.now()) return s;
+  } catch (e) { /* bez přihlášení */ }
+  return null;
 }
 
-function login() {
-  const user = document.getElementById('login-user').value.trim();
+function init() {
+  // dřívější verze si heslo ukládala do prohlížeče a mělo výchozí hodnotu ve zdrojáku, to už se nepoužívá
+  try { localStorage.removeItem('cv_user'); localStorage.removeItem('cv_pass'); } catch (e) { /* nevadí */ }
+  if (getSession()) { show('admin-screen'); loadData(); }
+  else show('login-screen');
+}
+
+async function login() {
   const pass = document.getElementById('login-pass').value;
   const err = document.getElementById('login-error');
-  if (user === localStorage.getItem('cv_user') && pass === localStorage.getItem('cv_pass')) {
-    err.style.display = 'none';
-    show('admin-screen');
-    loadData();
-  } else {
+  const btn = document.getElementById('login-btn');
+  if (!pass) { err.textContent = '❌ Zadejte heslo'; err.style.display = 'block'; return; }
+  btn.disabled = true;
+  try {
+    const r = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pass })
+    });
+    const d = await r.json().catch(() => ({}));
+    if (r.ok && d.token) {
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify({ token: d.token, exp: d.exp }));
+      document.getElementById('login-pass').value = '';
+      err.style.display = 'none';
+      show('admin-screen');
+      loadData();
+    } else {
+      err.textContent = '❌ ' + (d.message || 'Přihlášení se nepovedlo.');
+      err.style.display = 'block';
+    }
+  } catch (e) {
+    err.textContent = '❌ Server teď neodpovídá. Zkuste to prosím za chvíli.';
     err.style.display = 'block';
+  } finally {
+    btn.disabled = false;
   }
 }
 
-function logout() { show('login-screen'); document.getElementById('login-pass').value = ''; }
+function logout() {
+  try { sessionStorage.removeItem(SESSION_KEY); } catch (e) { /* nevadí */ }
+  show('login-screen');
+  document.getElementById('login-pass').value = '';
+}
 
-function changeCredentials() {
-  const user = document.getElementById('new-user').value.trim();
-  const pass = document.getElementById('new-pass').value;
-  const pass2 = document.getElementById('new-pass2').value;
+// Uložení na server s tokenem. Když přihlášení vyprší, admin se vrátí na přihlašovací obrazovku.
+async function apiSave(payload) {
+  const s = getSession();
+  const headers = { 'Content-Type': 'application/json' };
+  if (s) headers.Authorization = 'Bearer ' + s.token;
+  const r = await fetch(API_URL, { method: 'PUT', headers, body: JSON.stringify(payload) });
+  if (r.status === 401) { toast('🔒 Přihlášení vypršelo, přihlaste se prosím znovu.', 'error'); logout(); }
+  return r;
+}
+
+async function changePassword() {
+  const cur = document.getElementById('pw-current').value;
+  const next = document.getElementById('pw-new').value;
+  const next2 = document.getElementById('pw-new2').value;
   const msg = document.getElementById('settings-msg');
-  if (!user || !pass) { showMsg(msg, '❌ Vyplňte všechna pole.', false); return; }
-  if (pass !== pass2) { showMsg(msg, '❌ Hesla se neshodují.', false); return; }
-  localStorage.setItem('cv_user', user);
-  localStorage.setItem('cv_pass', pass);
-  showMsg(msg, '✅ Přihlašovací údaje uloženy.', true);
-  ['new-user','new-pass','new-pass2'].forEach(id => document.getElementById(id).value = '');
+  const btn = document.getElementById('pw-save-btn');
+  if (!cur || !next || !next2) { showMsg(msg, '❌ Vyplňte všechna pole.', false); return; }
+  if (next !== next2) { showMsg(msg, '❌ Nová hesla se neshodují.', false); return; }
+  if (next.length < 10) { showMsg(msg, '❌ Nové heslo musí mít aspoň 10 znaků.', false); return; }
+  const s = getSession();
+  btn.disabled = true;
+  try {
+    const r = await fetch('/api/login', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...(s ? { Authorization: 'Bearer ' + s.token } : {}) },
+      body: JSON.stringify({ current: cur, next })
+    });
+    const d = await r.json().catch(() => ({}));
+    if (r.ok) {
+      ['pw-current', 'pw-new', 'pw-new2'].forEach(id => document.getElementById(id).value = '');
+      showMsg(msg, '✅ Heslo je změněné. Příště se přihlaste novým heslem.', true);
+    } else {
+      showMsg(msg, '❌ ' + (d.message || 'Heslo se nepodařilo změnit.'), false);
+      if (r.status === 401 && /^Přihlášení vypršelo/.test(d.message || '')) logout();
+    }
+  } catch (e) {
+    showMsg(msg, '❌ Server teď neodpovídá. Zkuste to prosím za chvíli.', false);
+  } finally {
+    btn.disabled = false;
+  }
 }
 
 function showMsg(el, text, ok) {
@@ -368,12 +433,8 @@ async function ghGet(path) {
 }
 
 async function ghPut(path, content, sha) {
-  const r = await fetch(API_URL, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ path, content, sha })
-  });
-  if (!r.ok) { toast('❌ ' + await apiErrorText(r, 'Chyba uložení'), 'error'); return false; }
+  const r = await apiSave({ path, content, sha });
+  if (!r.ok) { if (r.status !== 401) toast('❌ ' + await apiErrorText(r, 'Chyba uložení'), 'error'); return false; }
   const d = await r.json();
   if (d.content) fileSHAs[path] = d.content.sha;
   return true;
@@ -388,12 +449,12 @@ async function apiErrorText(r, fallback) {
 async function ghUploadFile(filename, base64data, folder = 'images') {
   const safeName = filename.replace(/[^a-zA-Z0-9._-]/g, '_');
   const path = `${folder}/${Date.now()}_${safeName}`;
-  const r = await fetch('/api/save', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ path, content: base64data, isBase64: true })
-  });
-  if (!r.ok) { console.error('Upload failed', r.status); toast('❌ ' + await apiErrorText(r, 'Soubor se nepodařilo nahrát'), 'error'); return null; }
+  const r = await apiSave({ path, content: base64data, isBase64: true });
+  if (!r.ok) {
+    console.error('Upload failed', r.status);
+    if (r.status !== 401) toast('❌ ' + await apiErrorText(r, 'Soubor se nepodařilo nahrát'), 'error');
+    return null;
+  }
   return `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${path}`;
 }
 
@@ -1282,12 +1343,8 @@ async function saveHistory() {
     const meta = Object.assign({}, historyMeta || {});
     if (historyPending) {
       const content = await fileToBase64(historyPending.file);
-      const r = await fetch(API_URL, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path: HISTORY_PDF_PATH, content, isBase64: true })
-      });
-      if (!r.ok) throw new Error(r.status === 413 ? 'Soubor je na nahrání příliš velký. Zmenšete ho a zkuste to znovu.' : await apiErrorText(r, `Nahrání PDF se nepovedlo (chyba ${r.status}).`));
+      const r = await apiSave({ path: HISTORY_PDF_PATH, content, isBase64: true });
+      if (!r.ok) throw new Error(r.status === 401 ? 'Přihlášení vypršelo, přihlaste se prosím znovu.' : r.status === 413 ? 'Soubor je na nahrání příliš velký. Zmenšete ho a zkuste to znovu.' : await apiErrorText(r, `Nahrání PDF se nepovedlo (chyba ${r.status}).`));
       meta.file = HISTORY_PDF_PATH;
       meta.pages = historyPending.pages;
       meta.size = historyPending.file.size;

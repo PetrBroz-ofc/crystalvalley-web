@@ -1,13 +1,17 @@
 // Ukládání z administrace do GitHubu (data/*.json, fotky, certifikáty, kniha Historie).
 //
-// Omezení zápisu (přihlášení do administrace zůstává jak bylo, heslo klienta se nemění):
-//  - zapisovat jde jen na předem známé cesty, nikdy do kódu webu (index.html, admin.html, api/, vendor/),
+// Zabezpečení:
+//  - zapíše jen přihlášenému adminovi (podepsaný token z /api/login v hlavičce Authorization),
+//  - zapisovat jde jen na předem známé cesty, nikdy do kódu webu (index.html, admin.html, api/, vendor/)
+//    a ani do data/admin.json (heslo mění jen /api/login),
 //  - kontroluje se typ i obsah souboru (JSON musí být platný JSON, fotky a PDF musí opravdu být fotky a PDF),
 //  - žádné CORS a požadavek musí přijít ze stránky z téhož webu (kontrola hlaviček Origin a Sec-Fetch-Site),
 //  - chyby GitHubu se klientovi nevypisují.
 //
-// Vercel: proměnné prostředí GH_TOKEN, GH_OWNER a GH_REPO.
+// Vercel: proměnné prostředí GH_TOKEN, GH_OWNER, GH_REPO (a ADMIN_PASSWORD pro přihlášení v api/login.js).
+import { createHmac, timingSafeEqual } from 'node:crypto';
 
+const SESSION_MS = 12 * 60 * 60 * 1000;      // stejná platnost jako v /api/login
 const MAX_B64_CHARS = 4_400_000;              // Vercel stejně pustí tělo jen do 4,5 MB
 const MAX_JSON_CHARS = 1_000_000;
 const JSON_FILES = new Set(['about', 'cats', 'toms', 'litters', 'gallery', 'certificates', 'history']);
@@ -15,6 +19,20 @@ const IMAGE_EXT = /\.(jpe?g|png|gif|webp)$/i;
 const FILE_NAME = '[A-Za-z0-9][A-Za-z0-9._-]{0,200}';
 const RE_IMAGES = new RegExp(`^images/${FILE_NAME}$`);
 const RE_CERTS = new RegExp(`^certificates/${FILE_NAME}$`);
+
+// Token je "platnost.podpis"; podpis umí vyrobit jen server, který zná GH_TOKEN (stejný postup jako v api/login.js).
+const hmac = (key, data) => createHmac('sha256', key).update(data);
+function tokenValid(header) {
+  const m = /^Bearer (\d{10,16})\.([A-Za-z0-9_-]{43})$/.exec(String(header || ''));
+  if (!m || !process.env.GH_TOKEN) return false;
+  const exp = Number(m[1]);
+  const now = Date.now();
+  if (!(exp > now) || exp - now > SESSION_MS + 60_000) return false;
+  const key = hmac(process.env.GH_TOKEN, 'cv-admin-session-key').digest();
+  const a = Buffer.from(m[2]);
+  const b = Buffer.from(hmac(key, `cv-admin-session:${exp}`).digest('base64url'));
+  return a.length === b.length && timingSafeEqual(a, b);
+}
 
 // Vrací druh souboru, nebo null, když se na tu cestu zapisovat nesmí.
 function classify(path) {
@@ -57,6 +75,7 @@ export default async function handler(req, res) {
   const owner = process.env.GH_OWNER;
   const repo = process.env.GH_REPO;
   if (!ghToken || !owner || !repo) return fail(res, 500, 'Ukládání není na serveru nastavené.');
+  if (!tokenValid(req.headers.authorization)) return fail(res, 401, 'Přihlášení vypršelo nebo chybí. Přihlaste se prosím znovu.');
 
   let body = req.body;
   if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = null; } }
