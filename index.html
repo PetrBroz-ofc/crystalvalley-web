@@ -4,8 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Crystal Valley – Norwegian Forest Cat</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="preload" href="fonts/cormorantgaramond-normal-300-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/jost-normal-300-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="fonts/fonts.css">
+  <link rel="stylesheet" href="consent.css">
+  <script src="consent.js" defer></script>
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
   <meta name="description" content="Crystal Valley – chovatelská stanice norských lesních koček ze severních Čech. Zdravá koťata s průkazem původu FIFe. Železný Brod.">
@@ -425,6 +428,9 @@
     .footer-bottom { border-top: 1px solid rgba(201, 168, 76, 0.15); }
     .footer-bottom-inner { max-width: 1200px; margin: 0 auto; padding: 1.2rem 2rem; display: flex; align-items: center; gap: 1.5rem; font-size: 0.8rem; }
     .footer-bottom-inner p { color: rgba(245, 240, 232, 0.45); }
+    .footer-legal { display: flex; flex-wrap: wrap; gap: 0.3rem 1.1rem; }
+    .footer-legal a { color: rgba(245, 240, 232, 0.55); text-decoration: none; transition: color 0.25s ease; }
+    .footer-legal a:hover { color: var(--gold-light); }
     .footer-credit { margin-left: auto; color: rgba(245, 240, 232, 0.5); text-decoration: none; transition: color 0.25s ease; }
     .footer-credit span { color: var(--gold); font-weight: 500; }
     .footer-credit:hover { color: rgba(245, 240, 232, 0.85); }
@@ -924,11 +930,22 @@
         </div>
 
         <div style="border-radius:8px;overflow:hidden;border:1px solid rgba(201,168,76,0.2);box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+          <div class="embed-gate" data-consent-embed="external" style="min-height:420px;">
+            <div class="embed-gate-box">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+              <h3>Mapa Google</h3>
+              <p>Mapa se načte až s vaším souhlasem, protože ji nám poskytuje Google a při načtení se k němu dostanou údaje z vašeho zařízení.</p>
+              <button type="button" class="cc-btn cc-yes" data-cookie-accept>Povolit externí služby a zobrazit mapu</button>
+              <button type="button" class="cc-btn cc-more" data-cookie-settings>Nastavení cookies</button>
+            </div>
+            <template>
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2556.3!2d15.2528!3d50.6431!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470ebe3f3b3b3b3b%3A0x0!2sFranti%C5%A1ka+Balatky+913%2C+%C5%BDelezn%C3%BD+Brod!5e0!3m2!1scs!2scz!4v1"
             width="100%" height="420" style="display:block;border:none;"
             allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
           </iframe>
+            </template>
+          </div>
         </div>
 
       </div>
@@ -981,6 +998,12 @@
     <div class="footer-bottom">
       <div class="footer-bottom-inner">
         <p>© 2026 Crystal Valley, CZ. Všechna práva vyhrazena.</p>
+        <nav class="footer-legal" aria-label="Právní informace">
+          <a href="/ochrana-osobnich-udaju">Ochrana osobních údajů</a>
+          <a href="/cookies">Cookies</a>
+          <a href="#nastaveni-cookies" data-cookie-settings>Nastavení cookies</a>
+          <a href="/pravni-upozorneni">Právní upozornění</a>
+        </nav>
         <a href="https://pebmedia.cz" target="_blank" rel="noopener" class="footer-credit">Web vytvořilo <span>PEBMedia</span></a>
         <a href="admin.html" class="footer-admin-lock" aria-label="Administrace webu"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></a>
       </div>
@@ -2059,6 +2082,13 @@
   }
 
   function changeLanguage(langCode) {
+    // Překlad zajišťuje Google, proto se nejdřív zeptáme na souhlas s externími službami
+    if (langCode !== 'cs' && !(window.cvConsent && window.cvConsent.has('external'))) {
+      pendingLang = langCode;
+      document.getElementById('langDropdown')?.classList.remove('open');
+      if (window.cvConsent) window.cvConsent.open();
+      return;
+    }
     highlightActive(langCode);
     localStorage.setItem('cv_lang', langCode);
     document.getElementById('langDropdown')?.classList.remove('open');
@@ -2072,7 +2102,8 @@
     return;
   }
 
-    // Počkej na widget max 3s
+    loadTranslate();
+    // Počkej na widget (max 10 s, načítá se až teď)
     let tries = 0;
     const interval = setInterval(() => {
       const select = document.querySelector('.goog-te-combo');
@@ -2080,7 +2111,7 @@
         clearInterval(interval);
         select.value = langCode;
         select.dispatchEvent(new Event('change'));
-      } else if (++tries > 30) {
+      } else if (++tries > 100) {
         clearInterval(interval);
       }
     }, 100);
@@ -2101,7 +2132,23 @@
   // Inicializuj správné tlačítko
   highlightActive(localStorage.getItem('cv_lang') || 'cs');
   </script>
-  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script>
+  // Překladač Google se načte až s vaším souhlasem s externími službami (viz consent.js)
+  let translateRequested = false;
+  let pendingLang = null;
+  function loadTranslate() {
+    if (translateRequested) return;
+    translateRequested = true;
+    const s = document.createElement('script');
+    s.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+    document.head.appendChild(s);
+  }
+  window.addEventListener('cv-consent', e => {
+    if (!e.detail.external) return;
+    if (pendingLang) { const l = pendingLang; pendingLang = null; changeLanguage(l); }
+    else if ((localStorage.getItem('cv_lang') || 'cs') !== 'cs') loadTranslate();
+  });
+  </script>
 
 
   </body>

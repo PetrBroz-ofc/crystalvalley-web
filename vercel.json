@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/cookies", "destination": "/cookies.html" },
+    { "source": "/ochrana-osobnich-udaju", "destination": "/ochrana-osobnich-udaju.html" },
+    { "source": "/pravni-upozorneni", "destination": "/pravni-upozorneni.html" }
+  ]
+}

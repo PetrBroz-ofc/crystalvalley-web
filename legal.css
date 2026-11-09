@@ -1,0 +1,36 @@
+/* Právní stránky (ochrana osobních údajů, cookies, právní upozornění) */
+*{margin:0;padding:0;box-sizing:border-box}
+body.legal-page{font-family:'Jost',system-ui,sans-serif;background:#f5f0e8;color:#3b2a1a;line-height:1.65;font-size:1rem}
+.legal-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1.5rem;background:#3b2a1a;color:#f5f0e8}
+.legal-logo{display:flex;align-items:center;gap:.7rem;color:inherit;text-decoration:none;font-family:'Cormorant Garamond',Georgia,serif;font-size:1.5rem;font-weight:500}
+.legal-logo img{width:40px;height:40px;border-radius:8px}
+.legal-back{color:#e8d09a;text-decoration:none;font-size:.9rem;border:1px solid rgba(232,208,154,.45);padding:.45rem 1rem;border-radius:999px;transition:background .2s}
+.legal-back:hover{background:rgba(232,208,154,.12)}
+.legal{max-width:820px;margin:0 auto;padding:3rem 1.5rem 4rem}
+.legal h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(2.1rem,5vw,3rem);line-height:1.1;margin-bottom:.5rem}
+.legal-meta{color:#6b4c2a;font-size:.9rem;margin-bottom:2rem}
+.legal h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:1.65rem;line-height:1.2;margin:2.4rem 0 .8rem;display:flex;align-items:center;gap:.6rem}
+.legal h2::before{content:'';width:7px;height:7px;background:#c9a84c;transform:rotate(45deg);flex-shrink:0}
+.legal p,.legal ul{margin-bottom:1rem}
+.legal ul{padding-left:1.4rem}
+.legal li{margin-bottom:.4rem}
+.legal a{color:#6b4c2a;text-underline-offset:3px}
+.legal a:hover{color:#a98a32}
+.legal-box{background:#fefcf8;border:1px solid rgba(201,168,76,.35);border-radius:14px;padding:1.1rem 1.3rem;line-height:1.7}
+.legal table{width:100%;border-collapse:collapse;background:#fefcf8;border:1px solid rgba(201,168,76,.35);border-radius:12px;overflow:hidden;margin:1rem 0 1.5rem;font-size:.9rem}
+.legal th,.legal td{text-align:left;vertical-align:top;padding:.7rem .85rem;border-bottom:1px solid rgba(201,168,76,.25)}
+.legal th{background:#ede6d6;font-weight:500;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:#6b4c2a}
+.legal tr:last-child td{border-bottom:none}
+.legal-button{display:inline-block;background:#3b2a1a;color:#f5f0e8!important;text-decoration:none!important;padding:.75rem 1.4rem;border-radius:999px;font-weight:500;font-size:.92rem;transition:background .2s}
+.legal-button:hover{background:#6b4c2a}
+.legal-foot{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;justify-content:center;padding:1.6rem 1.5rem 2.2rem;border-top:1px solid rgba(201,168,76,.3);font-size:.85rem}
+.legal-foot a{color:#6b4c2a;text-decoration:none}
+.legal-foot a:hover{color:#3b2a1a;text-decoration:underline}
+@media (max-width:640px){
+  .legal{padding:2rem 1.1rem 3rem}
+  .legal table,.legal thead,.legal tbody,.legal tr,.legal th,.legal td{display:block}
+  .legal thead{display:none}
+  .legal tr{padding:.75rem 0;border-bottom:1px solid rgba(201,168,76,.3)}
+  .legal td{border:none;padding:.25rem .9rem}
+  .legal td:first-child{font-weight:500}
+}
