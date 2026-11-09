@@ -201,6 +201,20 @@ body { font-family: var(--sans); font-size:16px; line-height:1.5; background: li
 /* LOADING */
 .loading-state { text-align:center; padding:3rem; color:var(--brown-mid); }
 
+/* IKONY (sprite na začátku stránky) */
+.ic { width:1.1em; height:1.1em; flex-shrink:0; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; vertical-align:-0.17em; pointer-events:none; }
+.btn .ic { vertical-align:0; }
+.tab .ic { width:1.2rem; height:1.2rem; margin-right:0.4rem; vertical-align:-0.27em; color:var(--gold-deep); transition:color 0.2s; }
+.tab.active .ic, .tab:hover .ic { color:var(--brown); }
+.btn-move .ic { width:1rem; height:1rem; vertical-align:0; }
+.drag-handle .ic { width:1.2rem; height:1.2rem; vertical-align:middle; }
+.modal-close .ic { width:1.1rem; height:1.1rem; vertical-align:0; }
+.upload-area .upload-icon .ic { width:2.4rem; height:2.4rem; color:var(--gold-deep); stroke-width:1.5; vertical-align:0; }
+.item-row-info span .ic { width:0.95em; height:0.95em; color:var(--gold-deep); vertical-align:-0.12em; }
+.thumb-del .ic, .gallery-admin-item button .ic { width:12px; height:12px; vertical-align:0; stroke-width:2.4; }
+.toast .ic { width:1.25em; height:1.25em; margin-right:0.55rem; vertical-align:-0.24em; }
+.hdr-link .ic { width:0.95em; height:0.95em; }
+
 /* Koťata ve vrhu: na počítači ve dvou řádcích, aby se výběry nezkracovaly */
 @media (min-width:601px) {
   .kitten-row { grid-template-columns:auto minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr) auto; }
@@ -253,6 +267,8 @@ body { font-family: var(--sans); font-size:16px; line-height:1.5; background: li
 </style>
 </head>
 <body>
+<!-- Ikony: Lucide (lucide.dev), licence ISC -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="i-venus" viewBox="0 0 24 24"><path d="M12 15v7" /><path d="M9 19h6" /><circle cx="12" cy="9" r="6" /></symbol><symbol id="i-mars" viewBox="0 0 24 24"><path d="M16 3h5v5" /><path d="m21 3-6.75 6.75" /><circle cx="10" cy="14" r="6" /></symbol><symbol id="i-paw" viewBox="0 0 24 24"><circle cx="11" cy="4" r="2" /><circle cx="18" cy="8" r="2" /><circle cx="20" cy="16" r="2" /><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z" /></symbol><symbol id="i-images" viewBox="0 0 24 24"><path d="m22 11-1.296-1.296a2.4 2.4 0 0 0-3.408 0L11 16" /><path d="M4 8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2" /><circle cx="13" cy="7" r="1" fill="currentColor" /><rect x="8" y="2" width="14" height="14" rx="2" /></symbol><symbol id="i-award" viewBox="0 0 24 24"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526" /><circle cx="12" cy="8" r="6" /></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M12 5v16" /><path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z" /></symbol><symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" /><path d="M14 2v5a1 1 0 0 0 1 1h5" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></symbol><symbol id="i-settings" viewBox="0 0 24 24"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" /><circle cx="12" cy="12" r="3" /></symbol><symbol id="i-pencil" viewBox="0 0 24 24"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /><path d="m15 5 4 4" /></symbol><symbol id="i-trash" viewBox="0 0 24 24"><path d="M10 11v6" /><path d="M14 11v6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></symbol><symbol id="i-save" viewBox="0 0 24 24"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" /><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" /><path d="M7 3v4a1 1 0 0 0 1 1h7" /></symbol><symbol id="i-key" viewBox="0 0 24 24"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" /><circle cx="16.5" cy="7.5" r=".5" fill="currentColor" /></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14" /><path d="M12 5v14" /></symbol><symbol id="i-up" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6" /></symbol><symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" /></symbol><symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="12" r="1" /><circle cx="9" cy="5" r="1" /><circle cx="9" cy="19" r="1" /><circle cx="15" cy="12" r="1" /><circle cx="15" cy="5" r="1" /><circle cx="15" cy="19" r="1" /></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></symbol><symbol id="i-camera" viewBox="0 0 24 24"><path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z" /><circle cx="12" cy="13" r="3" /></symbol><symbol id="i-folder" viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" /></symbol><symbol id="i-external" viewBox="0 0 24 24"><path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></symbol><symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="m16 9-5.5 5.5L8 12" /></symbol><symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><line x1="12" x2="12" y1="8" y2="12" /><line x1="12" x2="12.01" y1="16" y2="16" /></symbol><symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></symbol><symbol id="i-trophy" viewBox="0 0 24 24"><path d="M10 14.66V17a1 1 0 0 1-1 1 2 2 0 0 0-2 2v2" /><path d="M14 14.66V17a1 1 0 0 0 1 1 2 2 0 0 1 2 2v2" /><path d="M17.916 10H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3" /><path d="M4 22h16" /><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z" /><path d="M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3" /></symbol><symbol id="i-file" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" /><path d="M14 2v5a1 1 0 0 0 1 1h5" /></symbol><symbol id="i-cat" viewBox="0 0 24 24"><path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.07 1 2.24 1 3.44C21 17.9 16.97 21 12 21s-9-3-9-7.56c0-1.25.5-2.4 1-3.44 0 0-1.89-6.42-.5-7 1.39-.58 4.72.23 6.5 2.23A9.04 9.04 0 0 1 12 5Z" /><path d="M8 14v.5" /><path d="M16 14v.5" /><path d="M11.25 16.25h1.5L12 17l-.75-.75Z" /></symbol></defs></svg>
 
 <!-- LOGIN -->
 <div id="login-screen">
@@ -263,7 +279,7 @@ body { font-family: var(--sans); font-size:16px; line-height:1.5; background: li
     <div class="field"><label>Uživatelské jméno</label><input type="text" id="login-user" placeholder="Uživatelské jméno" autocomplete="username" autocapitalize="none" spellcheck="false"></div>
     <div class="field"><label>Heslo</label><input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"></div>
     <button class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center;margin-top:0.5rem">Přihlásit se</button>
-    <p id="login-error" role="alert" style="color:var(--red);font-size:0.8rem;margin-top:0.75rem;display:none">❌ Špatné jméno nebo heslo</p>
+    <p id="login-error" role="alert" style="color:var(--red);font-size:0.8rem;margin-top:0.75rem;display:none">Špatné jméno nebo heslo</p>
   </div>
 </div>
 
@@ -272,53 +288,53 @@ body { font-family: var(--sans); font-size:16px; line-height:1.5; background: li
   <div class="admin-header">
     <h2><img src="logo.png" alt="" onerror="this.style.display='none'"> Crystal Valley Admin</h2>
     <div class="admin-header-actions">
-      <a class="btn btn-outline hdr-link" href="/" target="_blank" rel="noopener">Zobrazit web ↗</a>
+      <a class="btn btn-outline hdr-link" href="/" target="_blank" rel="noopener">Zobrazit web <svg class="ic" aria-hidden="true"><use href="#i-external"/></svg></a>
       <button class="btn btn-outline" style="color:white;border-color:rgba(255,255,255,0.3)" onclick="logout()">Odhlásit</button>
     </div>
   </div>
 
   <div class="tabs">
-    <button class="tab active" onclick="showTab('cats',this)">🐱 Kočky</button>
-    <button class="tab" onclick="showTab('toms',this)">🐈 Kocouři</button>
-    <button class="tab" onclick="showTab('litters',this)">🐾 Koťata</button>
-    <button class="tab" onclick="showTab('gallery',this)">📸 Galerie</button>
-    <button class="tab" onclick="showTab('certificates',this)">🎓 Certifikáty</button>
-    <button class="tab" onclick="showTab('history',this);loadHistory()">📖 Historie</button>
-    <button class="tab" onclick="showTab('about',this)">📝 O nás</button>
-    <button class="tab" onclick="showTab('settings',this)">⚙️ Nastavení</button>
+    <button class="tab active" onclick="showTab('cats',this)"><svg class="ic" aria-hidden="true"><use href="#i-venus"/></svg> Kočky</button>
+    <button class="tab" onclick="showTab('toms',this)"><svg class="ic" aria-hidden="true"><use href="#i-mars"/></svg> Kocouři</button>
+    <button class="tab" onclick="showTab('litters',this)"><svg class="ic" aria-hidden="true"><use href="#i-paw"/></svg> Koťata</button>
+    <button class="tab" onclick="showTab('gallery',this)"><svg class="ic" aria-hidden="true"><use href="#i-images"/></svg> Galerie</button>
+    <button class="tab" onclick="showTab('certificates',this)"><svg class="ic" aria-hidden="true"><use href="#i-award"/></svg> Certifikáty</button>
+    <button class="tab" onclick="showTab('history',this);loadHistory()"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg> Historie</button>
+    <button class="tab" onclick="showTab('about',this)"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg> O nás</button>
+    <button class="tab" onclick="showTab('settings',this)"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg> Nastavení</button>
   </div>
 
   <div class="panel active" id="panel-cats">
     <div class="card">
-      <div class="card-header"><h3>Chovné kočky</h3><button class="btn btn-primary" onclick="openModal('cats')">+ Přidat kočku</button></div>
+      <div class="card-header"><h3>Chovné kočky</h3><button class="btn btn-primary" onclick="openModal('cats')"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg> Přidat kočku</button></div>
       <div id="list-cats"><div class="loading-state">Načítám...</div></div>
     </div>
   </div>
 
   <div class="panel" id="panel-toms">
     <div class="card">
-      <div class="card-header"><h3>Chovní kocouři</h3><button class="btn btn-primary" onclick="openModal('toms')">+ Přidat kocoura</button></div>
+      <div class="card-header"><h3>Chovní kocouři</h3><button class="btn btn-primary" onclick="openModal('toms')"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg> Přidat kocoura</button></div>
       <div id="list-toms"><div class="loading-state">Načítám...</div></div>
     </div>
   </div>
 
   <div class="panel" id="panel-litters">
     <div class="card">
-      <div class="card-header"><h3>Vrhy</h3><button class="btn btn-primary" onclick="openModal('litter')">+ Přidat vrh</button></div>
+      <div class="card-header"><h3>Vrhy</h3><button class="btn btn-primary" onclick="openModal('litter')"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg> Přidat vrh</button></div>
       <div id="list-litters"><div class="loading-state">Načítám...</div></div>
     </div>
   </div>
 
   <div class="panel" id="panel-gallery">
     <div class="card">
-      <div class="card-header"><h3>Galerie</h3><button class="btn btn-primary" onclick="openModal('gallery')">+ Přidat foto</button></div>
+      <div class="card-header"><h3>Galerie</h3><button class="btn btn-primary" onclick="openModal('gallery')"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg> Přidat foto</button></div>
       <div class="gallery-admin-grid" id="gallery-grid"></div>
     </div>
   </div>
 
   <div class="panel" id="panel-certificates">
     <div class="card">
-      <div class="card-header"><h3>Certifikáty</h3><button class="btn btn-primary" onclick="openModal('certfolder')">+ Přidat složku</button></div>
+      <div class="card-header"><h3>Certifikáty</h3><button class="btn btn-primary" onclick="openModal('certfolder')"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg> Přidat složku</button></div>
       <div id="list-certificates"><div class="loading-state">Načítám...</div></div>
     </div>
   </div>
@@ -336,7 +352,7 @@ body { font-family: var(--sans); font-size:16px; line-height:1.5; background: li
       <div class="field">
         <label>PDF s knihou</label>
         <div class="upload-area" id="history-drop" onclick="document.getElementById('history-file').click()">
-          <span class="upload-icon">📖</span>
+          <span class="upload-icon"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg></span>
           Klikněte a vyberte PDF, nebo ho sem přetáhněte (maximálně 3 MB)
           <input type="file" id="history-file" accept="application/pdf,.pdf" onchange="pickHistoryFile(this.files[0]); this.value=''">
         </div>
@@ -344,7 +360,7 @@ body { font-family: var(--sans); font-size:16px; line-height:1.5; background: li
         <div class="history-msg" id="history-msg" role="alert"></div>
       </div>
 
-      <button class="btn btn-success" id="history-save-btn" onclick="saveHistory()">💾 Nahrát a zveřejnit</button>
+      <button class="btn btn-success" id="history-save-btn" onclick="saveHistory()"><svg class="ic" aria-hidden="true"><use href="#i-save"/></svg> Nahrát a zveřejnit</button>
     </div>
   </div>
 
@@ -352,7 +368,7 @@ body { font-family: var(--sans); font-size:16px; line-height:1.5; background: li
     <div class="card">
       <h3 style="margin-bottom:1rem">Text sekce „O nás"</h3>
       <div class="field"><label>Text</label><textarea id="about-text" rows="10" placeholder="Napište text o vaší chovatelské stanici..."></textarea></div>
-      <button class="btn btn-success" id="about-save-btn" onclick="saveAbout()">💾 Uložit text</button>
+      <button class="btn btn-success" id="about-save-btn" onclick="saveAbout()"><svg class="ic" aria-hidden="true"><use href="#i-save"/></svg> Uložit text</button>
     </div>
   </div>
 
@@ -369,7 +385,7 @@ body { font-family: var(--sans); font-size:16px; line-height:1.5; background: li
         <div class="field"><label>Nové heslo</label><input type="password" id="pw-new" autocomplete="new-password" minlength="10"></div>
         <div class="field"><label>Nové heslo znovu</label><input type="password" id="pw-new2" autocomplete="new-password" minlength="10"></div>
       </div>
-      <button class="btn btn-success" id="pw-save-btn" onclick="changePassword()">🔑 Uložit nové údaje</button>
+      <button class="btn btn-success" id="pw-save-btn" onclick="changePassword()"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg> Uložit nové údaje</button>
       <p id="settings-msg" role="alert" style="font-size:0.82rem;margin-top:0.75rem;display:none"></p>
     </div>
     <div class="card">
@@ -384,12 +400,12 @@ body { font-family: var(--sans); font-size:16px; line-height:1.5; background: li
   <div class="modal-box">
     <div class="modal-header">
       <h3 id="modal-title">Formulář</h3>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" onclick="closeModal()" aria-label="Zavřít"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
     </div>
     <div class="modal-body" id="modal-body"></div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal()">Zrušit</button>
-      <button class="btn btn-success" id="modal-save-btn" onclick="saveModal()">💾 Uložit</button>
+      <button class="btn btn-success" id="modal-save-btn" onclick="saveModal()"><svg class="ic" aria-hidden="true"><use href="#i-save"/></svg> Uložit</button>
     </div>
   </div>
 </div>
@@ -403,6 +419,8 @@ const API_URL = '/api/save';
 const GH_OWNER = 'PetrBroz-ofc';
 const GH_REPO  = 'crystalvalley-web';
 const SESSION_KEY = 'cv_admin_session';
+// Ikona ze sprite na začátku stránky (symboly #i-...)
+const ic = n => `<svg class="ic" aria-hidden="true"><use href="#i-${n}"/></svg>`;
 
 let DATA = { cats:[], toms:[], litters:[], gallery:[], certificates:[], about:{} };
 let fileSHAs = {};
@@ -434,7 +452,7 @@ async function login() {
   const pass = document.getElementById('login-pass').value;
   const err = document.getElementById('login-error');
   const btn = document.getElementById('login-btn');
-  if (!user || !pass) { err.textContent = '❌ Zadejte jméno i heslo'; err.style.display = 'block'; return; }
+  if (!user || !pass) { err.textContent = 'Zadejte jméno i heslo'; err.style.display = 'block'; return; }
   btn.disabled = true;
   try {
     const r = await fetch('/api/login', {
@@ -450,11 +468,11 @@ async function login() {
       show('admin-screen');
       loadData();
     } else {
-      err.textContent = '❌ ' + (d.message || 'Přihlášení se nepovedlo.');
+      err.textContent = '' + (d.message || 'Přihlášení se nepovedlo.');
       err.style.display = 'block';
     }
   } catch (e) {
-    err.textContent = '❌ Server teď neodpovídá. Zkuste to prosím za chvíli.';
+    err.textContent = 'Server teď neodpovídá. Zkuste to prosím za chvíli.';
     err.style.display = 'block';
   } finally {
     btn.disabled = false;
@@ -474,7 +492,7 @@ async function apiSave(payload) {
   const headers = { 'Content-Type': 'application/json' };
   if (s) headers.Authorization = 'Bearer ' + s.token;
   const r = await fetch(API_URL, { method: 'PUT', headers, body: JSON.stringify(payload) });
-  if (r.status === 401) { toast('🔒 Přihlášení vypršelo, přihlaste se prosím znovu.', 'error'); logout(); }
+  if (r.status === 401) { toast('Přihlášení vypršelo, přihlaste se prosím znovu.', 'error'); logout(); }
   return r;
 }
 
@@ -486,10 +504,10 @@ async function changePassword() {
   const next2 = document.getElementById('pw-new2').value;
   const msg = document.getElementById('settings-msg');
   const btn = document.getElementById('pw-save-btn');
-  if (!curUser || !cur || !nextUser || !next || !next2) { showMsg(msg, '❌ Vyplňte všechna pole.', false); return; }
-  if (nextUser.length < 3) { showMsg(msg, '❌ Nové jméno musí mít aspoň 3 znaky.', false); return; }
-  if (next !== next2) { showMsg(msg, '❌ Nová hesla se neshodují.', false); return; }
-  if (next.length < 10) { showMsg(msg, '❌ Nové heslo musí mít aspoň 10 znaků.', false); return; }
+  if (!curUser || !cur || !nextUser || !next || !next2) { showMsg(msg, 'Vyplňte všechna pole.', false); return; }
+  if (nextUser.length < 3) { showMsg(msg, 'Nové jméno musí mít aspoň 3 znaky.', false); return; }
+  if (next !== next2) { showMsg(msg, 'Nová hesla se neshodují.', false); return; }
+  if (next.length < 10) { showMsg(msg, 'Nové heslo musí mít aspoň 10 znaků.', false); return; }
   const s = getSession();
   btn.disabled = true;
   try {
@@ -501,13 +519,13 @@ async function changePassword() {
     const d = await r.json().catch(() => ({}));
     if (r.ok) {
       ['pw-current-user', 'pw-current', 'pw-new-user', 'pw-new', 'pw-new2'].forEach(id => document.getElementById(id).value = '');
-      showMsg(msg, '✅ Přihlašovací údaje jsou změněné. Příště se přihlaste novým jménem a heslem.', true);
+      showMsg(msg, 'Přihlašovací údaje jsou změněné. Příště se přihlaste novým jménem a heslem.', true);
     } else {
-      showMsg(msg, '❌ ' + (d.message || 'Údaje se nepodařilo změnit.'), false);
+      showMsg(msg, '' + (d.message || 'Údaje se nepodařilo změnit.'), false);
       if (r.status === 401 && /^Přihlášení vypršelo/.test(d.message || '')) logout();
     }
   } catch (e) {
-    showMsg(msg, '❌ Server teď neodpovídá. Zkuste to prosím za chvíli.', false);
+    showMsg(msg, 'Server teď neodpovídá. Zkuste to prosím za chvíli.', false);
   } finally {
     btn.disabled = false;
   }
@@ -535,7 +553,7 @@ async function ghGet(path) {
 
 async function ghPut(path, content, sha) {
   const r = await apiSave({ path, content, sha });
-  if (!r.ok) { if (r.status !== 401) toast('❌ ' + await apiErrorText(r, 'Chyba uložení'), 'error'); return false; }
+  if (!r.ok) { if (r.status !== 401) toast('' + await apiErrorText(r, 'Chyba uložení'), 'error'); return false; }
   const d = await r.json();
   if (d.content) fileSHAs[path] = d.content.sha;
   return true;
@@ -553,7 +571,7 @@ async function ghUploadFile(filename, base64data, folder = 'images') {
   const r = await apiSave({ path, content: base64data, isBase64: true });
   if (!r.ok) {
     console.error('Upload failed', r.status);
-    if (r.status !== 401) toast('❌ ' + await apiErrorText(r, 'Soubor se nepodařilo nahrát'), 'error');
+    if (r.status !== 401) toast('' + await apiErrorText(r, 'Soubor se nepodařilo nahrát'), 'error');
     return null;
   }
   return `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${path}`;
@@ -610,17 +628,17 @@ function renderList(type, arr) {
       ondragleave="itemDragLeave(event)"
       ondrop="itemDrop(event,'${type}',${i})"
       ondragend="itemDragEnd(event)">
-      <span class="drag-handle" title="Přetáhněte pro změnu pořadí">☰</span>
-      ${item.photo ? `<img src="${item.photo}" alt="">` : `<div style="width:52px;height:52px;background:var(--cream-dark);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.5rem">🐱</div>`}
+      <span class="drag-handle" title="Přetáhněte pro změnu pořadí">${ic('grip')}</span>
+      ${item.photo ? `<img src="${item.photo}" alt="">` : `<div style="width:52px;height:52px;background:var(--cream-dark);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--gold-deep)">${ic('cat')}</div>`}
       <div class="item-row-info">
         <strong>${item.name || '—'}</strong>
-        <span>${item.detail || ''} ${item.achievements ? '· 🏆 '+item.achievements : ''}</span>
+        <span>${item.detail || ''} ${item.achievements ? '· '+ic('trophy')+' '+item.achievements : ''}</span>
       </div>
       <div class="item-actions">
-        <button class="btn-move" onclick="moveItem('${type}',${i},-1)" ${i===0?'disabled':''} title="Posunout nahoru">↑</button>
-        <button class="btn-move" onclick="moveItem('${type}',${i},1)" ${i===arr.length-1?'disabled':''} title="Posunout dolů">↓</button>
-        <button class="btn btn-outline" onclick="openModal('${type}',${i})">✏️ Upravit</button>
-        <button class="btn btn-danger" onclick="deleteItem('${type}',${i})">🗑</button>
+        <button class="btn-move" onclick="moveItem('${type}',${i},-1)" ${i===0?'disabled':''} title="Posunout nahoru" aria-label="Posunout nahoru">${ic('up')}</button>
+        <button class="btn-move" onclick="moveItem('${type}',${i},1)" ${i===arr.length-1?'disabled':''} title="Posunout dolů" aria-label="Posunout dolů">${ic('down')}</button>
+        <button class="btn btn-outline" onclick="openModal('${type}',${i})">${ic('pencil')} Upravit</button>
+        <button class="btn btn-danger" onclick="deleteItem('${type}',${i})" title="Smazat" aria-label="Smazat">${ic('trash')}</button>
       </div>
     </div>
   `).join('');
@@ -655,7 +673,7 @@ async function itemDrop(e, type, i) {
   dragItemIndex = null; dragItemType = null;
   renderByType(type);
   const ok = await saveFile(type);
-  if (ok) toast('✅ Pořadí uloženo', 'success');
+  if (ok) toast('Pořadí uloženo', 'success');
 }
 
 function itemDragEnd(e) {
@@ -670,7 +688,7 @@ async function moveItem(type, i, dir) {
   [arr[i], arr[j]] = [arr[j], arr[i]];
   renderByType(type);
   const ok = await saveFile(type);
-  if (ok) toast('✅ Pořadí uloženo', 'success');
+  if (ok) toast('Pořadí uloženo', 'success');
 }
 
 function renderCertFolders() {
@@ -684,17 +702,17 @@ function renderCertFolders() {
       ondragleave="itemDragLeave(event)"
       ondrop="itemDrop(event,'certificates',${i})"
       ondragend="itemDragEnd(event)">
-      <span class="drag-handle" title="Přetáhněte pro změnu pořadí">☰</span>
-      <div style="width:52px;height:52px;background:var(--cream-dark);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.5rem">📁</div>
+      <span class="drag-handle" title="Přetáhněte pro změnu pořadí">${ic('grip')}</span>
+      <div style="width:52px;height:52px;background:var(--cream-dark);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--gold-deep)">${ic('folder')}</div>
       <div class="item-row-info">
         <strong>${esc(f.name) || '—'}</strong>
         <span>${(f.items||[]).length} certifikát${(f.items||[]).length===1?'':(f.items||[]).length>=2&&(f.items||[]).length<=4?'y':'ů'}</span>
       </div>
       <div class="item-actions">
-        <button class="btn-move" onclick="moveItem('certificates',${i},-1)" ${i===0?'disabled':''} title="Posunout nahoru">↑</button>
-        <button class="btn-move" onclick="moveItem('certificates',${i},1)" ${i===arr.length-1?'disabled':''} title="Posunout dolů">↓</button>
-        <button class="btn btn-outline" onclick="openModal('certfolder',${i})">✏️ Upravit</button>
-        <button class="btn btn-danger" onclick="deleteItem('certificates',${i})">🗑</button>
+        <button class="btn-move" onclick="moveItem('certificates',${i},-1)" ${i===0?'disabled':''} title="Posunout nahoru" aria-label="Posunout nahoru">${ic('up')}</button>
+        <button class="btn-move" onclick="moveItem('certificates',${i},1)" ${i===arr.length-1?'disabled':''} title="Posunout dolů" aria-label="Posunout dolů">${ic('down')}</button>
+        <button class="btn btn-outline" onclick="openModal('certfolder',${i})">${ic('pencil')} Upravit</button>
+        <button class="btn btn-danger" onclick="deleteItem('certificates',${i})" title="Smazat" aria-label="Smazat">${ic('trash')}</button>
       </div>
     </div>
   `).join('');
@@ -705,14 +723,14 @@ function renderLitters() {
   if (!DATA.litters.length) { el.innerHTML = `<p style="color:var(--brown-mid);font-size:0.85rem;padding:0.5rem">Zatím žádné vrhy.</p>`; return; }
   el.innerHTML = DATA.litters.map((l, i) => `
     <div class="item-row">
-      <div style="width:52px;height:52px;background:var(--cream-dark);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.5rem">🐾</div>
+      <div style="width:52px;height:52px;background:var(--cream-dark);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--gold-deep)">${ic('paw')}</div>
       <div class="item-row-info">
         <strong>Vrh ${l.id} — ${l.name}</strong>
-        <span>${l.born || ''} · ${(l.kittens||[]).length} koťat · ♀ ${l.mother} · ♂ ${l.father}</span>
+        <span>${l.born || ''} · ${(l.kittens||[]).length} koťat · ${ic('venus')} ${l.mother} · ${ic('mars')} ${l.father}</span>
       </div>
       <div class="item-actions">
-        <button class="btn btn-outline" onclick="openModal('litter',${i})">✏️ Upravit</button>
-        <button class="btn btn-danger" onclick="deleteItem('litters',${i})">🗑</button>
+        <button class="btn btn-outline" onclick="openModal('litter',${i})">${ic('pencil')} Upravit</button>
+        <button class="btn btn-danger" onclick="deleteItem('litters',${i})" title="Smazat" aria-label="Smazat">${ic('trash')}</button>
       </div>
     </div>
   `).join('');
@@ -723,7 +741,7 @@ function renderGalleryAdmin() {
   el.innerHTML = DATA.gallery.map((g, i) => `
     <div class="gallery-admin-item">
       <img src="${g.url}" alt="">
-      <button onclick="deleteItem('gallery',${i})">✕</button>
+      <button onclick="deleteItem('gallery',${i})" title="Smazat" aria-label="Smazat">${ic('x')}</button>
       <div class="g-label">${g.label||''}</div>
     </div>
   `).join('') || '<p style="color:var(--brown-mid);font-size:0.85rem;padding:0.5rem;grid-column:1/-1">Galerie je prázdná.</p>';
@@ -796,7 +814,7 @@ function catForm(item) {
     <div class="field">
       <label>Hlavní fotografie</label>
       <div class="upload-area" onclick="document.getElementById('img-main').click()">
-        <span class="upload-icon">📷</span>
+        <span class="upload-icon">${ic('camera')}</span>
         Klikněte pro výběr fotografie
         <input type="file" id="img-main" accept="image/*" onchange="previewMainPhoto(this)">
       </div>
@@ -808,7 +826,7 @@ function catForm(item) {
     <div class="field">
       <label>Podgalerie (více fotek naráz)</label>
       <div class="upload-area" id="sub-drop" onclick="document.getElementById('img-sub').click()">
-        <span class="upload-icon">🖼️</span>
+        <span class="upload-icon">${ic('images')}</span>
         Klikněte nebo přetáhněte více fotek
         <input type="file" id="img-sub" accept="image/*" multiple onchange="handleSubUpload(this)">
       </div>
@@ -835,7 +853,7 @@ function litterForm(item) {
     <div class="field"><label>Popis vrhu</label><textarea id="f-desc">${esc(item.description)}</textarea></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
       <label style="font-size:0.75rem;font-weight:600;color:var(--brown-mid);text-transform:uppercase;letter-spacing:0.05em">Koťata ve vrhu</label>
-      <button class="btn btn-outline" type="button" onclick="addKittenRow()" style="font-size:0.78rem">+ Přidat kotě</button>
+      <button class="btn btn-outline" type="button" onclick="addKittenRow()" style="font-size:0.78rem"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg> Přidat kotě</button>
     </div>
     <div id="k-list">${(item.kittens||[]).map(kRow).join('')}</div>
   `;
@@ -847,15 +865,15 @@ function galleryForm() {
     <div class="field">
       <label>Kategorie</label>
       <select id="f-category">
-        <option value="other">📷 Ostatní</option>
-        <option value="exhibitions">🏆 Výstavy</option>
-        <option value="new_homes">🏡 Z nových domovů</option>
+        <option value="other">Ostatní</option>
+        <option value="exhibitions">Výstavy</option>
+        <option value="new_homes">Z nových domovů</option>
       </select>
     </div>
     <div class="field">
       <label>Fotografie</label>
       <div class="upload-area" onclick="document.getElementById('img-gal').click()">
-        <span class="upload-icon">📷</span>
+        <span class="upload-icon">${ic('camera')}</span>
         Klikněte pro výběr fotografie
         <input type="file" id="img-gal" accept="image/*" onchange="previewMainPhoto(this)">
       </div>
@@ -872,7 +890,7 @@ function certFolderForm(item) {
     <div class="field">
       <label>Certifikáty ve složce (obrázky nebo PDF)</label>
       <div class="upload-area" onclick="document.getElementById('cert-upload').click()">
-        <span class="upload-icon">📄</span>
+        <span class="upload-icon">${ic('doc')}</span>
         Klikněte nebo přetáhněte certifikáty
         <input type="file" id="cert-upload" accept="image/*,application/pdf" multiple onchange="handleCertUpload(this)">
       </div>
@@ -894,9 +912,9 @@ function renderCertItems() {
       ondragleave="certDragLeave(event)"
       ondrop="certDrop(event,${i})"
       ondragend="certDragEnd(event)">
-      <button type="button" class="thumb-del" onclick="removeCertItem(${i})" title="Smazat">✕</button>
+      <button type="button" class="thumb-del" onclick="removeCertItem(${i})" title="Smazat" aria-label="Smazat">${ic('x')}</button>
       ${it.type === 'pdf'
-        ? `<div class="cert-item-thumb cert-pdf">📄</div>`
+        ? `<div class="cert-item-thumb cert-pdf">${ic('doc')}</div>`
         : `<img src="${it.fileUrl}" class="cert-item-thumb" alt="">`}
       <input type="text" class="cert-item-name" value="${esc(it.name)}" placeholder="Název certifikátu" oninput="currentCertItems[${i}].name=this.value">
     </div>
@@ -966,7 +984,7 @@ async function handleCertUpload(input) {
   }
 
   progressFill.style.width = '100%';
-  progressText.textContent = `✅ Nahráno ${files.length} souborů`;
+  progressText.textContent = `Nahráno ${files.length} souborů`;
   setTimeout(() => { progress.style.display = 'none'; }, 2000);
   saveBtn.disabled = false;
   input.value = '';
@@ -978,7 +996,7 @@ function kRow(k = {}) {
   const thumbs = (k.subgallery||[]).map((url,i) => `
     <div class="subgallery-thumb" style="position:relative;width:60px;height:60px;border-radius:4px;overflow:hidden;border:1px solid var(--border);display:inline-block;margin:2px;">
       <img src="${url}" style="width:100%;height:100%;object-fit:cover;">
-      <button type="button" onclick="removeKittenThumb(${uid},${i})" style="position:absolute;top:1px;right:1px;background:rgba(139,46,46,0.9);color:white;border:none;width:16px;height:16px;border-radius:50%;cursor:pointer;font-size:9px;">✕</button>
+      <button type="button" onclick="removeKittenThumb(${uid},${i})" style="position:absolute;top:1px;right:1px;background:rgba(139,46,46,0.9);color:white;border:none;width:16px;height:16px;border-radius:50%;cursor:pointer;font-size:10px;padding:0;display:flex;align-items:center;justify-content:center;">${ic('x')}</button>
     </div>
   `).join('');
 
@@ -989,24 +1007,24 @@ function kRow(k = {}) {
       ondragleave="kittenDragLeave(event)"
       ondrop="kittenDrop(event)"
       ondragend="kittenDragEnd(event)">
-      <span class="drag-handle" title="Přetáhněte pro změnu pořadí">⠿</span>
+      <span class="drag-handle" title="Přetáhněte pro změnu pořadí">${ic('grip')}</span>
       <input type="text" placeholder="Celé jméno kotěte" value="${esc(k.name)}" class="k-name">
       <input type="text" placeholder="Barva (NFO n 22)" value="${esc(k.color)}" class="k-color">
       <select class="k-sex">
-        <option value="Kočka" ${k.sex==='Kočka'?'selected':''}>🐱 Kočka</option>
-        <option value="Kocour" ${k.sex==='Kocour'?'selected':''}>🐈 Kocour</option>
+        <option value="Kočka" ${k.sex==='Kočka'?'selected':''}>Kočka</option>
+        <option value="Kocour" ${k.sex==='Kocour'?'selected':''}>Kocour</option>
       </select>
       <select class="k-status">
-        <option value="available" ${k.status==='available'?'selected':''}>✅ Volné</option>
-        <option value="reserved" ${k.status==='reserved'?'selected':''}>🔒 Rezervace</option>
-        <option value="sold" ${k.status==='sold'?'selected':''}>🏠 V domově</option>
-        <option value="booked" ${k.status==='booked'?'selected':''}>📋 Zamluvené</option>
-        <option value="stays" ${k.status==='stays'?'selected':''}>🏡 Zůstává doma</option>
+        <option value="available" ${k.status==='available'?'selected':''}>Volné</option>
+        <option value="reserved" ${k.status==='reserved'?'selected':''}>Rezervace</option>
+        <option value="sold" ${k.status==='sold'?'selected':''}>V domově</option>
+        <option value="booked" ${k.status==='booked'?'selected':''}>Zamluvené</option>
+        <option value="stays" ${k.status==='stays'?'selected':''}>Zůstává doma</option>
       </select>
       <div style="display:flex;gap:0.3rem;">
-        <button type="button" class="btn-move" onclick="moveKittenRow(this,-1)" title="Posunout nahoru">↑</button>
-        <button type="button" class="btn-move" onclick="moveKittenRow(this,1)" title="Posunout dolů">↓</button>
-        <button type="button" class="btn btn-danger" onclick="this.closest('.kitten-row').remove()" style="padding:0.4rem 0.6rem">🗑</button>
+        <button type="button" class="btn-move" onclick="moveKittenRow(this,-1)" title="Posunout nahoru" aria-label="Posunout nahoru">${ic('up')}</button>
+        <button type="button" class="btn-move" onclick="moveKittenRow(this,1)" title="Posunout dolů" aria-label="Posunout dolů">${ic('down')}</button>
+        <button type="button" class="btn btn-danger" onclick="this.closest('.kitten-row').remove()" style="padding:0.4rem 0.6rem" title="Smazat" aria-label="Smazat">${ic('trash')}</button>
       </div>
       <div class="kitten-row-pedigree">
         <input type="url" placeholder="URL rodokmenu (nepovinné)" value="${esc(k.pedigree)}" class="k-pedigree">
@@ -1015,7 +1033,7 @@ function kRow(k = {}) {
         <div style="display:flex;flex-direction:column;gap:0.4rem;">
           <label style="font-size:0.72rem;color:var(--brown-mid);font-weight:600;">Hlavní foto</label>
           <div style="display:flex;gap:0.5rem;align-items:center;">
-            ${k.photo ? `<img src="${k.photo}" style="width:60px;height:60px;object-fit:cover;border-radius:4px;border:1px solid var(--border);" class="k-photo-preview-${uid}">` : `<div class="k-photo-preview-${uid}" style="width:60px;height:60px;background:var(--cream-dark);border-radius:4px;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:1.2rem;">📷</div>`}
+            ${k.photo ? `<img src="${k.photo}" style="width:60px;height:60px;object-fit:cover;border-radius:4px;border:1px solid var(--border);" class="k-photo-preview-${uid}">` : `<div class="k-photo-preview-${uid}" style="width:60px;height:60px;background:var(--cream-dark);border-radius:4px;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--gold-deep);">${ic('camera')}</div>`}
             <button type="button" class="btn btn-outline" style="font-size:0.75rem;padding:0.4rem 0.75rem;" onclick="document.getElementById('k-photo-${uid}').click()">Nahrát</button>
             <input type="file" id="k-photo-${uid}" accept="image/*" style="display:none" onchange="handleKittenPhoto(this,${uid})">
             <input type="hidden" class="k-photo" value="${esc(k.photo)}">
@@ -1024,7 +1042,7 @@ function kRow(k = {}) {
         <div style="flex:1;min-width:200px;">
           <label style="font-size:0.72rem;color:var(--brown-mid);font-weight:600;display:block;margin-bottom:0.4rem;">Podgalerie</label>
           <div class="k-thumbs-${uid}" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:0.4rem;">${thumbs}</div>
-          <button type="button" class="btn btn-outline" style="font-size:0.75rem;padding:0.4rem 0.75rem;" onclick="document.getElementById('k-sub-${uid}').click()">+ Přidat fotky</button>
+          <button type="button" class="btn btn-outline" style="font-size:0.75rem;padding:0.4rem 0.75rem;" onclick="document.getElementById('k-sub-${uid}').click()"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg> Přidat fotky</button>
           <input type="file" id="k-sub-${uid}" accept="image/*" multiple style="display:none" onchange="handleKittenSub(this,${uid})">
         </div>
       </div>
@@ -1041,7 +1059,7 @@ function removeKittenThumb(uid, idx) {
   thumbsEl.innerHTML = sub.map((url,i) => `
     <div style="position:relative;width:60px;height:60px;border-radius:4px;overflow:hidden;border:1px solid var(--border);display:inline-block;margin:2px;">
       <img src="${url}" style="width:100%;height:100%;object-fit:cover;">
-      <button type="button" onclick="removeKittenThumb(${uid},${i})" style="position:absolute;top:1px;right:1px;background:rgba(139,46,46,0.9);color:white;border:none;width:16px;height:16px;border-radius:50%;cursor:pointer;font-size:9px;">✕</button>
+      <button type="button" onclick="removeKittenThumb(${uid},${i})" style="position:absolute;top:1px;right:1px;background:rgba(139,46,46,0.9);color:white;border:none;width:16px;height:16px;border-radius:50%;cursor:pointer;font-size:10px;padding:0;display:flex;align-items:center;justify-content:center;">${ic('x')}</button>
     </div>
   `).join('');
 }
@@ -1078,7 +1096,7 @@ async function handleKittenSub(input, uid) {
           thumbsEl.innerHTML += `
             <div style="position:relative;width:60px;height:60px;border-radius:4px;overflow:hidden;border:1px solid var(--border);display:inline-block;margin:2px;">
               <img src="${url}" style="width:100%;height:100%;object-fit:cover;">
-              <button type="button" onclick="removeKittenThumb(${uid},${i})" style="position:absolute;top:1px;right:1px;background:rgba(139,46,46,0.9);color:white;border:none;width:16px;height:16px;border-radius:50%;cursor:pointer;font-size:9px;">✕</button>
+              <button type="button" onclick="removeKittenThumb(${uid},${i})" style="position:absolute;top:1px;right:1px;background:rgba(139,46,46,0.9);color:white;border:none;width:16px;height:16px;border-radius:50%;cursor:pointer;font-size:10px;padding:0;display:flex;align-items:center;justify-content:center;">${ic('x')}</button>
             </div>`;
         }
         resolve();
@@ -1188,7 +1206,7 @@ async function handleSubUpload(input) {
   }
 
   progressFill.style.width = '100%';
-  progressText.textContent = `✅ Nahráno ${files.length} fotek`;
+  progressText.textContent = `Nahráno ${files.length} fotek`;
   setTimeout(() => { progress.style.display = 'none'; }, 2000);
   saveBtn.disabled = false;
   input.value = '';
@@ -1198,7 +1216,7 @@ function renderThumbs() {
   return currentModalSubgallery.map((url, i) => `
     <div class="subgallery-thumb" draggable="true" ondragstart="dragStart(${i})" ondragover="dragOver(event,${i})" ondrop="dragDrop(event,${i})">
       <img src="${url}" alt="">
-      <button class="thumb-del" onclick="removeThumb(${i})">✕</button>
+      <button class="thumb-del" onclick="removeThumb(${i})" title="Smazat" aria-label="Smazat">${ic('x')}</button>
       <span class="thumb-num">${i+1}</span>
     </div>
   `).join('');
@@ -1249,7 +1267,7 @@ async function saveModal() {
       const arr = DATA[currentModal];
       if (editIndex >= 0) arr[editIndex] = item; else arr.push(item);
       const ok = await saveFile(currentModal);
-      if (ok) { toast('✅ Uloženo!', 'success'); closeModal(); renderList(currentModal, arr); }
+      if (ok) { toast('Uloženo!', 'success'); closeModal(); renderList(currentModal, arr); }
 
     } else if (currentModal === 'litters') {
       const kittens = [...document.querySelectorAll('#k-list .kitten-row')].map(r => ({
@@ -1268,31 +1286,31 @@ async function saveModal() {
       };
       if (editIndex >= 0) DATA.litters[editIndex] = item; else DATA.litters.push(item);
       const ok = await saveFile('litters');
-      if (ok) { toast('✅ Vrh uložen!', 'success'); closeModal(); renderLitters(); }
+      if (ok) { toast('Vrh uložen!', 'success'); closeModal(); renderLitters(); }
 
     } else if (currentModal === 'gallery') {
       const pMain = document.getElementById('p-main');
-      if (!pMain?.dataset?.b64) { toast('❌ Vyberte fotografii', 'error'); btn.disabled = false; btn.textContent = '💾 Uložit'; return; }
+      if (!pMain?.dataset?.b64) { toast('Vyberte fotografii', 'error'); btn.disabled = false; btn.innerHTML = ic('save') + ' Uložit'; return; }
       const url = await ghUploadImage(pMain.dataset.file, pMain.dataset.b64);
-      if (!url) { toast('❌ Nahrání selhalo', 'error'); btn.disabled = false; btn.textContent = '💾 Uložit'; return; }
+      if (!url) { toast('Nahrání selhalo', 'error'); btn.disabled = false; btn.innerHTML = ic('save') + ' Uložit'; return; }
      DATA.gallery.push({ url, label: val('f-label'), category: val('f-category') || 'other' });
       const ok = await saveFile('gallery');
-      if (ok) { toast('✅ Fotografie přidána!', 'success'); closeModal(); renderGalleryAdmin(); }
+      if (ok) { toast('Fotografie přidána!', 'success'); closeModal(); renderGalleryAdmin(); }
 
     } else if (currentModal === 'certificates') {
-      if (!val('f-cf-name').trim()) { toast('❌ Vyplňte název složky', 'error'); btn.disabled = false; btn.innerHTML = '💾 Uložit'; return; }
+      if (!val('f-cf-name').trim()) { toast('Vyplňte název složky', 'error'); btn.disabled = false; btn.innerHTML = ic('save') + ' Uložit'; return; }
       const folder = { name: val('f-cf-name'), items: [...currentCertItems] };
       if (editIndex >= 0) DATA.certificates[editIndex] = folder; else DATA.certificates.push(folder);
       const ok = await saveFile('certificates');
-      if (ok) { toast('✅ Složka uložena!', 'success'); closeModal(); renderCertFolders(); }
+      if (ok) { toast('Složka uložena!', 'success'); closeModal(); renderCertFolders(); }
     }
   } catch(e) {
     console.error(e);
-    toast('❌ Chyba: ' + e.message, 'error');
+    toast('Chyba: ' + e.message, 'error');
   }
 
   btn.disabled = false;
-  btn.innerHTML = '💾 Uložit';
+  btn.innerHTML = ic('save') + ' Uložit';
 }
 
 async function deleteItem(type, i) {
@@ -1301,7 +1319,7 @@ async function deleteItem(type, i) {
   DATA[key].splice(i, 1);
   const ok = await saveFile(key);
   if (ok) {
-    toast('🗑 Smazáno', 'info');
+    toast('Smazáno', 'info');
     if (key === 'cats' || key === 'toms') renderList(key, DATA[key]);
     else if (key === 'litters') renderLitters();
     else if (key === 'certificates') renderCertFolders();
@@ -1314,8 +1332,8 @@ async function saveAbout() {
   btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Ukládám...';
   DATA.about.text = document.getElementById('about-text').value;
   const ok = await saveFile('about');
-  if (ok) toast('✅ Text uložen!', 'success');
-  btn.disabled = false; btn.innerHTML = '💾 Uložit text';
+  if (ok) toast('Text uložen!', 'success');
+  btn.disabled = false; btn.innerHTML = ic('save') + ' Uložit text';
 }
 
 // ── HISTORIE (kniha z PDF) ──
@@ -1459,12 +1477,12 @@ async function saveHistory() {
     historyPending = null;
     document.getElementById('history-pick').classList.remove('show');
     renderHistory();
-    toast('✅ Kniha je zveřejněná. Na webu se ukáže během chvilky.', 'success');
+    toast('Kniha je zveřejněná. Na webu se ukáže během chvilky.', 'success');
   } catch (e) {
     console.error(e);
     historyError(e && e.message ? e.message : 'Něco se nepovedlo. Zkuste to prosím znovu.');
   } finally {
-    btn.disabled = false; btn.innerHTML = '💾 Nahrát a zveřejnit';
+    btn.disabled = false; btn.innerHTML = ic('save') + ' Nahrát a zveřejnit';
   }
 }
 
@@ -1483,7 +1501,10 @@ function esc(s) { return (s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
 function toast(msg, type = 'success') {
   const t = document.getElementById('toast');
   t.className = `toast ${type}`;
-  t.textContent = msg;
+  t.innerHTML = ic(type === 'success' ? 'check' : type === 'error' ? 'alert' : 'info');
+  const text = document.createElement('span');
+  text.textContent = String(msg).replace(/^(?:\u2705|\u274C|\uD83D\uDD12|\uD83D\uDDD1)\s*/, '');
+  t.appendChild(text);
   t.style.display = 'block';
   setTimeout(() => t.style.display = 'none', 3500);
 }
