@@ -1,38 +1,47 @@
-/* Lišta souhlasu s cookies (styl převzatý z webu Yummy, barvy Crystal Valley) */
-.cc { position:fixed; left:12px; right:12px; bottom:12px; z-index:2000; font-family:'Jost', system-ui, sans-serif; color:#3b2a1a; opacity:0; transform:translateY(40px); pointer-events:none; transition:opacity .45s cubic-bezier(.16,1,.3,1), transform .45s cubic-bezier(.16,1,.3,1); }
+/* Lišta souhlasu s cookies: rozložení jako na webu Yummy, vzhled Crystal Valley (tmavá karta se zlatým rámečkem, vlevo dole) */
+.cc { position:fixed; left:12px; right:12px; bottom:12px; z-index:2000; font-family:'Jost', system-ui, sans-serif; color:#f5f0e8; text-align:left; opacity:0; transform:translateY(40px); pointer-events:none; transition:opacity .45s cubic-bezier(.16,1,.3,1), transform .45s cubic-bezier(.16,1,.3,1); }
 .cc.is-open { opacity:1; transform:none; pointer-events:auto; }
 .cc[hidden] { display:none; }
-.cc-box { max-height:80vh; max-height:80svh; overflow-y:auto; background:#fefcf8; border-radius:24px; padding:1.1rem; box-shadow:0 30px 80px -20px rgba(28,22,19,.55); outline:1px solid rgba(59,42,26,.1); outline-offset:-1px; }
-.cc-box:focus { outline:2px solid #c9a84c; outline-offset:-2px; }
-.cc-title { font-family:'Cormorant Garamond', Georgia, serif; font-weight:500; font-size:1.5rem; line-height:1.15; }
-.cc-text { margin-top:.6rem; font-size:.84rem; line-height:1.5; color:#6b4c2a; }
-.cc-text a { color:#3b2a1a; font-weight:500; text-decoration:underline; text-underline-offset:2px; }
-.cc-text a:hover { color:#a98a32; }
-.cc-list { list-style:none; margin-top:1.1rem; display:grid; gap:.7rem; }
-.cc-item { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; padding:.95rem 1rem; border-radius:16px; background:rgba(237,230,214,.6); }
+.cc-box { max-height:80vh; max-height:80svh; overflow-y:auto; background:linear-gradient(160deg, #46321f, #2a1d11); border:1px solid rgba(201,168,76,.55); border-radius:16px; padding:1.1rem; box-shadow:0 30px 80px -20px rgba(20,12,5,.7), inset 0 0 0 4px rgba(201,168,76,.08); }
+.cc-box:focus { outline:2px solid #e8d09a; outline-offset:2px; }
+.cc-head { display:flex; align-items:center; gap:.75rem; }
+.cc-paw { flex-shrink:0; display:grid; place-items:center; width:40px; height:40px; border-radius:50%; border:1px solid rgba(201,168,76,.6); background:rgba(201,168,76,.12); }
+.cc-paw svg { width:22px; height:22px; fill:#e8d09a; }
+.cc-title { margin:0; font-family:'Cormorant Garamond', Georgia, serif; font-weight:500; font-size:1.5rem; line-height:1.15; color:#f5f0e8; letter-spacing:.01em; }
+.cc-text { margin:.75rem 0 0; font-size:.84rem; font-weight:300; line-height:1.55; color:#e6d9c4; }
+.cc-text a { color:#e8d09a; font-weight:400; text-decoration:underline; text-underline-offset:2px; }
+.cc-text a:hover { color:#fefcf8; }
+.cc-list { list-style:none; margin:1rem 0 0; padding:0; border-top:1px solid rgba(201,168,76,.3); }
+.cc-item { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin:0; padding:.85rem 0; border-bottom:1px solid rgba(201,168,76,.3); }
 .cc-item label { font-size:.86rem; cursor:pointer; }
-.cc-item strong { display:block; font-weight:500; font-size:.92rem; }
-.cc-item span { color:#6b4c2a; line-height:1.45; display:block; margin-top:.15rem; }
-.cc-switch { position:relative; flex-shrink:0; width:48px; height:28px; border-radius:999px; border:none; background:rgba(59,42,26,.22); cursor:pointer; transition:background .2s; padding:0; }
-.cc-switch::after { content:''; position:absolute; top:4px; left:4px; width:20px; height:20px; border-radius:50%; background:#fefcf8; box-shadow:0 1px 3px rgba(0,0,0,.25); transition:transform .2s; }
-.cc-switch[aria-checked="true"] { background:#3b2a1a; }
+.cc-item strong { display:block; font-weight:500; font-size:.92rem; color:#e8d09a; }
+.cc-item span { display:block; margin-top:.15rem; font-weight:300; line-height:1.45; color:#e6d9c4; }
+.cc-switch { position:relative; flex-shrink:0; width:48px; height:28px; border-radius:999px; border:1px solid rgba(232,208,154,.4); background:rgba(245,240,232,.12); cursor:pointer; transition:background .2s; padding:0; }
+.cc-switch::after { content:''; position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:#fefcf8; box-shadow:0 1px 3px rgba(0,0,0,.35); transition:transform .2s; }
+.cc-switch[aria-checked="true"] { background:#c9a84c; border-color:#c9a84c; }
 .cc-switch[aria-checked="true"]::after { transform:translateX(20px); }
-.cc-switch:disabled { opacity:.6; cursor:not-allowed; }
-.cc-switch:focus-visible { outline:3px solid rgba(201,168,76,.55); outline-offset:2px; }
-.cc-actions { margin-top:1.3rem; display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
-.cc-btn { font:inherit; font-size:.88rem; font-weight:500; padding:.8rem 1rem; border-radius:999px; border:1.5px solid transparent; cursor:pointer; transition:background .2s, color .2s, border-color .2s; }
-.cc-btn:focus-visible { outline:3px solid rgba(201,168,76,.55); outline-offset:2px; }
-.cc-no { background:transparent; border-color:rgba(59,42,26,.25); color:#3b2a1a; }
-.cc-no:hover { border-color:#3b2a1a; }
+.cc-switch:disabled { opacity:.55; cursor:not-allowed; }
+.cc-switch:focus-visible { outline:3px solid rgba(232,208,154,.7); outline-offset:2px; }
+.cc-actions { margin-top:1.1rem; display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
+.cc-btn { font-family:'Jost', system-ui, sans-serif; font-size:.88rem; font-weight:500; line-height:1.35; padding:.78rem 1rem; border-radius:10px; border:1.5px solid transparent; cursor:pointer; transition:background .2s, color .2s, border-color .2s; }
+.cc-btn:focus-visible { outline:3px solid rgba(201,168,76,.65); outline-offset:2px; }
+/* světlá varianta (tlačítka u mapy) */
 .cc-yes { background:#3b2a1a; color:#f5f0e8; }
 .cc-yes:hover { background:#6b4c2a; }
-.cc-wide { grid-column:1 / -1; }
 .cc-more { background:transparent; color:#6b4c2a; text-decoration:underline; text-underline-offset:4px; }
 .cc-more:hover { color:#3b2a1a; }
-.cc-save { background:#ede6d6; color:#3b2a1a; }
-.cc-save:hover { background:#e8d09a; }
+/* tmavá lišta */
+.cc-box .cc-no { background:transparent; border-color:#c9a84c; color:#f5f0e8; }
+.cc-box .cc-no:hover { background:rgba(201,168,76,.18); }
+.cc-box .cc-yes { background:#c9a84c; border-color:#c9a84c; color:#22170d; }
+.cc-box .cc-yes:hover { background:#e8d09a; border-color:#e8d09a; }
+.cc-wide { grid-column:1 / -1; }
+.cc-box .cc-more { padding:.45rem 1rem; color:#e6d9c4; }
+.cc-box .cc-more:hover { color:#fefcf8; }
+.cc-box .cc-save { background:rgba(245,240,232,.1); border-color:rgba(245,240,232,.22); color:#f5f0e8; }
+.cc-box .cc-save:hover { background:rgba(245,240,232,.2); }
 @media (min-width:640px) {
-  .cc { left:auto; right:24px; bottom:24px; width:26rem; }
+  .cc { right:auto; left:24px; bottom:24px; width:26rem; }
   .cc-box { padding:1.5rem; }
 }
 
